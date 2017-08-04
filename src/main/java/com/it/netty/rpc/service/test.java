@@ -8,6 +8,8 @@ public class test {
 	public static void main(String[] args) {
 		PersonService personService=new RpcProxyClient().getProxy(PersonService.class);
 		Person name = personService.getName();
-		System.out.println(name.getAge());
+		
+		
+		Person name1 = personService.getName();
 	}
 }

@@ -5,6 +5,6 @@ package com.it.netty.rpc.serialize;
  *
  */
 public interface BaseRpcSerialize {
-	byte[]  encode();
-	Object decode();
+	byte[]  encode(Object obj);
+	Object decode(byte[] bytes);
 }

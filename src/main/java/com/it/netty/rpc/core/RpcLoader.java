@@ -9,7 +9,7 @@ import io.netty.channel.ChannelFuture;
  *
  */
 public class RpcLoader {
-		private  static RpcLoader rpcLoader;
+		private volatile  static RpcLoader rpcLoader;
 		private RpcClientInit init;
 		private ChannelFuture start ;
 		private static Object obj = new Object();

@@ -15,6 +15,7 @@ import com.it.netty.rpc.core.RpcClientInit;
 import com.it.netty.rpc.message.MsgBackCall;
 import com.it.netty.rpc.message.MsgRequest;
 import com.it.netty.rpc.message.MsgResponse;
+import com.it.netty.rpc.service.Person;
 /**
  * 响应handler
  * @author 17070680
@@ -43,6 +44,10 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<MsgResponse>{
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
 		this.ctx=ctx;
+		Person p = new Person();
+		p.setAge(1);
+		p.setName("zhangsan");
+		ctx.channel().writeAndFlush(p);
 		logger.info(getClass().getName()+":ChannelHandlerContext success open:{}", ctx.toString());
 	}
 

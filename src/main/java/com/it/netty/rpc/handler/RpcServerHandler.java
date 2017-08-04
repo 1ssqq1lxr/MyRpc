@@ -32,7 +32,9 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<MsgRequest>{
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, MsgRequest request)
 			throws Exception {
+		System.out.println(request);
 		RpcExcutors exRpcExcutors = new RpcExcutors("Rpc-method-server");
+		
 		exRpcExcutors.excute(new HandRequestMsg(request, ctx));
 	}
 

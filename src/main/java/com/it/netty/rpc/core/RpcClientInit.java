@@ -51,15 +51,19 @@ public class RpcClientInit extends AbstractBaseClient{
 			final public static int MESSAGE_LENGTH = 4;
 			@Override
 			protected void initChannel(SocketChannel ch) throws Exception {
-				ch.pipeline().addLast(new IdleStateHandler(20, 0, 0));
-				ch.pipeline().addLast(new  RpcClientHandler(RpcClientInit.this));
+			
+		
 				ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, this.MESSAGE_LENGTH, 0, this.MESSAGE_LENGTH));
 			        //利用LengthFieldPrepender回填补充ObjectDecoder消息报文头
 				ch.pipeline().addLast(new LengthFieldPrepender(this.MESSAGE_LENGTH));
 				ch.pipeline().addLast(new ObjectEncoder());
 			        //考虑到并发性能，采用weakCachingConcurrentResolver缓存策略。一般情况使用:cacheDisabled即可
 				ch.pipeline().addLast(new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.weakCachingConcurrentResolver(this.getClass().getClassLoader())));
-				
+//				
+//				ch.pipeline().addLast(new ObjectEncoder());
+//				ch.pipeline().addLast(new ObjectDecoder(ClassResolvers.softCachingConcurrentResolver(this.getClass().getClassLoader())));
+				ch.pipeline().addLast(new  RpcClientHandler(RpcClientInit.this));
+				ch.pipeline().addLast(new IdleStateHandler(20, 0, 0));
 				//检测链路是否读空闲    	
 			}
 		});
@@ -84,5 +88,9 @@ public class RpcClientInit extends AbstractBaseClient{
 			}
 		});
 		return sync;
+	}
+	public static void main(String[] args) {
+		RpcClientInit init = new RpcClientInit();
+		init.start();
 	}
 }
