@@ -3,7 +3,7 @@ package com.it.netty.rpc.serialize;
 import java.io.Serializable;
 
 public class MsgConventer implements Serializable{
-	private int header =0X76;
+	private int header =1;
 	private int bodyLength;
 	private Object obj;
 	public int getHeader() {

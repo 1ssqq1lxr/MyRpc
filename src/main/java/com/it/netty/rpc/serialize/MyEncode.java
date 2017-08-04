@@ -12,13 +12,8 @@ import io.netty.handler.codec.MessageToByteEncoder;
  */
 public class MyEncode extends MessageToByteEncoder {
 
-	BaseRpcSerialize se;
+	BaseRpcSerialize se = new ByteObjConverter();
 	
-
-	public MyEncode(BaseRpcSerialize se) {
-		super();
-		this.se = se;
-	}
 
 
 	@Override
@@ -27,8 +22,10 @@ public class MyEncode extends MessageToByteEncoder {
 		// TODO Auto-generated method stub
 		MsgConventer msh = new MsgConventer();
 		out.writeInt(msh.getHeader());
+
 		byte[] encode = se.encode(msg);
-		out.writeInt(encode.length);
+		System.out.println(encode.length);
+		out.writeLong(encode.length);
 		out.writeBytes(encode);
 		
 	}

@@ -12,6 +12,9 @@ import java.util.List;
  *
  */
 public class MyDecode extends ByteToMessageDecoder{
+	BaseRpcSerialize se = new ByteObjConverter();
+	
+
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in,
@@ -19,14 +22,13 @@ public class MyDecode extends ByteToMessageDecoder{
 		MsgConventer msh = new MsgConventer();
 		int readerIndex = in.readerIndex();
 		int readInt = in.readInt();
-		int length = in.readInt();
+		Long length = in.readLong();
 		if(in.readableBytes()<length){
 		    in.readerIndex(readerIndex);  //刷新指针
             return;  
 		}
-//		Serializable byteToObject = (Serializable) ByteObjConverter.d(ByteObjConverter.read(in));
-//		entity.setBody(byteToObject);
-		out.add(null);
+		Object byteToObject =  se.decode(ByteObjConverter.read(in));
+		out.add(byteToObject);
 	}
 
 }
