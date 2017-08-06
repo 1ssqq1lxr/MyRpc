@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.it.netty.rpc.core.RpcClientInit;
+import com.it.netty.rpc.core.RpcLoader;
 import com.it.netty.rpc.message.MsgBackCall;
 import com.it.netty.rpc.message.MsgRequest;
 import com.it.netty.rpc.message.MsgResponse;
@@ -24,7 +25,7 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<MsgResponse>{
 	
 	
 	private static ConcurrentHashMap<String, Object> allback = new ConcurrentHashMap<String, Object>();
-	private  RpcClientInit client1;
+	private static  RpcClientInit client1 =RpcLoader.getloader().getRpcClientInit();;
 	public RpcClientHandler(RpcClientInit client1) {
 		super();
 		this.client1 = client1;
@@ -43,17 +44,28 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<MsgResponse>{
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
-		this.ctx=ctx;
-		Person p = new Person();
-		p.setAge(1);
-		p.setName("zhangsan");
-		ctx.channel().writeAndFlush(p);
+		if(this.ctx==null){
+			synchronized (client1) {
+				if(this.ctx==null){
+					this.ctx=ctx;
+					client1.notifyAll();
+				}
+			}
+		}
 		logger.info(getClass().getName()+":ChannelHandlerContext success open:{}", ctx.toString());
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
+		if(this.ctx!=null){
+			synchronized (client1) {
+				if(this.ctx!=null){
+					this.ctx=null;
+					client1.notifyAll();
+				}
+			}
+		}
 		client1.connect();
 		super.channelInactive(ctx);
 	}
@@ -81,6 +93,19 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<MsgResponse>{
 	}
 
 	public static MsgBackCall sendMag(MsgRequest obj){
+		if(ctx==null){
+			synchronized (client1) {
+				if(ctx==null){
+					try {
+						client1.wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		RpcLoader.getloader().getRpcClientInit();
 		MsgBackCall back= new MsgBackCall();
 		ctx.writeAndFlush(obj);
 		allback.put(obj.getSiralNo(), back);

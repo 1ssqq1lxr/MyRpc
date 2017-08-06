@@ -20,11 +20,13 @@ public class HandRequestMsg implements Runnable{
 
 	public void run() {
 		// TODO Auto-generated method stub
-		MsgResponse response = new MsgResponse();
+		MsgResponse<Person> response = new MsgResponse<Person>();
 		Person p = new Person();
 		p.setAge(1);
 		p.setName("zhangsan");
-		ctx.writeAndFlush(p);
+		response.setData(p);
+		response.setSiralNo(request.getSiralNo());
+		ctx.writeAndFlush(response);
 	}
 
 }
