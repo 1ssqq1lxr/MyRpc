@@ -7,10 +7,10 @@ import java.lang.reflect.Proxy;
  *
  * @param <T>
  */
-public class RpcProxyClient implements RpcProxy {
+public class RpcProxyClient {
 
 
-	public <T> T getProxy( Class<T> classes) {
+	public  static <T>  T getProxy( Class<T> classes) {
 		// TODO Auto-generated method stub
 		return (T) Proxy.newProxyInstance(classes.getClassLoader(), new Class<?>[]{classes}, new RpcInvocationHandler<T>(classes));
 	}
