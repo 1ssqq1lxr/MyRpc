@@ -44,7 +44,7 @@ public class ServiceRegist {
 	    private void createNode(ZooKeeper zk, String data) {
 	        try {
 	            byte[] bytes = data.getBytes();
-	            String path = zk.create("/test", bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+	            String path = zk.create("/test", bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
 	            System.out.println("create zookeeper node path:"+path+" data:"+data);
 	        } catch (Exception e) {
 	         e.printStackTrace();

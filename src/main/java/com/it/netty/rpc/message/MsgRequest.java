@@ -12,7 +12,7 @@ public class MsgRequest implements Serializable {
 	 */
 	private static final long serialVersionUID = 1000000L;
 	private String siralNo;
-	private Class<?> classt;
+	private String className;
 	private String methodName;
 	private Object[] params;
 	public String getSiralNo() {
@@ -21,11 +21,12 @@ public class MsgRequest implements Serializable {
 	public void setSiralNo(String siralNo) {
 		this.siralNo = siralNo;
 	}
-	public Class getClasst() {
-		return classt;
+	
+	public String getClassName() {
+		return className;
 	}
-	public void setClasst(Class classt) {
-		this.classt = classt;
+	public void setClassName(String className) {
+		this.className = className;
 	}
 	public String getMethodName() {
 		return methodName;
