@@ -34,6 +34,8 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 			System.out.println();
 			msgRequest.setClassName(classes.getName());
 			msgRequest.setMethodName(method.getName());
+			Class<?>[] parameterTypes = method.getParameterTypes();
+			msgRequest.setParamsType(parameterTypes);
 			msgRequest.setParams(args);
 			MsgBackCall sendMag = RpcClientHandler.sendMag(msgRequest);
 			return sendMag.call(); // 回调

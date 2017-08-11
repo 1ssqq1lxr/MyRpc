@@ -18,10 +18,7 @@ public class MsgResponse<T> implements Serializable{
 	
 	private T data;
 	
-	
-	
-	
-	
+
 	
 	
 	public T getData() {

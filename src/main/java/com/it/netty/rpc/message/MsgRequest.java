@@ -15,6 +15,14 @@ public class MsgRequest implements Serializable {
 	private String className;
 	private String methodName;
 	private Object[] params;
+	private Class<?>[] paramsType;
+	
+	public Class<?>[] getParamsType() {
+		return paramsType;
+	}
+	public void setParamsType(Class<?>[] paramsType) {
+		this.paramsType = paramsType;
+	}
 	public String getSiralNo() {
 		return siralNo;
 	}
