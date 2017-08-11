@@ -2,6 +2,8 @@ package com.it.netty.rpc.serialize;
 
 import java.io.Serializable;
 
+import com.it.netty.rpc.serialize.java.ByteObjConverter;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;

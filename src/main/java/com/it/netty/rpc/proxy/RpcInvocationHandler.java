@@ -31,7 +31,8 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 			// TODO Auto-generated method stub
 			MsgRequest msgRequest= new MsgRequest();
 			msgRequest.setSiralNo(UUID.randomUUID().toString());
-			msgRequest.setClassName(proxy.getClass().getName());
+			System.out.println();
+			msgRequest.setClassName(classes.getName());
 			msgRequest.setMethodName(method.getName());
 			msgRequest.setParams(args);
 			MsgBackCall sendMag = RpcClientHandler.sendMag(msgRequest);

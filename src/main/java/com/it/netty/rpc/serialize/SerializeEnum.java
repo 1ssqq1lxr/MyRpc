@@ -1,5 +1,7 @@
 package com.it.netty.rpc.serialize;
 
+import com.it.netty.rpc.serialize.java.ByteObjConverter;
+
 public enum SerializeEnum {
 		JDKSERIALIZE(1),
 		PROTOBUFSERIALIZE(2),

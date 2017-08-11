@@ -6,5 +6,5 @@ package com.it.netty.rpc.zookeeper.base;
  */
 public interface BaseZkClient {
 	void registURI(String path,URI uri);
-	URI findURI(String path);
+	void initAllURI(String path);
 }
