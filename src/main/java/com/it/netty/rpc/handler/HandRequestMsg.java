@@ -2,6 +2,7 @@ package com.it.netty.rpc.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 
+import com.it.netty.rpc.common.ReflectUtils;
 import com.it.netty.rpc.message.MsgRequest;
 import com.it.netty.rpc.message.MsgResponse;
 import com.it.netty.rpc.service.Person;
@@ -20,9 +21,10 @@ public class HandRequestMsg implements Runnable{
 
 	public void run() {
 		// TODO Auto-generated method stub
-		MsgResponse<Person> response = new MsgResponse<Person>();
+		MsgResponse<Object> response = new MsgResponse<Object>();
 		response.setSiralNo(request.getSiralNo());
-		
+		Object return1 = ReflectUtils.getReturn(request);
+		response.setData(return1);
 		ctx.writeAndFlush(response);
 	}
 
