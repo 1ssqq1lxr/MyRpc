@@ -37,8 +37,12 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 			Class<?>[] parameterTypes = method.getParameterTypes();
 			msgRequest.setParamsType(parameterTypes);
 			msgRequest.setParams(args);
+			msgRequest.setReturnType( method.getReturnType());
 			MsgBackCall sendMag = RpcClientHandler.sendMag(msgRequest);
-			return sendMag.call(); // 回调
+			if(msgRequest.getReturnType().getSimpleName().equals("void")) // 返回值 为void 直接返回不等待
+			return null;
+			else
+			return sendMag.call();  // 回调
 		}
 		return null;
 	}

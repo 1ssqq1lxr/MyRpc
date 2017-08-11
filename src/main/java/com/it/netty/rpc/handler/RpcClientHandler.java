@@ -105,10 +105,16 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<MsgResponse>{
 				}
 			}
 		}
-		RpcLoader.getloader().getRpcClientInit();
-		MsgBackCall back= new MsgBackCall();
-		ctx.writeAndFlush(obj);
-		allback.put(obj.getSiralNo(), back);
-		return back;
+		if(obj.getReturnType().getSimpleName().equals("void")){
+			ctx.writeAndFlush(obj);
+			return null;
+		}
+		else{
+			MsgBackCall back= new MsgBackCall();
+			ctx.writeAndFlush(obj);
+			allback.put(obj.getSiralNo(), back);
+			return back;
+		}
+
 	}
 }
