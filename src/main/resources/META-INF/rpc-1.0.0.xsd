@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.lxr.com/schema/rpc"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tool="http://www.springframework.org/schema/tool" xmlns:beans="http://www.springframework.org/schema/beans"
+	targetNamespace="http://www.lxr.com/schema/rpc"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:import namespace="http://www.springframework.org/schema/beans" />
+	<xsd:import namespace="http://www.springframework.org/schema/tool" />
+		
+	<xsd:element name="service" >
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="serviceRegeist" type="serviceRegeist" maxOccurs="unbounded" minOccurs="0"/>
+			</xsd:sequence>
+			<xsd:attribute name="id" type="xsd:string" use="required"/>
+			<xsd:attribute name="address" type="xsd:string" use="optional" default="127.0.0.1:2181"/>
+			<xsd:attribute name="protocol" type="xsd:string" use="optional" default="jdk"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	
+	<xsd:complexType name="serviceRegeist">
+		<xsd:attribute name="class" type="xsd:string" use="required"/>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+	</xsd:complexType>
+	
+	
+	
+</xsd:schema>

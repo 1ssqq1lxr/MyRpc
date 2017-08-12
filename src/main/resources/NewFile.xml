@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xmlns:rpc="http://www.lxr.com/schema/rpc"  
+    xsi:schemaLocation="  
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
+        http://www.lxr.com/schema/rpc 
+        http://www.lxr.com/schema/rpc/rpc-1.0.0.xsd">  
+ 	<rpc:service id="ss" address="127.0.0.1:2181" >
+ 				<rpc:serviceRegeist name="testservice" class="com.it"></rpc:serviceRegeist>
+ 	</rpc:service>
+	
+</beans>  

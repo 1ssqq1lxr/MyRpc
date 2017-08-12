@@ -10,15 +10,14 @@ public enum SerializeEnum {
 		SerializeEnum(int value){
 				this.value=value;
 		}
-		
 		public BaseRpcSerialize getSerialBean(){
 			switch (value) {
 			case 1:
 				return  new ByteObjConverter();
 
 			default:
-				break;
+				return  new ByteObjConverter();
 			}
-			return null;
+		
 		}
 }
