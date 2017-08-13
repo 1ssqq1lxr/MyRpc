@@ -12,7 +12,8 @@ import com.alibaba.fastjson.JSON;
 import com.it.netty.rpc.zookeeper.base.URI;
 
 public class ServiceDiscovery {
-	private  static Map<String,URI> dataList = new ConcurrentHashMap<String,URI>();
+	public  static Map<String,URI> dataList = new ConcurrentHashMap<String,URI>();
+	public static ThreadLocal<String> threadLocal = new ThreadLocal<>();
 	public  static void watchNode(final ZooKeeper zk) {
 		try {
 			List<String> nodeList = zk.getChildren("/", new Watcher() {
@@ -49,6 +50,22 @@ public class ServiceDiscovery {
 			return dataList.get(path);
 		}
 		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public static URI findURIByThread(){
+		try {
+			if(dataList!=null){
+				if(dataList.get(threadLocal.get())!=null){
+					return dataList.get(threadLocal.get());
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		finally{
+			threadLocal.remove();
+		}
 		return null;
 	}
 	

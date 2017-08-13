@@ -3,6 +3,7 @@ package com.it.netty.rpc.zookeeper.base;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.zookeeper.Transaction;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -13,10 +14,9 @@ import com.it.netty.rpc.zookeeper.ServiceDiscovery;
 import com.it.netty.rpc.zookeeper.ServiceRegist;
 
 public class ServerInitialization implements BaseZkClient {
-	private String registryAddress;
+	private static String registryAddress;
 	private CountDownLatch latch = new CountDownLatch(1);
 	protected Logger logger = LoggerFactory.getLogger(getClass());
-	private static ServiceRegist regist;
 	ZooKeeper zk ;
 	private ServerInitialization(){
 		zk= connectServer();
@@ -35,6 +35,7 @@ public class ServerInitialization implements BaseZkClient {
 	}
 	
 	public static ServerInitialization getInstance(String registryAddress){
+		ServerInitialization.registryAddress=registryAddress;
 		return new ServerInitialization();
 		
 	}
@@ -59,5 +60,17 @@ public class ServerInitialization implements BaseZkClient {
 			e.printStackTrace();
 		}
 		return zk;
+	}
+	
+	public static void main(String[] args) {
+				// TODO Auto-generated method stub
+				ServerInitialization instance = ServerInitialization.getInstance("localhost:2181");
+				instance.registURI("/test", new URI());
+				try {
+					Thread.sleep(6000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	}
 }

@@ -14,4 +14,5 @@ public interface AbstractExcutor {
 	
 	public void excute(Runnable runnable);
 	public <T>	Future<T> submit(Callable<T> runnable);
+	
 }

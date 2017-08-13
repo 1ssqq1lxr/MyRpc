@@ -17,11 +17,17 @@ import io.netty.handler.timeout.IdleStateHandler;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import javax.management.RuntimeErrorException;
+
+import com.google.common.util.concurrent.Service;
 import com.it.netty.rpc.handler.RpcClientHandler;
 import com.it.netty.rpc.heart.ChannelConnect;
+import com.it.netty.rpc.zookeeper.ServiceDiscovery;
+import com.it.netty.rpc.zookeeper.base.ServerInitialization;
+import com.it.netty.rpc.zookeeper.base.URI;
 
 public class RpcClientInit extends AbstractBaseClient{
-	
+	public static ThreadLocal<String> threadLocal = new ThreadLocal<>();
 	private Channel channel;
 	
 	public Channel getChannel() {
@@ -65,25 +71,32 @@ public class RpcClientInit extends AbstractBaseClient{
 
 	@Override
 	public  ChannelFuture connect() {
-		ChannelFuture sync = b.connect("127.0.0.1",8099);
-		sync.addListener(new ChannelFutureListener(){
+		try {
+			URI findURIByThread = ServiceDiscovery.findURIByThread();
+			if(findURIByThread==null)
+				throw new RuntimeException("没找到匹配的service {}");
+			ChannelFuture sync = b.connect(findURIByThread.getHost(),findURIByThread.getPort());
+			sync.addListener(new ChannelFutureListener(){
 
-			public void operationComplete(ChannelFuture future)
-					throws Exception {
-				// TODO Auto-generated method stub
-				if (future.isSuccess()) {
-					Channel  channel = future.channel();
-					System.out.println("Connect to server successfully!"+channel.toString());
-				} else {
-					System.out.println("Failed to connect to server, try connect after 10s");
-					executorService.execute(new ChannelConnect(RpcClientInit.this));
+				public void operationComplete(ChannelFuture future)
+						throws Exception {
+					// TODO Auto-generated method stub
+					if (future.isSuccess()) {
+						Channel  channel = future.channel();
+						logger.info("Connect to server successfully!"+channel.toString());
+					} else {
+						logger.info("Failed to connect to server, try connect after 20s");
+						executorService.execute(new ChannelConnect(RpcClientInit.this));
+					}
 				}
-			}
-		});
-		return sync;
+			});
+			return sync;
+		} catch (Exception e) {
+			// TODO: handle exception
+			logger.error(this.getClass().getName()+": service {} not finded" ,ServiceDiscovery.threadLocal.get());
+		}
+		return cf;
+		
 	}
-	public static void main(String[] args) {
-		RpcClientInit init = new RpcClientInit();
-		init.start();
-	}
+	
 }

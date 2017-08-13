@@ -6,10 +6,12 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
+import com.it.netty.rpc.core.RpcClientInit;
 import com.it.netty.rpc.core.RpcLoader;
 import com.it.netty.rpc.handler.RpcClientHandler;
 import com.it.netty.rpc.message.MsgBackCall;
 import com.it.netty.rpc.message.MsgRequest;
+import com.it.netty.rpc.zookeeper.ServiceDiscovery;
 /**
  * rpc客户端代码类
  * @author 17070680
@@ -28,6 +30,7 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 			throws Throwable {
 		RpcLoader getloader = RpcLoader.getloader();
 		if(getloader!=null){
+			ServiceDiscovery.threadLocal.set(classes.getName());
 			// TODO Auto-generated method stub
 			MsgRequest msgRequest= new MsgRequest();
 			msgRequest.setSiralNo(UUID.randomUUID().toString());
