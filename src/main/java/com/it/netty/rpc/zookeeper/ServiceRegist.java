@@ -20,7 +20,7 @@ public class ServiceRegist {
 	    
 	    private static void createNode(ZooKeeper zk, String path, byte[] bs) {
 	        try {
-	            String path1 = zk.create(path, bs, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+	            String path1 = zk.create("/"+path, bs, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
 	            logger.info(ServiceRegist.class.getName()+":{} success regist zookeeper {}",path,path1);
 	        } catch (Exception e) {
 	         e.printStackTrace();

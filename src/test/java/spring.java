@@ -1,12 +1,12 @@
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.it.netty.rpc.framework.Test;
+import com.it.netty.rpc.framework.ZkBean;
 
 
 public class spring {
 	public static void main(String[] args) {
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("NewFile.xml");
-		Test bean = applicationContext.getBean(Test.class);
+		ZkBean bean = (ZkBean) applicationContext.getBean("ss");
 		System.out.println(bean.getAddress());
 	}
 }

@@ -62,15 +62,5 @@ public class ServerInitialization implements BaseZkClient {
 		return zk;
 	}
 	
-	public static void main(String[] args) {
-				// TODO Auto-generated method stub
-				ServerInitialization instance = ServerInitialization.getInstance("localhost:2181");
-				instance.registURI("/test", new URI());
-				try {
-					Thread.sleep(6000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	}
+
 }
