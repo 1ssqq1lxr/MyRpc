@@ -61,4 +61,13 @@ public abstract class AbstractBaseServer implements Base {
 	        bossGroup.shutdownGracefully();
 	        workGroup.shutdownGracefully();
 	    }
+
+		public int getPort() {
+			return port;
+		}
+
+		public void setPort(int port) {
+			this.port = port;
+		}
+	    
 }

@@ -2,7 +2,7 @@ package com.it.netty.rpc.framework;
 
 import java.util.Set;
 
-public class ZkBean {
+public class ZkBeanService {
 	private String address;
 	private String protocol;
 	private Set<String>  classes;

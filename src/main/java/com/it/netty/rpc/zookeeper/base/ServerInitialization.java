@@ -40,6 +40,16 @@ public class ServerInitialization implements BaseZkClient {
 		
 	}
 	
+	public void colse(){
+		try {
+			if(zk!=null){
+				zk.close();
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			logger.info(this.getClass().getName()+":{}",e);
+		}
+	}
 	
 	private ZooKeeper connectServer() {
 		ZooKeeper zk = null;

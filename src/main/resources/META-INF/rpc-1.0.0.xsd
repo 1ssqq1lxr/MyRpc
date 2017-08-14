@@ -12,10 +12,12 @@
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="serviceRegeist" type="serviceRegeist" maxOccurs="unbounded" minOccurs="0"/>
+				<xsd:element name="serviceConsume" type="serviceConsume" maxOccurs="unbounded" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attribute name="id" type="xsd:string" use="required"/>
-			<xsd:attribute name="address" type="xsd:string" use="optional" default="127.0.0.1:2181"/>
+			<xsd:attribute name="zkAddress" type="xsd:string" use="required" />
 			<xsd:attribute name="protocol" type="xsd:string" use="optional" default="jdk"/>
+			<xsd:attribute name="serverPort" type="xsd:string" use="required" />
 		</xsd:complexType>
 	</xsd:element>
 	
@@ -24,6 +26,12 @@
 		<xsd:attribute name="class" type="xsd:string" use="required"/>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 	</xsd:complexType>
+	
+	<xsd:complexType name="serviceConsume">
+		<xsd:attribute name="class" type="xsd:string" use="required"/>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+	</xsd:complexType>
+	
 	
 	
 	
