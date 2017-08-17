@@ -16,11 +16,14 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import org.springframework.beans.factory.InitializingBean;
+
 import com.it.netty.rpc.handler.RpcServerHandler;
 
-public class RpcServerInit extends AbstractBaseServer {
+public class RpcServerInit extends AbstractBaseServer implements InitializingBean {
 
 	private ScheduledExecutorService executorService;
+	
 	public RpcServerInit() {
 		this.init();
         executorService = Executors.newScheduledThreadPool(2);
@@ -74,5 +77,12 @@ public class RpcServerInit extends AbstractBaseServer {
     	init.start();
 	}
 
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// TODO Auto-generated method stub
+		this.start();
+		logger.info(this.getClass().getName()+": tcp 服务启动成功");
+	}
+	
 	
 }

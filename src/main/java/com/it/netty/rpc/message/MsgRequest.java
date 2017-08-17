@@ -17,7 +17,15 @@ public class MsgRequest implements Serializable {
 	private Object[] params;
 	private Class<?>[] paramsType;
 	private Class<?> returnType;
+	private String protocol;
 	
+	
+	public String getProtocol() {
+		return protocol;
+	}
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
+	}
 	public Class<?> getReturnType() {
 		return returnType;
 	}

@@ -27,7 +27,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<MsgRequest>{
 	private static RpcExcutors exRpcExcutors = new RpcExcutors("Rpc-method-server");
 	private static List<Channel> channels = new ArrayList<Channel>();
 	protected Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	private int num ;
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, MsgRequest request)
