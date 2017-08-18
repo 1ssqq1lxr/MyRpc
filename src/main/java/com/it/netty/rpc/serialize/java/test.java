@@ -6,7 +6,7 @@ import com.it.netty.rpc.serialize.BaseRpcSerialize;
 public class test {
 	
 	public static void main(String[] args) {
-		String strName = "";
+		String strName = "张三李四";
         int length = strName.length();
         StringBuilder stringBuilder = new StringBuilder();
         if (length >3){

@@ -23,10 +23,27 @@ public abstract class AbstractInvocation<T> implements Invocation {
 	private Class<?>[] paramsType;
 	private Class<?> returnType;
 	private String protocol;
-	private static Cache cache = new CacheFactory();
+	private static Cache<Invocation> cache = new CacheFactory<Invocation>();
+		
 	
 	
+	public Invocation getInvocation(){
+		StringBuilder builder = new StringBuilder();
+		return null;
+		
+//		String url=uri.getHost()+":"+uri.getPort()+""
+	}
 	
+	@Override
+	public Invocation getInvocation(String url) {
+		// TODO Auto-generated method stub
+		Invocation cache2 = cache.getCache(url);
+		if(cache!=null){
+			return cache2;
+		}
+		return null;
+	}
+
 	public AbstractInvocation(T t, String className, URI uri) {
 		super();
 		this.t = t;

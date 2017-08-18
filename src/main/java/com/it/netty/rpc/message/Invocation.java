@@ -11,4 +11,6 @@ public interface Invocation {
 	public Class<?>[] getParamsType();
 	
 	public Object[] getParams();
+	
+	public Invocation getInvocation(String url);
 }
