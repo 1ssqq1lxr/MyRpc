@@ -1,7 +1,13 @@
 package com.it.netty.rpc.message;
 
+import java.io.Serializable;
 
-public class URI {
+
+public class URI implements Serializable {
+	/**
+	 * 序列化号
+	 */
+	private static final long serialVersionUID = 1L;
 	String serialMethod;  
 	String host;
 	int port;

@@ -13,7 +13,7 @@ public abstract class AbstractInvocation<T> implements Invocation {
 	
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 	
-	private T t;
+	private transient T t; // 实体类
 	private URI  uri;
 	private Class<?> interfaceClass;
 	private String siralNo;
