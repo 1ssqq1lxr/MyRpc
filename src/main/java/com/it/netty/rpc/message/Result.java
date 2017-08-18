@@ -5,6 +5,19 @@ public class Result {
 		private Exception exception;
 		private String resultMsg;
 		private String resultCode =Const.SUCCESS_CODE;
+		
+		public Result(Object msg, Exception exception, String resultMsg,
+				String resultCode) {
+			super();
+			this.msg = msg;
+			this.exception = exception;
+			this.resultMsg = resultMsg;
+			this.resultCode = resultCode;
+		}
+		public Result(Object msg) {
+			super();
+			this.msg = msg;
+		}
 		public Object getMsg() {
 			return msg;
 		}

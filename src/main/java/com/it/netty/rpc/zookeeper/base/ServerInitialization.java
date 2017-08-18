@@ -3,13 +3,13 @@ package com.it.netty.rpc.zookeeper.base;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
-import org.apache.zookeeper.Transaction;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.zookeeper.ServiceDiscovery;
 import com.it.netty.rpc.zookeeper.ServiceRegist;
 

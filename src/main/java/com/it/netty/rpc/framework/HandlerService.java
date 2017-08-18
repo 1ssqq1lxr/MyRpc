@@ -12,15 +12,14 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.it.netty.rpc.core.RpcServerInit;
 import com.it.netty.rpc.framework.FrameworkRpcParseUtil.ComponentCallback;
+import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.serialize.SerializeEnum;
 import com.it.netty.rpc.zookeeper.base.ServerInitialization;
-import com.it.netty.rpc.zookeeper.base.URI;
 
 
 public class HandlerService extends AbstractSingleBeanDefinitionParser {

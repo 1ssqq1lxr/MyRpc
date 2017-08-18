@@ -14,9 +14,9 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.serialize.SerializeEnum;
 import com.it.netty.rpc.zookeeper.base.ServerInitialization;
-import com.it.netty.rpc.zookeeper.base.URI;
 
 
 public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {

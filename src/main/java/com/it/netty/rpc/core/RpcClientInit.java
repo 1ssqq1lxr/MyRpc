@@ -17,14 +17,10 @@ import io.netty.handler.timeout.IdleStateHandler;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import javax.management.RuntimeErrorException;
-
-import com.google.common.util.concurrent.Service;
 import com.it.netty.rpc.handler.RpcClientHandler;
 import com.it.netty.rpc.heart.ChannelConnect;
+import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.zookeeper.ServiceDiscovery;
-import com.it.netty.rpc.zookeeper.base.ServerInitialization;
-import com.it.netty.rpc.zookeeper.base.URI;
 
 public class RpcClientInit extends AbstractBaseClient{
 	public static ThreadLocal<String> threadLocal = new ThreadLocal<>();

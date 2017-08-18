@@ -4,6 +4,6 @@ package com.it.netty.rpc.proxy;
  * @author 17070680
  *
  */
-public abstract class RpcProxy{
+public interface RpcProxy{
 	public abstract <T> T getProxy(Class<T> t);
 }

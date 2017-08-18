@@ -1,16 +1,21 @@
 package com.it.netty.rpc.proxy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.it.netty.rpc.cache.Cache;
 import com.it.netty.rpc.cache.CacheFactory;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.Result;
 import com.it.netty.rpc.message.URI;
 
-public abstract class AbstractInvocation implements Invocation {
+public abstract class AbstractInvocation<T> implements Invocation {
 	
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	private T t;
 	private URI  uri;
 	private Class<?> interfaceClass;
-	
 	private String siralNo;
 	private String className;
 	private String methodName;
@@ -19,6 +24,24 @@ public abstract class AbstractInvocation implements Invocation {
 	private Class<?> returnType;
 	private String protocol;
 	private static Cache cache = new CacheFactory();
+	
+	
+	
+	public AbstractInvocation(T t, String className, URI uri) {
+		super();
+		this.t = t;
+		this.uri = uri;
+		this.className=className;
+	}
+
+	public T getT() {
+		return t;
+	}
+
+	public void setT(T t) {
+		this.t = t;
+	}
+
 	@Override
 	public URI getURI() {
 		// TODO Auto-generated method stub
@@ -28,9 +51,9 @@ public abstract class AbstractInvocation implements Invocation {
 	@Override
 	public Result invoke(Invocation invocation) {
 		// TODO Auto-generated method stub
-		return null;
+		return doInvoke(invocation);
 	}
-	public abstract Result doInvoke();	
+	public abstract Result doInvoke(Invocation invocation);	
 	
 
 

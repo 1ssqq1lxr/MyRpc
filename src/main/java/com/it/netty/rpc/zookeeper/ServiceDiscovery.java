@@ -9,7 +9,7 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
 import com.alibaba.fastjson.JSON;
-import com.it.netty.rpc.zookeeper.base.URI;
+import com.it.netty.rpc.message.URI;
 
 public class ServiceDiscovery {
 	public  static Map<String,URI> dataList = new ConcurrentHashMap<String,URI>();

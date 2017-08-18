@@ -25,7 +25,7 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<MsgResponse>{
 	
 	
 	private static ConcurrentHashMap<String, Object> allback = new ConcurrentHashMap<String, Object>();
-	private static  RpcClientInit client1 =RpcLoader.getloader().getRpcClientInit();;
+	private static  RpcClientInit client1 =null;
 	public RpcClientHandler(RpcClientInit client1) {
 		super();
 		this.client1 = client1;
@@ -44,10 +44,10 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<MsgResponse>{
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
-		if(this.ctx==null){
-			synchronized (client1) {
-				if(this.ctx==null){
-					this.ctx=ctx;
+		if(RpcClientHandler.ctx==null){
+			synchronized (RpcClientHandler.class) {
+				if(RpcClientHandler.ctx==null){
+					RpcClientHandler.ctx=ctx;
 					client1.notifyAll();
 				}
 			}
@@ -58,10 +58,10 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<MsgResponse>{
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
-		if(this.ctx!=null){
-			synchronized (client1) {
-				if(this.ctx!=null){
-					this.ctx=null;
+		if(RpcClientHandler.ctx!=null){
+			synchronized (RpcClientHandler.class) {
+				if(RpcClientHandler.ctx!=null){
+					RpcClientHandler.ctx=null;
 					client1.notifyAll();
 				}
 			}
@@ -94,7 +94,7 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<MsgResponse>{
 
 	public static MsgBackCall sendMag(MsgRequest obj){
 		if(ctx==null){
-			synchronized (client1) {
+			synchronized (RpcClientHandler.class) {
 				if(ctx==null){
 					try {
 						client1.wait();
