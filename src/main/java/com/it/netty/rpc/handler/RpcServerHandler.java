@@ -6,6 +6,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -13,6 +14,8 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.caucho.hessian.io.InetAddressHandle;
+import com.google.common.net.InetAddresses;
 import com.it.netty.rpc.excutor.RpcExcutors;
 import com.it.netty.rpc.message.MsgRequest;
 import com.it.netty.rpc.message.MsgResponse;
