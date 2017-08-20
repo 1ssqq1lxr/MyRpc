@@ -1,16 +1,13 @@
 package com.it.netty.rpc.proxy;
 
-import io.netty.channel.Channel;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
-import com.it.netty.rpc.core.RpcClientInit;
-import com.it.netty.rpc.core.RpcLoader;
-import com.it.netty.rpc.handler.RpcClientHandler;
-import com.it.netty.rpc.message.MsgBackCall;
-import com.it.netty.rpc.message.MsgRequest;
+import com.it.netty.rpc.NoFindClassException.NoFindClassException;
+import com.it.netty.rpc.message.Invocation;
+import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.zookeeper.ServiceDiscovery;
 /**
  * rpc客户端代码类
@@ -19,34 +16,33 @@ import com.it.netty.rpc.zookeeper.ServiceDiscovery;
  * @param <T>
  */
 public class RpcInvocationHandler<T> implements InvocationHandler{
+
+
+	private static ConcurrentHashMap<Object, Invocation>  map = new ConcurrentHashMap<>();
+
+
 	Class<T> classes;
-	
+
 	public RpcInvocationHandler(Class<T> classes) {
 		super();
 		this.classes = classes;
 	}
-	
+
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
-		RpcLoader getloader = RpcLoader.getloader();
-		if(getloader!=null){
-			ServiceDiscovery.threadLocal.set(classes.getName());
-			// TODO Auto-generated method stub
-			MsgRequest msgRequest= new MsgRequest();
-			msgRequest.setSiralNo(UUID.randomUUID().toString());
-			System.out.println();
-			msgRequest.setClassName(classes.getName());
-			msgRequest.setMethodName(method.getName());
-			Class<?>[] parameterTypes = method.getParameterTypes();
-			msgRequest.setParamsType(parameterTypes);
-			msgRequest.setParams(args);
-			msgRequest.setReturnType( method.getReturnType());
-			MsgBackCall sendMag = RpcClientHandler.sendMag(msgRequest);
-			if(msgRequest.getReturnType().getSimpleName().equals("void")) // 返回值 为void 直接返回不等待
-			return null;
-			else
-			return sendMag.call();  // 回调
-		}
+	
+		Invocation invocation = new Invocation();
+		invocation.setClassName(classes.getName());
+		invocation.setInterfaceClass(classes);
+		invocation.setSerialNo(UUID.randomUUID().toString());
+		invocation.setParams(args);
+		invocation.setParamsType(method.getParameterTypes());
+		invocation.setMethodName(method.getName());
+		URI uri = ServiceDiscovery.findURIByPath(classes.getName());
+		if(uri==null)
+			throw new NoFindClassException();
+		invocation.setUri(uri);
+		
 		return null;
 	}
 

@@ -62,15 +62,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<MsgRequest>{
 	@Override
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 			throws Exception {
-		// TODO Auto-generated method stub
-//		IdleStateEvent e = (IdleStateEvent) evt; 
-//		if(e.state().equals(IdleState.READER_IDLE)){
-//			if(num<4){
-//				num++;
-//			}
-//			
-//			
-//		}
+
 		ctx.fireUserEventTriggered(evt);
 	}
 

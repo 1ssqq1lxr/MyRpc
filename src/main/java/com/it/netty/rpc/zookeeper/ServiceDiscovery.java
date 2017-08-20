@@ -11,6 +11,8 @@ import org.apache.zookeeper.ZooKeeper;
 import com.alibaba.fastjson.JSON;
 import com.it.netty.rpc.message.URI;
 
+import javassist.NotFoundException;
+
 public class ServiceDiscovery {
 	public  static Map<String,URI> dataList = new ConcurrentHashMap<String,URI>();
 	public static ThreadLocal<String> threadLocal = new ThreadLocal<>();
@@ -45,12 +47,12 @@ public class ServiceDiscovery {
 	 public static URI getBytesToURI(byte[] bytes){
 	    	return JSON.parseObject(new String(bytes), URI.class);
 	    }
-	public static URI findURIByPath(String path) {
+	public static URI findURIByPath(String path) throws NotFoundException {
 		if(!dataList.isEmpty()){
 			return dataList.get(path);
 		}
+		throw new NotFoundException("为找到匹配的URI {"+path+"}");
 		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	public static URI findURIByThread(){

@@ -19,7 +19,7 @@ import com.it.netty.rpc.core.RpcServerInit;
 import com.it.netty.rpc.framework.FrameworkRpcParseUtil.ComponentCallback;
 import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.serialize.SerializeEnum;
-import com.it.netty.rpc.zookeeper.base.ServerInitialization;
+import com.it.netty.rpc.zookeeper.base.ZkServerInitialization;
 
 
 public class HandlerService extends AbstractSingleBeanDefinitionParser {
@@ -38,7 +38,7 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 		// TODO Auto-generated method stub
 		
 		InetAddress localHost = null;
-		ServerInitialization initialization =null;
+		ZkServerInitialization initialization =null;
 		try {
 			int serverPort = Integer.parseInt(element.getAttribute("serverPort"));
 			builder.addPropertyValue("address", element.getAttribute("zkAddress"));
@@ -53,7 +53,7 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 			}); // 开启tcp服务端
 			localHost = Inet4Address.getLocalHost();
 			String hostAddress = localHost.getHostAddress();
-			initialization= ServerInitialization.getInstance(element.getAttribute("zkAddress"));
+			initialization= ZkServerInitialization.getInstance(element.getAttribute("zkAddress"));
 			Set<String> hashset = new HashSet<>();
 			for(int i=0;i<serviceRegeist.getLength();i++){ // 注册服务
 				URI uri = new URI();

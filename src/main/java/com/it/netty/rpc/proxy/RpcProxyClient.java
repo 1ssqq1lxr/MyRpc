@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import com.it.netty.rpc.message.Const;
 import com.it.netty.rpc.message.Invocation;
+import com.it.netty.rpc.message.Resolver;
 import com.it.netty.rpc.message.Result;
-import com.it.netty.rpc.message.URI;
 /**
  * 动态代理客户端
  * @author 17070680
@@ -23,10 +23,9 @@ public class RpcProxyClient {
 		// TODO Auto-generated method stub
 		return (T) Proxy.newProxyInstance(classes.getClassLoader(), new Class<?>[]{classes}, new RpcInvocationHandler<T>(classes));
 	}
-	public  static <T> Invocation getInvocation(final T t,String classname,URI uri) {
+	public  static <T> Resolver getInvocation(final T t) {
 		// TODO Auto-generated method stub
-		return new AbstractInvocation<T>(t, classname, uri) {
-			@Override
+		return new AbastractResolver<T>(t) {
 			public Result doInvoke(Invocation invocation) {
 				// TODO Auto-generated method stub
 				try {
@@ -36,9 +35,12 @@ public class RpcProxyClient {
 					// TODO Auto-generated catch block
 					logger.error(this.getClass().getName()+":{}",e.getMessage());
 					return new Result(null, e, "操作失败", Const.ERROR_CODE);
-				
 				} 
 			}
+
+
+		
+
 		};
 	}
 

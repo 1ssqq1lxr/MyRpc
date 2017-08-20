@@ -13,12 +13,12 @@ import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.zookeeper.ServiceDiscovery;
 import com.it.netty.rpc.zookeeper.ServiceRegist;
 
-public class ServerInitialization implements BaseZkClient {
+public class ZkServerInitialization implements BaseZkClient {
 	private static String registryAddress;
 	private CountDownLatch latch = new CountDownLatch(1);
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	ZooKeeper zk ;
-	private ServerInitialization(){
+	private ZkServerInitialization(){
 		zk= connectServer();
 	}
 
@@ -34,9 +34,9 @@ public class ServerInitialization implements BaseZkClient {
 		ServiceDiscovery.watchNode(zk);
 	}
 	
-	public static ServerInitialization getInstance(String registryAddress){
-		ServerInitialization.registryAddress=registryAddress;
-		return new ServerInitialization();
+	public static ZkServerInitialization getInstance(String registryAddress){
+		ZkServerInitialization.registryAddress=registryAddress;
+		return new ZkServerInitialization();
 		
 	}
 	
