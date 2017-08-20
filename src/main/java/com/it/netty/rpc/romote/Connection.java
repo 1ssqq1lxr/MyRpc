@@ -1,7 +1,8 @@
 package com.it.netty.rpc.romote;
 
+import io.netty.channel.ChannelFuture;
+
 
 public interface Connection {
-	public void init();
-	
+	public ChannelFuture init();
 }

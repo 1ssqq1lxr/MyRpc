@@ -8,7 +8,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class DeafultNettyServerRemoteConnection extends AbstractNettyRemoteConnetion {
+public class DeafultNettyServerRemoteConnection  {
 	private DefaultEventLoopGroup ServerdefLoopGroup;
 	private NioEventLoopGroup bossGroup;
 	private NioEventLoopGroup workGroup;
@@ -41,7 +41,6 @@ public class DeafultNettyServerRemoteConnection extends AbstractNettyRemoteConne
 		b = new ServerBootstrap();
 	}
 	public DeafultNettyServerRemoteConnection(int port) {
-		super(port);
 		resouce();
 		// TODO Auto-generated constructor stub
 	}
