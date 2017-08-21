@@ -1,4 +1,4 @@
-package com.it.netty.rpc.NoFindClassException;
+package com.it.netty.rpc.exception;
 
 public class NoFindClassException extends Exception{
 	@Override

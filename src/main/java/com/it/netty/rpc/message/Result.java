@@ -1,6 +1,13 @@
 package com.it.netty.rpc.message;
 
-public class Result {
+import java.io.Serializable;
+
+public class Result implements Serializable {
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+		private String serialNo;
 		private Object msg;
 		private Exception exception;
 		private String resultMsg;
@@ -14,6 +21,29 @@ public class Result {
 			this.resultMsg = resultMsg;
 			this.resultCode = resultCode;
 		}
+		
+		
+		public Result(String serialNo, Object msg, Exception exception,
+				String resultMsg, String resultCode) {
+			super();
+			this.serialNo = serialNo;
+			this.msg = msg;
+			this.exception = exception;
+			this.resultMsg = resultMsg;
+			this.resultCode = resultCode;
+		}
+
+
+		public String getSerialNo() {
+			return serialNo;
+		}
+
+
+		public void setSerialNo(String serialNo) {
+			this.serialNo = serialNo;
+		}
+
+
 		public Result(Object msg) {
 			super();
 			this.msg = msg;

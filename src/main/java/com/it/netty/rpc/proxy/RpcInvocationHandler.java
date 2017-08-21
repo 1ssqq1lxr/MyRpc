@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.it.netty.rpc.NoFindClassException.NoFindClassException;
+import com.it.netty.rpc.exception.NoFindClassException;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.zookeeper.ServiceDiscovery;

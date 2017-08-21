@@ -8,6 +8,17 @@ public class Invocation implements Serializable{
 	 */
 	private static final long serialVersionUID = 12223L;
 	private String serialNo;
+	
+	private long timeout;
+	
+	public long getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(long timeout) {
+		this.timeout = timeout;
+	}
+
 	public String getSerialNo() {
 		return serialNo;
 	}

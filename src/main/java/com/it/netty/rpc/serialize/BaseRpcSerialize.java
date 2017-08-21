@@ -7,7 +7,4 @@ package com.it.netty.rpc.serialize;
 public interface BaseRpcSerialize {
 	byte[]  encode(Object obj);
 	Object decode(byte[] bytes);
-	abstract class taskInit{
-		abstract BaseRpcSerialize getRpcSerialize();
-	}
 }

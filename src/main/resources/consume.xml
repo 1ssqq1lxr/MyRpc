@@ -7,7 +7,7 @@
         http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
         http://www.lxr.com/schema/consume 
         http://www.lxr.com/schema/consume/rpc-consume-1.0.0.xsd">  
-	<rpc:serviceBind id="" address="127.0.0.1:2181">
+	<rpc:serviceBind id="" address="127.0.0.1:2181" >
 		<rpc:serviceConsume name="" class=""/>
 		<rpc:serviceConsume name="" class=""/>
 		<rpc:serviceConsume name="" class=""/>

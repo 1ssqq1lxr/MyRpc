@@ -16,7 +16,15 @@
 			</xsd:sequence>
 			<xsd:attribute name="id" type="xsd:string" use="required"/>
 			<xsd:attribute name="zkAddress" type="xsd:string" use="required" />
-			<xsd:attribute name="protocol" type="xsd:string" use="optional" default="jdk"/>
+			<xsd:attribute name="protocol" type="xsd:string" use="optional" default="hession">
+				<xsd:simpleType>  
+                            <xsd:restriction base="xsd:string">  
+                                <xsd:enumeration value="jdk" />  
+                                <xsd:enumeration value="hession" /> 
+                                 <xsd:enumeration value="jackson" />   
+                            </xsd:restriction>  
+                 </xsd:simpleType> 
+			</xsd:attribute>
 			<xsd:attribute name="serverPort" type="xsd:string" use="required" />
 		</xsd:complexType>
 	</xsd:element>

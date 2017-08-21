@@ -13,7 +13,7 @@ import com.it.netty.rpc.serialize.java.ByteObjConverter;
  * @author 17070680
  *
  */
-public class MyDecode extends ByteToMessageDecoder{
+public abstract class MyDecode extends ByteToMessageDecoder{
 	BaseRpcSerialize se = new ByteObjConverter();
 	
 
@@ -32,6 +32,8 @@ public class MyDecode extends ByteToMessageDecoder{
 		Object byteToObject =  se.decode(ByteObjConverter.read(in));
 		out.add(byteToObject);
 	}
+	
+	public abstract BaseRpcSerialize addSerialize(int serialLize);
 	
 	
 }
