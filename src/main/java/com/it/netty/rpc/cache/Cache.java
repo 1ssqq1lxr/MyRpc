@@ -1,6 +1,6 @@
 package com.it.netty.rpc.cache;
 
-public interface Cache <T,V> {
-		 T getCache(V v);
-		 void addCache(V V,T t);
+public interface Cache <K,V> {
+		 V getCache(K k);
+		 void addCache(K k,V v);
 }

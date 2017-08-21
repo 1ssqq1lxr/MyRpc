@@ -2,21 +2,21 @@ package com.it.netty.rpc.cache;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public  class CacheFactory <T,V> implements Cache <T,V>{
-	private  ConcurrentHashMap<V, T> commons = new ConcurrentHashMap<V,T>();
+public  class CacheFactory <K,V> implements Cache <K,V>{
+	private  ConcurrentHashMap<K, V> commons = new ConcurrentHashMap<K,V>();
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T getCache(V str) {
+	public V getCache(K k) {
 		// TODO Auto-generated method stub
-		return   (T) commons.get(str);
+		return   (V) commons.get(k);
 	}
 
 	@Override
-	public  void addCache(V str,T t) {
+	public  void addCache(K k,V v) {
 		// TODO Auto-generated method stub
-		commons.put(str, t);
+		commons.put(k, v);
 	}
-	
+
 	
 }
