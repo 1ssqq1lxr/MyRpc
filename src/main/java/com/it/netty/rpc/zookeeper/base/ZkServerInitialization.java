@@ -13,7 +13,7 @@ import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.zookeeper.ServiceDiscovery;
 import com.it.netty.rpc.zookeeper.ServiceRegist;
 
-public class ZkServerInitialization implements BaseZkClient {
+public class ZkServerInitialization implements BaseZookeeperClient {
 	private static String registryAddress;
 	private CountDownLatch latch = new CountDownLatch(1);
 	protected Logger logger = LoggerFactory.getLogger(getClass());

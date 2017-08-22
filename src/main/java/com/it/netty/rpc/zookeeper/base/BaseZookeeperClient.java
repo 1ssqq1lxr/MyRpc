@@ -7,7 +7,7 @@ import com.it.netty.rpc.message.URI;
  * @author 17070680
  *
  */
-public interface BaseZkClient {
+public interface BaseZookeeperClient {
 	void registURI(String path,URI uri);
 	void initAllURI(String path);
 }

@@ -19,7 +19,6 @@ public class ZKConnector implements Watcher{
 	    
 	    private CountDownLatch connectedSemaphore = new CountDownLatch(1);
 	    private ZooKeeper zk =null;
-	    
 	    /**
 	     * 释放zookeeper连接
 	     */
