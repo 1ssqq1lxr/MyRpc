@@ -11,7 +11,11 @@ import org.slf4j.LoggerFactory;
 import com.it.netty.rpc.message.Const;
 import com.it.netty.rpc.message.Result;
 
-
+/**
+ * 
+ * @author 17070680
+ *
+ */
 public class ResultCallBack implements Callback{
 	private long timeout; //超时时间
 	

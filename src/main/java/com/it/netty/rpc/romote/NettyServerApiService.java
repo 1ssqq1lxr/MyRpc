@@ -11,7 +11,11 @@ import com.it.netty.rpc.message.Resolver;
 import com.it.netty.rpc.message.Result;
 import com.it.netty.rpc.proxy.RpcProxyClient;
 
-
+/**
+ * 
+ * @author 17070680
+ *
+ */
 public abstract class NettyServerApiService  {
 	protected static final Logger log = LoggerFactory.getLogger(NettyServerApiService.class.getSimpleName());
 
@@ -21,14 +25,7 @@ public abstract class NettyServerApiService  {
 	
 	
 	protected void invoke(Channel channel,Invocation invocation){
-//			if(invocation!=null){
-//				Class<?> interfaceClass = invocation.getInterfaceClass();
-//				Object newInstance = null;// 从spring 容器中 获取bean
-//				Resolver resolver = RpcProxyClient.getInvocation(newInstance);
-//				Result result = resolver.invoke(invocation);
-//				result.setSerialNo(invocation.getSerialNo());
-//				channel.writeAndFlush(result);
-//			}
+
 		try {
 			exRpcExcutors.excute(getSubmitTask(channel,invocation));
 		} catch (Exception e) {

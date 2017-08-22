@@ -34,7 +34,11 @@ import com.it.netty.rpc.protocol.DefaultProtocolFactorySelector;
 import com.it.netty.rpc.protocol.ProtocolFactory;
 import com.it.netty.rpc.protocol.ProtocolFactorySelector;
 import com.it.netty.rpc.protocol.SerializeEnum;
-
+/**
+ * 
+ * @author 17070680
+ *
+ */
 public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 	private  final  ProtocolFactorySelector protocolFactorySelector = new DefaultProtocolFactorySelector();
 	private  DefaultEventLoopGroup ClientdefLoopGroup;
@@ -87,8 +91,8 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 				ch.pipeline().addLast(ClientdefLoopGroup);
 				ch.pipeline().addLast(new ClientEncode());
 				ch.pipeline().addLast(new ClinetDecode());
-				ch.pipeline().addLast(new IdleStateHandler(15, 15, 15));
 				ch.pipeline().addLast(new OutChannelInvocationHandler());
+				ch.pipeline().addLast(new IdleStateHandler(15, 15, 15));
 			}
 		});
 		return b;

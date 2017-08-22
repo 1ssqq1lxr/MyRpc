@@ -8,9 +8,18 @@ public class Invocation implements Serializable{
 	 */
 	private static final long serialVersionUID = 12223L;
 	private String serialNo;
-	
 	private long timeout;
+	private Class<?> interfaceClass;
+	private String className;
+	private String methodName;
+	private Object[] params;
+	private Class<?>[] paramsType;
+	private String protocol;
 	
+	private transient URI uri;
+	
+	
+
 	public long getTimeout() {
 		return timeout;
 	}
@@ -26,18 +35,6 @@ public class Invocation implements Serializable{
 	public void setSerialNo(String serialNo) {
 		this.serialNo = serialNo;
 	}
-
-	private Class<?> interfaceClass;
-	private String className;
-	private String methodName;
-	private Object[] params;
-	private Class<?>[] paramsType;
-	private String protocol;
-	
-	private transient URI uri;
-	
-	
-	
 
 	public Class<?> getInterfaceClass() {
 		return interfaceClass;

@@ -3,10 +3,6 @@ package com.it.netty.rpc.romote;
 import io.netty.channel.ChannelFuture;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +11,11 @@ import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.Result;
 import com.it.netty.rpc.message.URI;
 
-
+/**
+ * 
+ * @author 17070680
+ *
+ */
 public abstract class NettyClientApiService {
 	protected static final Logger log = LoggerFactory.getLogger(NettyClientApiService.class.getSimpleName());
 

@@ -8,6 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.DefaultEventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -18,10 +19,13 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,7 +42,12 @@ import com.it.netty.rpc.protocol.SerializeEnum;
 import com.it.netty.rpc.proxy.RpcProxyClient;
 import com.it.netty.rpc.romote.DeafultNettyClientRemoteConnection.ClientEncode;
 import com.it.netty.rpc.romote.DeafultNettyClientRemoteConnection.ClinetDecode;
-
+import com.it.netty.rpc.romote.DeafultNettyClientRemoteConnection.OutChannelInvocationHandler;
+/**
+ * 
+ * @author 17070680
+ *
+ */
 public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 	private DefaultEventLoopGroup ServerdefLoopGroup;
 	private NioEventLoopGroup bossGroup;
@@ -46,6 +55,7 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 	private  ServerBootstrap b;
 	private  final  ProtocolFactorySelector protocolFactorySelector = new DefaultProtocolFactorySelector();
 	private final int TOP_LENGTH=129>>1|34; // 数据协议头
+	private final int TOP_HEARTBEAT=129>>1|36; // 心跳协议头
 	public void resouce(){
 		ServerdefLoopGroup = new DefaultEventLoopGroup(8, new ThreadFactory() {
 			private AtomicInteger index = new AtomicInteger(0);
@@ -81,24 +91,88 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 		.option(ChannelOption.SO_SNDBUF, 65535)
 		.option(ChannelOption.SO_RCVBUF, 65535)
 		.childHandler(new ChannelInitializer<SocketChannel>() {
-			final public static int MESSAGE_LENGTH = 4;
 			protected void initChannel(SocketChannel ch) throws Exception {
 				ch.pipeline().addLast(ServerdefLoopGroup);
 				ch.pipeline().addLast(new ServerEncode());
 				ch.pipeline().addLast(new ServerDecode());
+				ch.pipeline().addLast(new OutChannelInvocationHandler());
 				ch.pipeline().addLast(new IdleStateHandler(25,25 , 25));
 			}
 		}) .childOption(ChannelOption.SO_KEEPALIVE, true);;
-
+		
 	}
 
 	public DeafultNettyServerRemoteConnection(int port) {
 		resouce();
 		// TODO Auto-generated constructor stub
 	}
+	
+	class OutChannelInvocationHandler extends SimpleChannelInboundHandler<Object>{
+		private AtomicInteger atomicInteger= new AtomicInteger(0);
+		@Override
+		protected void messageReceived(ChannelHandlerContext ctx, Object result)
+				throws Exception {
+			// TODO Auto-generated method stub
+			if(result instanceof Invocation){
+				invoke(ctx.channel(), (Invocation)result);
+			}
+			else if(result instanceof HeartBeat){
+				atomicInteger.getAndAdd(0);// 重置心跳阙值
+				log.info(this.getClass().getName()+"收到来自 {}的心跳消息{}", ctx.channel().localAddress().hashCode(),result);
+			}
+		}
+
+		@Override
+		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
+				throws Exception {
+			// TODO Auto-generated method stub
+			ctx.close();
+		}
+
+		@Override
+		public void channelActive(ChannelHandlerContext ctx) throws Exception {
+			// TODO Auto-generated method stub
+			super.channelActive(ctx);
+		}
+
+		@Override
+		public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+			// TODO Auto-generated method stub
+			Channel channel = ctx.channel();
+			Set<String> keySet = DeafultNettyClientRemoteConnection.channels.keySet();
+			for(String set:keySet){
+				ChannelManager channelManager = DeafultNettyClientRemoteConnection.channels.get(set);
+				if(channelManager.getChannel()==channel){
+					DeafultNettyClientRemoteConnection.channels.remove(set);
+				}
+			}
+			ctx.close();
+		}
+
+		@Override
+		public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
+				throws Exception {
+			// TODO Auto-generated method stub
+	
+			IdleStateEvent e = (IdleStateEvent) evt; 
+			if(atomicInteger.get()<6){
+				if(e.state().equals(IdleState.READER_IDLE) ){
+					log.info(this.getClass().getName()+"未收到来自{}的心跳次数{}", ctx.channel(),atomicInteger.incrementAndGet());
+					
+				}
+			}
+			else{
+				log.info(this.getClass().getName()+"未收到来自{}的心跳次数 6 关闭连接",ctx.channel());
+				ctx.close();
+			}
+			super.userEventTriggered(ctx, evt);
+		}
+		
+		
+		
+	}
+	
 	class ServerEncode extends MessageToByteEncoder<Object> {
-
-
 
 		protected void encode(ChannelHandlerContext ctx, Object invocation, ByteBuf out)
 				throws Exception {
@@ -133,21 +207,37 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 				return;
 			}
 			int readInt = in.readInt();
-			if(readInt!=TOP_LENGTH){
+			if(readInt!=TOP_LENGTH || readInt!=TOP_HEARTBEAT){
 				log.warn(this.getClass().getName()+"消息协议头非法{}", readInt);
 				return;
 			}
-			int protocol = in.readInt();
-			int bodylength = in.readInt();
-			if(bodylength>in.readableBytes()){
-				in.readerIndex(readIndex); //初始化读取位置
-				return;
+			if(readInt==TOP_LENGTH){ // 处理消息
+				int protocol = in.readInt();
+				int bodylength = in.readInt();
+				if(bodylength>in.readableBytes()){
+					in.readerIndex(readIndex); //初始化读取位置
+					return;
+				}
+				byte[] bytes = new byte[bodylength];
+				ProtocolFactory select = protocolFactorySelector.select(protocol);
+				in.readBytes(bytes);
+				Result decode = select.decode(Result.class, bytes);
+				out.add(decode);
 			}
-			byte[] bytes = new byte[bodylength];
-			ProtocolFactory select = protocolFactorySelector.select(protocol);
-			in.readBytes(bytes);
-			Result decode = select.decode(Result.class, bytes);
-			out.add(decode);
+			else if(readInt==TOP_HEARTBEAT){ // 心跳
+				int protocol = in.readInt();
+				int bodylength = in.readInt();
+				if(bodylength>in.readableBytes()){
+					in.readerIndex(readIndex); //初始化读取位置
+					return;
+				}
+				byte[] bytes = new byte[bodylength];
+				ProtocolFactory select = protocolFactorySelector.select(protocol);
+				in.readBytes(bytes);
+				HeartBeat heartBeat = select.decode(HeartBeat.class, bytes);
+				out.add(heartBeat);
+			}
+			
 		}
 	}
 	@Override
