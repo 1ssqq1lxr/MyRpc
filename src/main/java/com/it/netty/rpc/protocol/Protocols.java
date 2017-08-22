@@ -5,7 +5,7 @@ package com.it.netty.rpc.protocol;
  *
  */
 public interface Protocols {
-    int DEFAULT_PROTOCOL = 0;
+    int DEFAULT_PROTOCOL = 3;
     int JAVA_NATIVE_PROTOCOL = 1;
     int HESSIAN_PROTOCOL = 2;
 }

@@ -18,7 +18,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import com.it.netty.rpc.handler.RpcClientHandler;
-import com.it.netty.rpc.heart.ChannelConnect;
 import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.zookeeper.ServiceDiscovery;
 
@@ -82,7 +81,7 @@ public class RpcClientInit extends AbstractBaseClient{
 						logger.info("Connect to server successfully!"+channel.toString());
 					} else {
 						logger.info("Failed to connect to server, try connect after 20s");
-						executorService.execute(new ChannelConnect(RpcClientInit.this));
+//						executorService.execute(new ChannelConnect(RpcClientInit.this));
 					}
 				}
 			});

@@ -72,5 +72,13 @@ public class Result implements Serializable {
 		public void setResultCode(String resultCode) {
 			this.resultCode = resultCode;
 		}
+
+
+		@Override
+		public String toString() {
+			return "Result [serialNo=" + serialNo + ", msg=" + msg
+					+ ", exception=" + exception + ", resultMsg=" + resultMsg
+					+ ", resultCode=" + resultCode + "]";
+		}
 		
 }

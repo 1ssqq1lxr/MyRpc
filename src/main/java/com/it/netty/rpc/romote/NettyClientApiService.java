@@ -16,15 +16,13 @@ import com.it.netty.rpc.message.Result;
 import com.it.netty.rpc.message.URI;
 
 
-public abstract class NettyApiService {
-	protected static final Logger log = LoggerFactory.getLogger(NettyApiService.class.getSimpleName());
+public abstract class NettyClientApiService {
+	protected static final Logger log = LoggerFactory.getLogger(NettyClientApiService.class.getSimpleName());
 
-	protected static ConcurrentHashMap<String, ChannelManager> channels = new ConcurrentHashMap<>();
+	protected static final ConcurrentHashMap<String, ChannelManager> channels = new ConcurrentHashMap<>();
 
-	protected static  ConcurrentHashMap<String, Callback> callBacks= new ConcurrentHashMap<String, Callback>();
+	protected static  final ConcurrentHashMap<String, Callback> callBacks= new ConcurrentHashMap<String, Callback>();
 
-	private  final Lock lock = new ReentrantLock();
-	private  final Condition condition = lock.newCondition();
 	public static String getRemoteStr(URI uri){
 		if(uri!=null){
 			return uri.getHost()+":"+uri.getPort();
@@ -55,7 +53,7 @@ public abstract class NettyApiService {
 		return initCallBack;
 	};
 	
-	public  Callback initCallBack(Invocation invocation) {
+	protected  Callback initCallBack(Invocation invocation) {
 		// TODO Auto-generated method stub
 		String UUID = java.util.UUID.randomUUID().toString();
 		//1 设置到invocation 中
@@ -65,11 +63,19 @@ public abstract class NettyApiService {
 		// 1 设置UUID  2 设置超时时间
 		return callback;
 	}
-	public  void setCallBack(Result result) {
+	protected  void setCallBack(Result result) {
 		// TODO Auto-generated method stub
-		Callback callback = callBacks.get(result.getSerialNo());
-		callback.putResult(result);
-		callBacks.remove(result.getSerialNo());
+		if(result!=null){
+			String serialNo = result.getSerialNo();
+			Callback callback = callBacks.get(serialNo);
+			if(callback!=null){
+				log.info(callback.getClass().getName()+"找到对应的 callback{}", result);
+				callback.putResult(result);
+				callBacks.remove(serialNo);
+			}
+			else
+			log.error(this.getClass().getName()+"未找到对应的 callback{}", result);
+		}
 	}
 
 
