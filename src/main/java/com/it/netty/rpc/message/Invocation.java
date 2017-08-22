@@ -8,7 +8,7 @@ public class Invocation implements Serializable{
 	 */
 	private static final long serialVersionUID = 12223L;
 	private String serialNo;
-	private long timeout;
+	private long timeout =3000;
 	private Class<?> interfaceClass;
 	private String className;
 	private String methodName;
