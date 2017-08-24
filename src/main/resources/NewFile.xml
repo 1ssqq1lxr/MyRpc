@@ -7,10 +7,9 @@
         http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
         http://www.lxr.com/schema/rpc 
         http://www.lxr.com/schema/rpc/rpc-1.0.0.xsd">  
- 	<rpc:service id="ss"  zkAddress="127.0.0.1:2181" protocol="jdk">
- 				<rpc:serviceRegeist name="testservice" class="com.it"></rpc:serviceRegeist>
- 		
- 	</rpc:service>
+ 	<rpc:server id="" serverPort="" zkAddress="">
+ 				<rpc:serviceRegeist class=""></rpc:serviceRegeist>
+ 	</rpc:server>
  	
 	
 </beans>  

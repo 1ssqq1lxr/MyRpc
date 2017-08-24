@@ -2,29 +2,46 @@
 <xsd:schema xmlns="http://www.lxr.com/schema/consume"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:tool="http://www.springframework.org/schema/tool" xmlns:beans="http://www.springframework.org/schema/beans"
-	targetNamespace="http://www.lxr.com/schema/consume"
-	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	targetNamespace="http://www.lxr.com/schema/consume" elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
 
 	<xsd:import namespace="http://www.springframework.org/schema/beans" />
 	<xsd:import namespace="http://www.springframework.org/schema/tool" />
-		
-	<xsd:element name="serviceBind" >
+
+	<xsd:element name="serviceBind">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="serviceConsume" type="serviceConsume" maxOccurs="unbounded" minOccurs="0"/>
+				<xsd:element name="serviceConsume" type="serviceConsume"
+					maxOccurs="unbounded" minOccurs="0" />
 			</xsd:sequence>
-			<xsd:attribute name="id" type="xsd:string" use="required"/>
-			<xsd:attribute name="address" type="xsd:string" use="optional" default="127.0.0.1:2181"/>
+			<xsd:attribute name="id" type="xsd:string" use="required" />
+			<xsd:attribute name="zkAddress" type="xsd:string" use="required" default="127.0.0.1:2181"  />
+			<xsd:attribute name="protocol" type="xsd:string" use="optional"
+				default="hession">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="jdk" />
+						<xsd:enumeration value="hession" />
+						<xsd:enumeration value="jackson" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
-	
-	
 	<xsd:complexType name="serviceConsume">
-		<xsd:attribute name="class" type="xsd:string" use="required"/>
-		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="class" type="xsd:string" use="required">
+			<xsd:attribute name="timeout" type="xsd:int" use="optional" default="3000">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:int">
+						<xsd:maxInclusive value="5000"></xsd:maxInclusive>
+						<xsd:minInclusive value="2000"></xsd:minInclusive>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="name" type="xsd:string" use="required" />
 	</xsd:complexType>
-	
-	
-	
-	
+
+
+
+
 </xsd:schema>

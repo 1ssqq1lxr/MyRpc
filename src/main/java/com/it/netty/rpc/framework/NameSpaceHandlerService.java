@@ -6,8 +6,7 @@ public class NameSpaceHandlerService extends NamespaceHandlerSupport {
 
 	public void init() {
 		// TODO Auto-generated method stub
-		registerBeanDefinitionParser("service", new HandlerService());
+		registerBeanDefinitionParser("server", new HandlerService());
+		registerBeanDefinitionParser("serviceBind", new HandlerServiceConsume());
 	}
-
-
 }

@@ -1,14 +1,8 @@
 package com.it.netty.rpc.framework;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.parsing.BeanComponentDefinition;
+import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
@@ -16,15 +10,20 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import com.it.netty.rpc.core.RpcServerInit;
+import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.it.netty.rpc.framework.FrameworkRpcParseUtil.ComponentCallback;
-import com.it.netty.rpc.message.URI;
-import com.it.netty.rpc.serialize.SerializeEnum;
+import com.it.netty.rpc.romote.DeafultNettyServerRemoteConnection;
+import com.it.netty.rpc.zookeeper.Certificate;
+import com.it.netty.rpc.zookeeper.ZookeeperService;
 
 
 public class HandlerService extends AbstractSingleBeanDefinitionParser {
 	protected Logger logger = LoggerFactory.getLogger(getClass());
+	ConcurrentHashSet<String> registClassNames  = new ConcurrentHashSet<>();
 	
+	private final String DEFAULT_NETTY_NAME="default_server_tcp";
+	private final String DEFAULT_ZOOKEEPER_NAME="default_server_zookeeper";
+	private final String DEFAULT_ZOOKEEPER_PATH="rpc";
 	@Override
 	protected Class<?> getBeanClass(Element element) {
 		// TODO Auto-generated method stub
@@ -36,36 +35,35 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 	protected void doParse(final Element element, ParserContext parserContext,
 			BeanDefinitionBuilder builder) {
 		// TODO Auto-generated method stub
-		
-		InetAddress localHost = null;
 		try {
-			int serverPort = Integer.parseInt(element.getAttribute("serverPort"));
-			builder.addPropertyValue("address", element.getAttribute("zkAddress"));
-			builder.addPropertyValue("protocol", element.getAttribute("protocol"));
-			NodeList serviceRegeist = element.getElementsByTagName("rpc:serviceRegeist");
-			FrameworkRpcParseUtil.parse("tcpService", RpcServerInit.class, element, parserContext,new ComponentCallback() {
+			
+			FrameworkRpcParseUtil.parse(DEFAULT_NETTY_NAME, DeafultNettyServerRemoteConnection.class, element, parserContext,new ComponentCallback() {
 				@Override
 				public void onParse(RootBeanDefinition beanDefinition) {
 					// TODO Auto-generated method stub
 					beanDefinition.getPropertyValues().addPropertyValue("port", element.getAttribute("serverPort"));
 				}
+			});
+			NodeList serviceRegeist = element.getElementsByTagName("rpc:serviceRegeist"); //开启zk
+			FrameworkRpcParseUtil.parse(DEFAULT_ZOOKEEPER_NAME, ZookeeperService.class, element, parserContext,new ComponentCallback() {
+				@Override
+				public void onParse(RootBeanDefinition beanDefinition) {
+					// TODO Auto-generated method stub
+					beanDefinition.getPropertyValues().addPropertyValue("port", element.getAttribute("serverPort"));
+					beanDefinition.getPropertyValues().addPropertyValue("zkAddress", element.getAttribute("zkAddress"));
+					beanDefinition.getPropertyValues().addPropertyValue("certificate",new Certificate());
+					beanDefinition.getPropertyValues().addPropertyValue("path",DEFAULT_ZOOKEEPER_PATH);
+					beanDefinition.getPropertyValues().addPropertyValue("path",DEFAULT_ZOOKEEPER_PATH);
+				}
 			}); // 开启tcp服务端
-			localHost = Inet4Address.getLocalHost();
-			String hostAddress = localHost.getHostAddress();
-			Set<String> hashset = new HashSet<>();
 			for(int i=0;i<serviceRegeist.getLength();i++){ // 注册服务
-				URI uri = new URI();
-				uri.setHost(hostAddress);
-				uri.setPort(serverPort);
-				uri.setSerialMethod(SerializeEnum.JDKSERIALIZE.toString());
 				Element item = (Element) serviceRegeist.item(i);
-				String classe = item.getAttribute("class");
-				hashset.add(classe);
-				logger.info(this.getClass().getName()+"success regeist service {}" ,classe);
+				registClassNames.add(item.getAttribute("class"));
 			}
-			builder.addPropertyValue("classes", hashset);
+			builder.addPropertyValue("registClassNames", registClassNames);
+			builder.addPropertyValue("zookeeperService", new RuntimeBeanReference(DEFAULT_ZOOKEEPER_NAME) );
 			
-		} catch (UnknownHostException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error(this.getClass().getName()+"error regeist service {}" +e);
 		}

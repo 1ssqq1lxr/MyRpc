@@ -11,11 +11,13 @@ public class Config {
 		
 		public static String zkAddress;
 		
+		public static int rpcPort;
+		
 		public static String zkUserName;
 		
 		public static String ZkPassword;
 		
 		public static String schema;
 		
-		public static int rpcPort;
+	
 }

@@ -23,6 +23,8 @@ import java.util.Set;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.springframework.beans.factory.InitializingBean;
+
 import com.it.netty.rpc.heart.HeartBeat;
 import com.it.netty.rpc.message.Const;
 import com.it.netty.rpc.message.Invocation;
@@ -33,14 +35,13 @@ import com.it.netty.rpc.protocol.ProtocolFactory;
 import com.it.netty.rpc.protocol.ProtocolFactorySelector;
 import com.it.netty.rpc.protocol.SerializeEnum;
 import com.it.netty.rpc.proxy.RpcProxyClient;
-import com.it.netty.rpc.service.Person;
 import com.it.netty.rpc.service.ServiceObjectFindInteferce;
 /**
  * 
  * @author 17070680
  *
  */
-public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
+public class DeafultNettyServerRemoteConnection extends NettyServerApiService implements InitializingBean {
 	
 	ServiceObjectFindInteferce serviceObjectFindInteferce;
 	
@@ -63,6 +64,16 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 	private  final  ProtocolFactorySelector protocolFactorySelector = new DefaultProtocolFactorySelector();
 	private final int TOP_LENGTH=129>>1|34; // 数据协议头
 	private final int TOP_HEARTBEAT=129>>1|36; // 心跳协议头
+	
+	
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
 	public void resouce(){
 		ServerdefLoopGroup = new DefaultEventLoopGroup(8, new ThreadFactory() {
 			private AtomicInteger index = new AtomicInteger(0);
@@ -115,9 +126,8 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 		}
 	}
 
-	public DeafultNettyServerRemoteConnection(int port) {
+	public DeafultNettyServerRemoteConnection() {
 		resouce();
-		this.port=port;
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -286,6 +296,12 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 				}
 			}
 		};
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// TODO Auto-generated method stub
+		this.start();
 	}
 
 }

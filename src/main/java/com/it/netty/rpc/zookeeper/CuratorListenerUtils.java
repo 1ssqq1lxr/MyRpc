@@ -61,8 +61,9 @@ public class CuratorListenerUtils {
         //setListenterThreeOne(client);  
        // setListenterThreeTwo(client);  
 //        client.create().forPath("/love", "ss".getBytes());
-        List<String> forPath = client.getChildren().forPath("/");
-        
+//        List<String> forPath = client.getChildren().forPath("/");
+        byte[] forPath = client.getData().watched().inBackground().forPath("/gg");
+        byte[] forPath1 = client.getData().forPath("/haha");
         setListenterThreeThree(client);  
        // getDataNode(client, "/two");  
        // setDataNode(client, "/two", "sss");  

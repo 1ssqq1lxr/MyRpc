@@ -34,8 +34,8 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
-	
 		Invocation invocation = new Invocation();
+		invocation.setProtocol(Config.protocol);
 		invocation.setClassName(classes.getName());
 		invocation.setInterfaceClass(classes);
 		invocation.setSerialNo(UUID.randomUUID().toString());
