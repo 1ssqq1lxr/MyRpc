@@ -8,20 +8,20 @@
 	<xsd:import namespace="http://www.springframework.org/schema/beans" />
 	<xsd:import namespace="http://www.springframework.org/schema/tool" />
 
-	<xsd:element name="serviceBind">
+	<xsd:element name="serviceBind" >
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="serviceConsume" type="serviceConsume"
 					maxOccurs="unbounded" minOccurs="0" />
 			</xsd:sequence>
 			<xsd:attribute name="id" type="xsd:string" use="required" />
-			<xsd:attribute name="zkAddress" type="xsd:string" use="required" default="127.0.0.1:2181"  />
-			<xsd:attribute name="protocol" type="xsd:string" use="optional"
-				default="hession">
+			<xsd:attribute name="zkAddress" type="xsd:string" use="required"  />
+			<xsd:attribute name="protocol"  use="optional"
+				default="HESSION">
 				<xsd:simpleType>
-					<xsd:restriction base="xsd:string">
+					<xsd:restriction  base="xsd:string">
 						<xsd:enumeration value="jdk" />
-						<xsd:enumeration value="hession" />
+						<xsd:enumeration value="HESSION" />
 						<xsd:enumeration value="jackson" />
 					</xsd:restriction>
 				</xsd:simpleType>
@@ -29,16 +29,17 @@
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:complexType name="serviceConsume">
-		<xsd:attribute name="class" type="xsd:string" use="required">
-			<xsd:attribute name="timeout" type="xsd:int" use="optional" default="3000">
-				<xsd:simpleType>
+		<xsd:attribute name="class" type="xsd:string" use="required" />
+			<xsd:attribute name="timeout" type="xsd:int" >
+		<!-- 		<xsd:simpleType>
 					<xsd:restriction base="xsd:int">
 						<xsd:maxInclusive value="5000"></xsd:maxInclusive>
 						<xsd:minInclusive value="2000"></xsd:minInclusive>
 					</xsd:restriction>
-				</xsd:simpleType>
+				</xsd:simpleType> -->
 			</xsd:attribute>
 			<xsd:attribute name="name" type="xsd:string" use="required" />
+			
 	</xsd:complexType>
 
 

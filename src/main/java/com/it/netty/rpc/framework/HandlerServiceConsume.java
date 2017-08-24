@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList;
 
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.it.netty.rpc.framework.FrameworkRpcParseUtil.ComponentCallback;
+import com.it.netty.rpc.proxy.RpcProxyClient;
 import com.it.netty.rpc.zookeeper.Certificate;
 import com.it.netty.rpc.zookeeper.ZookeeperService;
 
@@ -46,11 +47,26 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 				beanDefinition.getPropertyValues().addPropertyValue("path",DEFAULT_ZOOKEEPER_PATH);
 			}
 		});
-		for(int i=0;i<serviceRegeist.getLength();i++){ // 注册服务
+		for(int i=0;i<serviceRegeist.getLength();i++){ // 获取服务信息
 			Element item = (Element) serviceRegeist.item(i);
-			getClassNames.add(item.getAttribute("class"));
+			String className = item.getAttribute("class");
+			String name = item.getAttribute("name");
+			try {
+				Class<?> loadClass = this.getClass().getClassLoader().loadClass(className);
+				Object proxy = RpcProxyClient.getProxy(loadClass);
+				FrameworkRpcParseUtil.parse(name, proxy.getClass(), element, parserContext,new ComponentCallback() {
+					@Override
+					public void onParse(RootBeanDefinition beanDefinition) {
+					}
+				});
+				getClassNames.add(className);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				logger.error("not find class {},{}", className,e);
+			}
 		}
 		builder.addPropertyValue("getClassNames", getClassNames);
 		builder.addPropertyValue("zookeeperService", new RuntimeBeanReference(DEFAULT_ZOOKEEPER_NAME));
 	}
+	
 }
