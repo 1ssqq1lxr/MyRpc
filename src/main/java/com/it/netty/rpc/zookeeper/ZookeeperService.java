@@ -15,10 +15,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.esotericsoftware.minlog.Log;
@@ -26,12 +23,11 @@ import com.it.netty.rpc.Config;
 import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.protocol.ProtocolFactory;
 import com.it.netty.rpc.protocol.jackson.JacksonProtocolFactory;
-import com.it.netty.rpc.romote.NettyClientApiService;
 import com.it.netty.rpc.zookeeper.base.BaseZookeeperClient;
 import com.it.netty.rpc.zookeeper.base.BaseZookeeperService;
 
-public class ZookeeperService implements BaseZookeeperService ,InitializingBean,DisposableBean {
-	protected  Logger log = LoggerFactory.getLogger(ZookeeperService.class.getSimpleName());
+public class ZookeeperService implements BaseZookeeperService {
+
 	private int port;
 
 	private String zkAddress;
@@ -81,12 +77,27 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 
 	public ZookeeperService() throws Exception {
 		super();
-		
+		this.baseZookeeperClient = new ZookeeperClient();
+		this.curatorFramework=baseZookeeperClient.init(path, zkAddress, certificate);
+		this.eventHandler=new NodeEventHandler() {
+			public void upateNode(String path,URI uri) {
+				Config.uri.putIfAbsentCache(path, uri);
+			}
+			@Override
+			public void removeNode(String path) {
+				// TODO Auto-generated method stub
+				Config.uri.remove(path);
+			}
+			@Override
+			public void addNode(String path,URI uri) {
+				// TODO Auto-generated method stub
+				Config.uri.addCache(path, uri);;
+			}
+		};
 	}
 	@Override
 	public void registNode(String path, URI uri,CreateMode mode,boolean is) {
 		// TODO Auto-generated method stub
-		path = path.startsWith("/")?path:"/"+path;
 		try {
 			if(is){
 				curatorFramework.create().creatingParentsIfNeeded().withMode(mode).forPath(path, serialObject(uri));
@@ -103,7 +114,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	}
 	@Override
 	public void removeNode(String path,boolean is) {
-		path = path.startsWith("/")?path:"/"+path;
 		// TODO Auto-generated method stub
 		try {
 			if(is)
@@ -117,7 +127,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	}
 	@Override
 	public boolean exists(String path) {
-		path = path.startsWith("/")?path:"/"+path;
 		// TODO Auto-generated method stub
 		Stat forPath;
 		try {
@@ -135,7 +144,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	}
 	@Override
 	public URI getData(String path) {
-		path = path.startsWith("/")?path:"/"+path;
 		// TODO Auto-generated method stub
 		if(exists(path)){
 			byte[] forPath;
@@ -156,7 +164,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	}
 	@Override
 	public List<URI> getChildNodes(String path) {
-		path = path.startsWith("/")?path:"/"+path;
 		// TODO Auto-generated method stub
 		List<URI> list = new ArrayList<>();
 		try {
@@ -237,10 +244,10 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 			String hostAddress = localHost.getHostAddress();
 			URI uri= new URI(null, hostAddress, this.port, null);
 			for(String className:registClassNames){
-				registNode(className, uri, CreateMode.EPHEMERAL, false);
-				logger.info( "success regist server {} :{} ", className,uri);  
+				registNode(className, uri, CreateMode.EPHEMERAL, true);
 			}
 		}
+		closeServer();
 	}
 	public void initServer(ConcurrentHashSet<String> getClassNames) throws Exception{
 		if(CollectionUtils.isNotEmpty(getClassNames)){ //获取服务信息
@@ -255,34 +262,7 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 			}
 		}
 	}
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		// TODO Auto-generated method stub
-		this.baseZookeeperClient = new ZookeeperClient();
-		this.curatorFramework=baseZookeeperClient.init(path, zkAddress, certificate);
-		this.eventHandler=new NodeEventHandler() {
-			public void upateNode(String path,URI uri) {
-				Config.uri.putIfAbsentCache(path, uri);
-			}
-			@Override
-			public void removeNode(String path) {
-				// TODO Auto-generated method stub
-				Config.uri.remove(path);
-			}
-			@Override
-			public void addNode(String path,URI uri) {
-				// TODO Auto-generated method stub
-				Config.uri.addCache(path, uri);;
-			}
-		};
-	}
-	@Override
-	public void destroy() throws Exception {
-		// TODO Auto-generated method stub
-		log.info("=================关闭了");
-		this.closeServer();
-	}
 
-	
+
 
 }

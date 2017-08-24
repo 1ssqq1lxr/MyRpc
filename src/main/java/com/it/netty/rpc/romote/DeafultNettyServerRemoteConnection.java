@@ -42,7 +42,7 @@ import com.it.netty.rpc.service.ServiceObjectFindInteferce;
  * @author 17070680
  *
  */
-public class DeafultNettyServerRemoteConnection extends NettyServerApiService implements InitializingBean ,DisposableBean{
+public class DeafultNettyServerRemoteConnection extends NettyServerApiService implements InitializingBean {
 	
 	ServiceObjectFindInteferce serviceObjectFindInteferce;
 	
@@ -306,7 +306,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 		this.start();
 	}
 
-	@Override
 	public void destroy() throws Exception {
 		// TODO Auto-generated method stub
 		if(sync!=null){

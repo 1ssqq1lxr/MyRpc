@@ -38,6 +38,7 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 			throws Throwable {
 		Invocation invocation = new Invocation();
 		invocation.setProtocol(Config.protocol==null?"DEFAULTSERIALIZE":Config.protocol);
+		invocation.setProtocol(Config.protocol);
 		invocation.setClassName(classes.getName());
 		invocation.setInterfaceClass(classes);
 		invocation.setSerialNo(UUID.randomUUID().toString());
