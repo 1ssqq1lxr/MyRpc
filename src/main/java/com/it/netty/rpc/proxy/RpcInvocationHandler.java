@@ -7,7 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.it.netty.rpc.Config;
 import com.it.netty.rpc.exception.NoFindClassException;
+import com.it.netty.rpc.message.Const;
 import com.it.netty.rpc.message.Invocation;
+import com.it.netty.rpc.message.Result;
 import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.romote.Callback;
 import com.it.netty.rpc.romote.DeafultNettyClientRemoteConnection;
@@ -34,8 +36,8 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
-	
 		Invocation invocation = new Invocation();
+		invocation.setProtocol(Config.protocol==null?"DEFAULTSERIALIZE":Config.protocol);
 		invocation.setClassName(classes.getName());
 		invocation.setInterfaceClass(classes);
 		invocation.setSerialNo(UUID.randomUUID().toString());
@@ -47,7 +49,11 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 			throw new NoFindClassException();
 		invocation.setUri(uri);
 		Callback invokeAsync = connection.invokeAsync(invocation);
-		return invokeAsync.getObject();
+		Result result = invokeAsync.getObject();
+		if(result.getResultCode().endsWith(Const.ERROR_CODE)){
+			throw result.getException();
+		}
+		return result.getMsg();
 	}
 
 

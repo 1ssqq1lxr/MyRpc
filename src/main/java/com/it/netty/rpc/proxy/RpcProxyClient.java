@@ -23,9 +23,9 @@ public class RpcProxyClient {
 		// TODO Auto-generated method stub
 		return (T) Proxy.newProxyInstance(classes.getClassLoader(), new Class<?>[]{classes}, new RpcInvocationHandler<T>(classes));
 	}
-	public  static <T> Resolver getInvocation(final T t) {
+	public  static  Resolver getInvocation(final Object t) {
 		// TODO Auto-generated method stub
-		return new AbastractResolver<T>(t) {
+		return new AbastractResolver(t) {
 			public Result doInvoke(Invocation invocation) {
 				// TODO Auto-generated method stub
 				try {
@@ -37,10 +37,6 @@ public class RpcProxyClient {
 					return new Result(null, e, "操作失败", Const.ERROR_CODE);
 				} 
 			}
-
-
-		
-
 		};
 	}
 

@@ -8,39 +8,18 @@
 	<xsd:import namespace="http://www.springframework.org/schema/beans" />
 	<xsd:import namespace="http://www.springframework.org/schema/tool" />
 		
-	<xsd:element name="service" >
+	<xsd:element name="server" >
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="serviceRegeist" type="serviceRegeist" maxOccurs="unbounded" minOccurs="0"/>
-				<xsd:element name="serviceConsume" type="serviceConsume" maxOccurs="unbounded" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attribute name="id" type="xsd:string" use="required"/>
 			<xsd:attribute name="zkAddress" type="xsd:string" use="required" />
-			<xsd:attribute name="protocol" type="xsd:string" use="optional" default="hession">
-				<xsd:simpleType>  
-                            <xsd:restriction base="xsd:string">  
-                                <xsd:enumeration value="jdk" />  
-                                <xsd:enumeration value="hession" /> 
-                                 <xsd:enumeration value="jackson" />   
-                            </xsd:restriction>  
-                 </xsd:simpleType> 
-			</xsd:attribute>
 			<xsd:attribute name="serverPort" type="xsd:string" use="required" />
 		</xsd:complexType>
 	</xsd:element>
-	
-	
 	<xsd:complexType name="serviceRegeist">
 		<xsd:attribute name="class" type="xsd:string" use="required"/>
-		<xsd:attribute name="name" type="xsd:string" use="required" />
 	</xsd:complexType>
-	
-	<xsd:complexType name="serviceConsume">
-		<xsd:attribute name="class" type="xsd:string" use="required"/>
-		<xsd:attribute name="name" type="xsd:string" use="required" />
-	</xsd:complexType>
-	
-	
-	
 	
 </xsd:schema>

@@ -46,6 +46,7 @@ public class ZookeeperClient  implements BaseZookeeperClient{
         connectionTimeoutMs(connectionTimeoutMs).  
         connectString(connectString).  
         namespace(namespace).  
+        sessionTimeoutMs(3000).
         retryPolicy(new RetryNTimes(Integer.MAX_VALUE, 1000)).build();  
         client.start();  
         return client;  

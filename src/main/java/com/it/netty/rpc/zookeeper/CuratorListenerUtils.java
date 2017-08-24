@@ -6,6 +6,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;  
   
 
+
+
 import org.apache.curator.RetryPolicy;  
 import org.apache.curator.framework.CuratorFramework;  
 import org.apache.curator.framework.CuratorFrameworkFactory;  
@@ -24,6 +26,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;  
 import org.apache.curator.retry.ExponentialBackoffRetry;  
 import org.apache.curator.retry.RetryNTimes;  
+import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;  
 import org.apache.zookeeper.Watcher;  
 import org.apache.zookeeper.ZooDefs;  
@@ -61,8 +64,10 @@ public class CuratorListenerUtils {
         //setListenterThreeOne(client);  
        // setListenterThreeTwo(client);  
 //        client.create().forPath("/love", "ss".getBytes());
-        List<String> forPath = client.getChildren().forPath("/");
-        
+//        List<String> forPath = client.getChildren().forPath("/");
+        String forPaths = client.create().withMode(CreateMode.EPHEMERAL).forPath("/kiss", "ss".getBytes());
+        byte[] forPath = client.getData().watched().inBackground().forPath("/gg");
+        byte[] forPath1 = client.getData().forPath("/haha");
         setListenterThreeThree(client);  
        // getDataNode(client, "/two");  
        // setDataNode(client, "/two", "sss");  
@@ -124,7 +129,8 @@ public class CuratorListenerUtils {
         authorization(scheme, auth).  
         connectionTimeoutMs(connectionTimeoutMs).  
         connectString(connectString).  
-        namespace(namespace).  
+        namespace(namespace).
+        sessionTimeoutMs(1000).
         retryPolicy(new RetryNTimes(Integer.MAX_VALUE, 1000)).build();  
         client.start();  
         return client;  

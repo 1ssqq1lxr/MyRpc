@@ -1,28 +1,39 @@
 package com.it.netty.rpc.framework;
 
-import java.util.Set;
+import org.springframework.beans.factory.InitializingBean;
 
-public class ZkBeanService {
-	private String address;
-	private String protocol;
-	private Set<String>  classes;
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	public String getProtocol() {
-		return protocol;
-	}
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
-	}
-	public Set<String> getClasses() {
-		return classes;
-	}
-	public void setClasses(Set<String> classes) {
-		this.classes = classes;
-	}
+import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
+import com.it.netty.rpc.zookeeper.ZookeeperService;
+
+
+public class ZkBeanService implements InitializingBean{
 	
+	
+	private  ConcurrentHashSet<String> registClassNames  = new ConcurrentHashSet<>();
+	
+	private ZookeeperService zookeeperService;
+	
+	
+	
+	public ZookeeperService getZookeeperService() {
+		return zookeeperService;
+	}
+
+	public void setZookeeperService(ZookeeperService zookeeperService) {
+		this.zookeeperService = zookeeperService;
+	}
+
+	public ConcurrentHashSet<String> getRegistClassNames() {
+		return registClassNames;
+	}
+
+	public void setRegistClassNames(ConcurrentHashSet<String> registClassNames) {
+		this.registClassNames = registClassNames;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// TODO Auto-generated method stub
+		zookeeperService.initRegist(registClassNames);
+	}	
 }

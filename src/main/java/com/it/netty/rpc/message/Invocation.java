@@ -14,7 +14,7 @@ public class Invocation implements Serializable{
 	private String methodName;
 	private Object[] params;
 	private Class<?>[] paramsType;
-	private String protocol;
+	private String protocol ="DEFAULTSERIALIZE";
 	
 	private transient URI uri;
 	

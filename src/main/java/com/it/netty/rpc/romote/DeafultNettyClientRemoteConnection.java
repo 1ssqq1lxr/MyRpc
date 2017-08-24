@@ -215,6 +215,7 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 			ProtocolFactory protocolFactory = protocolFactorySelector.select(serialNo);
 			return protocolFactory;
 		}
+		
 	
 	
 			
