@@ -12,6 +12,18 @@ public class URI implements Serializable {
 	String host;
 	int port;
 	String message;
+	
+	
+	public URI() {
+		super();
+	}
+	public URI(String serialMethod, String host, int port, String message) {
+		super();
+		this.serialMethod = serialMethod;
+		this.host = host;
+		this.port = port;
+		this.message = message;
+	}
 	public String getSerialMethod() {
 		return serialMethod;
 	}
@@ -36,5 +48,10 @@ public class URI implements Serializable {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
+	@Override
+	public String toString() {
+		return "URI [serialMethod=" + serialMethod + ", host=" + host
+				+ ", port=" + port + ", message=" + message + "]";
+	}
+		
 }

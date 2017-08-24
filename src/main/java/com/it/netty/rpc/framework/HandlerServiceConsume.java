@@ -16,7 +16,6 @@ import org.w3c.dom.NodeList;
 
 import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.serialize.SerializeEnum;
-import com.it.netty.rpc.zookeeper.base.ZkServerInitialization;
 
 
 public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
@@ -50,7 +49,6 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 			logger.error(this.getClass().getName()+"error regeist service {}" +e);
 		}
 		String hostAddress = localHost.getHostAddress();
-		ZkServerInitialization initialization = ZkServerInitialization.getInstance(address);
 		Set<String> hashset = new HashSet<>();
 		for(int i=0;i<serviceRegeist.getLength();i++){ // 注册服务
 			URI uri = new URI();
@@ -60,7 +58,6 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 			Element item = (Element) serviceRegeist.item(i);
 			String classe = item.getAttribute("class");
 			hashset.add(classe);
-			initialization.registURI(classe, uri);
 			logger.info(this.getClass().getName()+"success regeist service {}" ,classe);
 		}
 		builder.addPropertyValue("classes", hashset);

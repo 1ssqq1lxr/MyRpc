@@ -18,9 +18,6 @@ import com.it.netty.rpc.message.Result;
  */
 public class ResultCallBack implements Callback{
 	private long timeout; //超时时间
-	
-	
-	
 	public ResultCallBack(long timeout) {
 		super();
 		this.timeout = timeout;
@@ -29,17 +26,16 @@ public class ResultCallBack implements Callback{
 	Result result;
 	Lock lock = new ReentrantLock();
 	Condition condition = lock.newCondition();
-	
 	public void putResult(Result result){
 		try {
-			if(result==null){
+			if(this.result==null){
 				lock.lock();
 				this.result=result; 
-				condition.notifyAll();
+				condition.signal();
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			
+			log.error(this.getClass().getSimpleName()+"请求超时{}", e);
 		}
 		finally{
 			lock.unlock();	
@@ -48,22 +44,27 @@ public class ResultCallBack implements Callback{
 	@Override
 	public Result getObject() {
 		// TODO Auto-generated method stub
-		try {
-			if(result==null){
-				lock.lock();
-				condition.await(timeout, TimeUnit.MILLISECONDS);
-				return result;
+		if(this.result==null){
+			lock.lock();
+			try{	
+				boolean await = condition.await(timeout, TimeUnit.MILLISECONDS);
+				if(await){
+					return this.result;
+				}
+				else{
+					log.error(this.getClass().getSimpleName()+"请求超时");
+					return new Result(null, new RuntimeException(""), "请求超时", Const.ERROR_CODE);
+				}
+					
 			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			return new Result(null, new RuntimeException(""), "请求超市", Const.ERROR_CODE);
-		}
-		finally{
-			lock.unlock();	
-		}
-		return null;
+			catch (InterruptedException e) {
+				// TODO: handle exception
+				log.error(this.getClass().getSimpleName()+"请求超时{}", e);
+			}
+			finally{
+				lock.unlock();	
+			}
+		} 
+		return result;
 	}
-
-	
-	
 }

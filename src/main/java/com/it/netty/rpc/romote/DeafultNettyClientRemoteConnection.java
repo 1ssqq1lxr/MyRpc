@@ -11,6 +11,7 @@ import io.netty.channel.DefaultEventLoopGroup;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.handler.timeout.IdleState;
@@ -80,6 +81,7 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 	}
 	public Bootstrap start() {
 		b.group(clientGroup)
+		.channel(NioSocketChannel.class)
 		.option(ChannelOption.TCP_NODELAY, true)
 		.option(ChannelOption.SO_KEEPALIVE, false)
 		.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
@@ -91,8 +93,9 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 				ch.pipeline().addLast(ClientdefLoopGroup);
 				ch.pipeline().addLast(new ClientEncode());
 				ch.pipeline().addLast(new ClinetDecode());
+				ch.pipeline().addLast(new IdleStateHandler(20, 0, 0));
 				ch.pipeline().addLast(new OutChannelInvocationHandler());
-				ch.pipeline().addLast(new IdleStateHandler(15, 15, 15));
+		
 			}
 		});
 		return b;
@@ -106,11 +109,11 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 					
 					ChannelManager channelManager = DeafultNettyClientRemoteConnection.channels.get(getRemoteStr(uri));
 					if(channelManager==null){
-						final ChannelFuture connect = b.connect(uri.getHost(), uri.getPort());
+						final ChannelFuture connect = b.connect(uri.getHost(), uri.getPort()).sync();
 						if(connect.isSuccess()){
 							ChannelManager channelManager1 = new ChannelManager(connect,uri);
 							DeafultNettyClientRemoteConnection.channels.putIfAbsent(getRemoteStr(uri), channelManager1);
-							return channelManager;
+							return channelManager1;
 						}
 						log.error(this.getClass().getName()+" 连接｛｝ 失败",getRemoteStr(uri));
 					}
@@ -188,6 +191,7 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 				throws Exception {
 			if(invocation instanceof Invocation){ // 请求
 				ProtocolFactory protocolFactory = getProtocolFactory((Invocation)invocation);
+				System.out.println(TOP_LENGTH+"");
 				out.writeInt(TOP_LENGTH);
 				byte[] encode = protocolFactory.encode(invocation);
 				out.writeInt(protocolFactory.getProtocol());

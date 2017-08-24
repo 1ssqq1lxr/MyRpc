@@ -1,6 +1,9 @@
 package com.it.netty.rpc.zookeeper.base;
 
-import com.it.netty.rpc.message.URI;
+import org.apache.curator.framework.CuratorFramework;
+
+import com.it.netty.rpc.zookeeper.Certificate;
+
 
 /**
  * 基础客户端类
@@ -8,6 +11,5 @@ import com.it.netty.rpc.message.URI;
  *
  */
 public interface BaseZookeeperClient {
-	void registURI(String path,URI uri);
-	void initAllURI(String path);
+	CuratorFramework init(String path,String connectString,Certificate certificate);
 }

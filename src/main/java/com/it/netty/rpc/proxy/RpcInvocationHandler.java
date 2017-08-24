@@ -5,12 +5,12 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.it.netty.rpc.Config;
 import com.it.netty.rpc.exception.NoFindClassException;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.romote.Callback;
 import com.it.netty.rpc.romote.DeafultNettyClientRemoteConnection;
-import com.it.netty.rpc.zookeeper.ServiceDiscovery;
 /**
  * rpc客户端代码类
  * @author 17070680
@@ -42,7 +42,7 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 		invocation.setParams(args);
 		invocation.setParamsType(method.getParameterTypes());
 		invocation.setMethodName(method.getName());
-		URI uri = ServiceDiscovery.findURIByPath(classes.getName());
+		URI uri = Config.uri.getCache(classes.getName());
 		if(uri==null)
 			throw new NoFindClassException();
 		invocation.setUri(uri);

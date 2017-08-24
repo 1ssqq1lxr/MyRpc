@@ -17,6 +17,17 @@ public  class CacheFactory <K,V> implements Cache <K,V>{
 		// TODO Auto-generated method stub
 		commons.put(k, v);
 	}
+	@Override
+	public  void putIfAbsentCache(K k,V v) {
+		// TODO Auto-generated method stub
+		commons.putIfAbsent(k, v);
+	}
+	@Override
+	public  void remove(K k) {
+		// TODO Auto-generated method stub
+		commons.remove(k);
+	}
+
 
 	
 }

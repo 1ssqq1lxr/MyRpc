@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
@@ -19,7 +20,6 @@ import com.it.netty.rpc.core.RpcServerInit;
 import com.it.netty.rpc.framework.FrameworkRpcParseUtil.ComponentCallback;
 import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.serialize.SerializeEnum;
-import com.it.netty.rpc.zookeeper.base.ZkServerInitialization;
 
 
 public class HandlerService extends AbstractSingleBeanDefinitionParser {
@@ -38,7 +38,6 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 		// TODO Auto-generated method stub
 		
 		InetAddress localHost = null;
-		ZkServerInitialization initialization =null;
 		try {
 			int serverPort = Integer.parseInt(element.getAttribute("serverPort"));
 			builder.addPropertyValue("address", element.getAttribute("zkAddress"));
@@ -53,7 +52,6 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 			}); // 开启tcp服务端
 			localHost = Inet4Address.getLocalHost();
 			String hostAddress = localHost.getHostAddress();
-			initialization= ZkServerInitialization.getInstance(element.getAttribute("zkAddress"));
 			Set<String> hashset = new HashSet<>();
 			for(int i=0;i<serviceRegeist.getLength();i++){ // 注册服务
 				URI uri = new URI();
@@ -63,16 +61,13 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 				Element item = (Element) serviceRegeist.item(i);
 				String classe = item.getAttribute("class");
 				hashset.add(classe);
-				initialization.registURI(classe, uri);
 				logger.info(this.getClass().getName()+"success regeist service {}" ,classe);
 			}
 			builder.addPropertyValue("classes", hashset);
+			
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			logger.error(this.getClass().getName()+"error regeist service {}" +e);
-			if(initialization!=null){
-				initialization.colse();
-			}
 		}
 		
 

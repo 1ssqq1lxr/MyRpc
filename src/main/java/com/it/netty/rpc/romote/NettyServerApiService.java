@@ -18,18 +18,11 @@ import com.it.netty.rpc.proxy.RpcProxyClient;
  */
 public abstract class NettyServerApiService  {
 	protected static final Logger log = LoggerFactory.getLogger(NettyServerApiService.class.getSimpleName());
-
-	
 	protected final static RpcExcutors exRpcExcutors = new RpcExcutors("Rpc-method-server");
-	
-	
-	
 	protected void invoke(Channel channel,Invocation invocation){
-
 		try {
 			exRpcExcutors.excute(getSubmitTask(channel,invocation));
 		} catch (Exception e) {
-			// TODO: handle exception
 			log.error(this.getClass().getName()+"线程池执行失败 类{} 方法{} 参数{}", invocation.getClassName(),invocation.getMethodName(),invocation.getParams());
 		}
 	}

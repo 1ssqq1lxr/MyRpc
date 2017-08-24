@@ -11,8 +11,19 @@ public class Result implements Serializable {
 		private Object msg;
 		private Exception exception;
 		private String resultMsg;
+		private String protocol;
 		private String resultCode =Const.SUCCESS_CODE;
 		
+		public String getProtocol() {
+			return protocol;
+		}
+
+
+		public void setProtocol(String protocol) {
+			this.protocol = protocol;
+		}
+
+
 		public Result(Object msg, Exception exception, String resultMsg,
 				String resultCode) {
 			super();

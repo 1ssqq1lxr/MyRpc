@@ -56,11 +56,9 @@ public abstract class NettyClientApiService {
 	protected  Callback initCallBack(Invocation invocation) {
 		// TODO Auto-generated method stub
 		String UUID = java.util.UUID.randomUUID().toString();
-		//1 设置到invocation 中
 		Callback callback = new ResultCallBack(invocation.getTimeout());
 		invocation.setSerialNo(UUID);
 		callBacks.putIfAbsent(UUID, callback);
-		// 1 设置UUID  2 设置超时时间
 		return callback;
 	}
 	protected  void setCallBack(Result result) {

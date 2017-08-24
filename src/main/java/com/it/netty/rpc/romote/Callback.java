@@ -8,5 +8,5 @@ import com.it.netty.rpc.message.Result;
  */
 public interface Callback {
 		void putResult(Result result);
-		Object getObject();
+		Result getObject();
 }

@@ -13,25 +13,18 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.MessageToByteEncoder;
-import io.netty.handler.codec.serialization.ClassResolvers;
-import io.netty.handler.codec.serialization.ObjectDecoder;
-import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 
-import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.it.netty.rpc.excutor.RpcExcutors;
-import com.it.netty.rpc.handler.RpcServerHandler;
 import com.it.netty.rpc.heart.HeartBeat;
+import com.it.netty.rpc.message.Const;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.Resolver;
 import com.it.netty.rpc.message.Result;
@@ -40,19 +33,33 @@ import com.it.netty.rpc.protocol.ProtocolFactory;
 import com.it.netty.rpc.protocol.ProtocolFactorySelector;
 import com.it.netty.rpc.protocol.SerializeEnum;
 import com.it.netty.rpc.proxy.RpcProxyClient;
-import com.it.netty.rpc.romote.DeafultNettyClientRemoteConnection.ClientEncode;
-import com.it.netty.rpc.romote.DeafultNettyClientRemoteConnection.ClinetDecode;
-import com.it.netty.rpc.romote.DeafultNettyClientRemoteConnection.OutChannelInvocationHandler;
+import com.it.netty.rpc.service.Person;
+import com.it.netty.rpc.service.ServiceObjectFindInteferce;
 /**
  * 
  * @author 17070680
  *
  */
 public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
+	
+	ServiceObjectFindInteferce serviceObjectFindInteferce;
+	
+	
+	
+	
+	public ServiceObjectFindInteferce getServiceObjectFindInteferce() {
+		return serviceObjectFindInteferce;
+	}
+
+	public void setServiceObjectFindInteferce(
+			ServiceObjectFindInteferce serviceObjectFindInteferce) {
+		this.serviceObjectFindInteferce = serviceObjectFindInteferce;
+	}
 	private DefaultEventLoopGroup ServerdefLoopGroup;
 	private NioEventLoopGroup bossGroup;
 	private NioEventLoopGroup workGroup;
 	private  ServerBootstrap b;
+	private int port;
 	private  final  ProtocolFactorySelector protocolFactorySelector = new DefaultProtocolFactorySelector();
 	private final int TOP_LENGTH=129>>1|34; // 数据协议头
 	private final int TOP_HEARTBEAT=129>>1|36; // 心跳协议头
@@ -95,15 +102,22 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 				ch.pipeline().addLast(ServerdefLoopGroup);
 				ch.pipeline().addLast(new ServerEncode());
 				ch.pipeline().addLast(new ServerDecode());
+				ch.pipeline().addLast(new IdleStateHandler(30,0 , 0));
 				ch.pipeline().addLast(new OutChannelInvocationHandler());
-				ch.pipeline().addLast(new IdleStateHandler(25,25 , 25));
 			}
 		}) .childOption(ChannelOption.SO_KEEPALIVE, true);;
-		
+		try {
+			ChannelFuture sync = b.bind(port).sync();
+			log.info(this.getClass().getName()+"启动成功 ：{}",sync);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			log.error(this.getClass().getName()+"启动失败 ：{}",e);
+		}
 	}
 
 	public DeafultNettyServerRemoteConnection(int port) {
 		resouce();
+		this.port=port;
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -118,7 +132,7 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 			}
 			else if(result instanceof HeartBeat){
 				atomicInteger.getAndAdd(0);// 重置心跳阙值
-				log.info(this.getClass().getName()+"收到来自 {}的心跳消息{}", ctx.channel().localAddress().hashCode(),result);
+				log.info(this.getClass().getName()+"收到来自 {}的心跳消息{}", ctx.channel().remoteAddress(),result);
 			}
 		}
 
@@ -176,8 +190,9 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 
 		protected void encode(ChannelHandlerContext ctx, Object invocation, ByteBuf out)
 				throws Exception {
-			if(invocation instanceof Invocation){ // 请求
-				ProtocolFactory protocolFactory = getProtocolFactory((Invocation)invocation);
+			if(invocation instanceof Result){ // 请求
+				Result result =(Result)invocation;
+				ProtocolFactory protocolFactory = getProtocolFactory(result);
 				out.writeInt(TOP_LENGTH);
 				byte[] encode = protocolFactory.encode(invocation);
 				out.writeInt(protocolFactory.getProtocol());
@@ -186,8 +201,8 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 			}
 			
 		}
-		protected ProtocolFactory getProtocolFactory(Invocation invocation){
-			SerializeEnum valueOf = SerializeEnum.valueOf(invocation.getProtocol());
+		protected ProtocolFactory getProtocolFactory(Result result){
+			SerializeEnum valueOf = SerializeEnum.valueOf(result.getProtocol());
 			valueOf=valueOf==null?SerializeEnum.DEFAULTSERIALIZE:valueOf;
 			int serialNo = valueOf.getValue();
 			ProtocolFactory protocolFactory = protocolFactorySelector.select(serialNo);
@@ -207,7 +222,7 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 				return;
 			}
 			int readInt = in.readInt();
-			if(readInt!=TOP_LENGTH || readInt!=TOP_HEARTBEAT){
+			if(readInt!=TOP_LENGTH && readInt!=TOP_HEARTBEAT){
 				log.warn(this.getClass().getName()+"消息协议头非法{}", readInt);
 				return;
 			}
@@ -221,8 +236,8 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 				byte[] bytes = new byte[bodylength];
 				ProtocolFactory select = protocolFactorySelector.select(protocol);
 				in.readBytes(bytes);
-				Result decode = select.decode(Result.class, bytes);
-				out.add(decode);
+				Invocation invocation = select.decode(Invocation.class, bytes);
+				out.add(invocation);
 			}
 			else if(readInt==TOP_HEARTBEAT){ // 心跳
 				int protocol = in.readInt();
@@ -250,11 +265,24 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService {
 				// TODO Auto-generated method stub
 				if(invocation!=null){
 					Class<?> interfaceClass = invocation.getInterfaceClass();
-					Object newInstance = null;// 从spring 容器中 获取bean
-					Resolver resolver = RpcProxyClient.getInvocation(newInstance);
-					Result result = resolver.invoke(invocation);
-					result.setSerialNo(invocation.getSerialNo());
-					channel.writeAndFlush(result);
+					Object newInstance;
+					Result result=null;
+					try {
+						newInstance = serviceObjectFindInteferce.getObject(invocation.getClassName());
+						Resolver resolver = RpcProxyClient.getInvocation(newInstance);
+						result = resolver.invoke(invocation);
+						result.setSerialNo(invocation.getSerialNo());
+//						Result result = new Result(new Person());
+						result.setProtocol(invocation.getProtocol());
+						result.setSerialNo(invocation.getSerialNo());
+						channel.writeAndFlush(result);
+					} catch (Exception e) {
+						result = new Result(null,e,"没找到service", Const.ERROR_CODE);
+						result.setProtocol(invocation.getProtocol());
+						result.setSerialNo(invocation.getSerialNo());
+						channel.writeAndFlush(new Result(result));
+					}// 从spring 容器中 获取bean
+					
 				}
 			}
 		};
