@@ -5,6 +5,9 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.it.netty.rpc.Config;
 import com.it.netty.rpc.exception.NoFindClassException;
 import com.it.netty.rpc.message.Const;
@@ -20,7 +23,7 @@ import com.it.netty.rpc.romote.DeafultNettyClientRemoteConnection;
  * @param <T>
  */
 public class RpcInvocationHandler<T> implements InvocationHandler{
-
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private static ConcurrentHashMap<Object, Invocation>  map = new ConcurrentHashMap<>();
 	
@@ -35,7 +38,10 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 	}
 
 	public Object invoke(Object proxy, Method method, Object[] args)
+	
+
 			throws Throwable {
+		Class<? extends Object> class1 = proxy.getClass();
 		Invocation invocation = new Invocation();
 		invocation.setProtocol(Config.protocol==null?"DEFAULTSERIALIZE":Config.protocol);
 		invocation.setProtocol(Config.protocol);
@@ -50,6 +56,10 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 			throw new NoFindClassException();
 		invocation.setUri(uri);
 		Callback invokeAsync = connection.invokeAsync(invocation);
+		if(invokeAsync==null){
+			logger.info(this.getClass().getName()+"连接远程服务器失败{}", invocation);
+			return null;
+		}
 		Result result = invokeAsync.getObject();
 		if(result.getResultCode().endsWith(Const.ERROR_CODE)){
 			throw result.getException();

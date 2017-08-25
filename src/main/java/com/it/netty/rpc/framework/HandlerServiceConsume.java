@@ -1,5 +1,7 @@
 package com.it.netty.rpc.framework;
 
+import java.lang.reflect.Constructor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -21,6 +23,13 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	private final String DEFAULT_ZOOKEEPER_NAME="default_client_zookeeper";
 	private final String DEFAULT_ZOOKEEPER_PATH="rpc";
+	private final String DEFAULT_ZOOKEEPER_ZKADDRESS="zkAddress";
+	private final String DEFAULT_ZOOKEEPER_PROTOCOL="protocol";
+	private final String DEFAULT_ZOOKEEPER_SERVICECONSUME="rpc:serviceConsume";
+	private final String DEFAULT_ZOOKEEPER_CERTIFICATE="certificate";
+	private final String DEFAULT_ZOOKEEPER_ZK_PATH="path";
+	private final String DEFAULT_ZOOKEEPER_CLASS="class";
+	private final String DEFAULT_ZOOKEEPER_SERVER_NAME="name";
 	private  ConcurrentHashSet<String> getClassNames  = new ConcurrentHashSet<>();
 	@Override
 	protected Class<?> getBeanClass(Element element) {
@@ -33,28 +42,30 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	protected void doParse(final Element element, ParserContext parserContext,
 			BeanDefinitionBuilder builder) {
 		// TODO Auto-generated method stub
-		String address = element.getAttribute("zkAddress");
-		String protocol = element.getAttribute("protocol");
-		builder.addPropertyValue("zkAddress", address);
-		builder.addPropertyValue("protocol", protocol);
-		NodeList serviceRegeist = element.getElementsByTagName("rpc:serviceConsume");
+		String address = element.getAttribute(DEFAULT_ZOOKEEPER_ZKADDRESS);
+		String protocol = element.getAttribute(DEFAULT_ZOOKEEPER_PROTOCOL);
+		builder.addPropertyValue(DEFAULT_ZOOKEEPER_ZKADDRESS, address);
+		builder.addPropertyValue(DEFAULT_ZOOKEEPER_PROTOCOL, protocol);
+		NodeList serviceRegeist = element.getElementsByTagName(DEFAULT_ZOOKEEPER_SERVICECONSUME);
 		FrameworkRpcParseUtil.parse(DEFAULT_ZOOKEEPER_NAME, ZookeeperService.class, element, parserContext,new ComponentCallback() {
 			@Override
 			public void onParse(RootBeanDefinition beanDefinition) {
 				// TODO Auto-generated method stub
-				beanDefinition.getPropertyValues().addPropertyValue("zkAddress", element.getAttribute("zkAddress"));
-				beanDefinition.getPropertyValues().addPropertyValue("certificate",new Certificate());
-				beanDefinition.getPropertyValues().addPropertyValue("path",DEFAULT_ZOOKEEPER_PATH);
+				beanDefinition.getPropertyValues().addPropertyValue(DEFAULT_ZOOKEEPER_ZKADDRESS, element.getAttribute("zkAddress"));
+				beanDefinition.getPropertyValues().addPropertyValue(DEFAULT_ZOOKEEPER_CERTIFICATE,new Certificate());
+				beanDefinition.getPropertyValues().addPropertyValue(DEFAULT_ZOOKEEPER_ZK_PATH,DEFAULT_ZOOKEEPER_PATH);
 			}
 		});
 		for(int i=0;i<serviceRegeist.getLength();i++){ // 获取服务信息
 			Element item = (Element) serviceRegeist.item(i);
-			String className = item.getAttribute("class");
-			String name = item.getAttribute("name");
+			String className = item.getAttribute(DEFAULT_ZOOKEEPER_CLASS);
+			String name = item.getAttribute(DEFAULT_ZOOKEEPER_SERVER_NAME);
 			try {
 				Class<?> loadClass = this.getClass().getClassLoader().loadClass(className);
 				Object proxy = RpcProxyClient.getProxy(loadClass);
-				FrameworkRpcParseUtil.parse(name, proxy.getClass(), element, parserContext,new ComponentCallback() {
+				Class<? extends Object> class1 = proxy.getClass();
+				boolean interface1 = class1.isInterface();
+				FrameworkRpcParseUtil.parse(name, class1, element, parserContext,new ComponentCallback() {
 					@Override
 					public void onParse(RootBeanDefinition beanDefinition) {
 					}

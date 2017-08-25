@@ -1,6 +1,7 @@
 package com.it.netty.rpc.message;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class Invocation implements Serializable{
 	/**
@@ -90,6 +91,16 @@ public class Invocation implements Serializable{
 
 	public void setUri(URI uri) {
 		this.uri = uri;
+	}
+
+	@Override
+	public String toString() {
+		return "Invocation [serialNo=" + serialNo + ", timeout=" + timeout
+				+ ", interfaceClass=" + interfaceClass + ", className="
+				+ className + ", methodName=" + methodName + ", params="
+				+ Arrays.toString(params) + ", paramsType="
+				+ Arrays.toString(paramsType) + ", protocol=" + protocol
+				+ ", uri=" + uri + "]";
 	}
 	
 	
