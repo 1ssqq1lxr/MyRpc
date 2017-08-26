@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 public @interface RpcService {
-	@Retention(RetentionPolicy.RUNTIME)
+	@Retention(RetentionPolicy.CLASS)
 	@Target({ ElementType.TYPE })
 	public @interface LnkVersion {
 	  

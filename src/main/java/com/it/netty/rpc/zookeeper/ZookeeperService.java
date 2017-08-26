@@ -179,7 +179,7 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 
 	@SuppressWarnings("unused")
 	private  void setListenter(String path,CuratorFramework client,final NodeEventHandler eventHandler) throws Exception{  
-		ExecutorService pool = Executors.newCachedThreadPool();  
+		path = path.startsWith("/")?path:"/"+path;
 		//设置节点的cache  
 		@SuppressWarnings("resource")
 		TreeCache treeCache = new TreeCache(client, path);  

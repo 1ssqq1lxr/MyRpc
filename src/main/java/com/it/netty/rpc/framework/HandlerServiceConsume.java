@@ -58,16 +58,18 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 		});
 		for(int i=0;i<serviceRegeist.getLength();i++){ // 获取服务信息
 			Element item = (Element) serviceRegeist.item(i);
-			String className = item.getAttribute(DEFAULT_ZOOKEEPER_CLASS);
+			final String className = item.getAttribute(DEFAULT_ZOOKEEPER_CLASS);
 			String name = item.getAttribute(DEFAULT_ZOOKEEPER_SERVER_NAME);
 			try {
-				Class<?> loadClass = this.getClass().getClassLoader().loadClass(className);
+				final Class<?> loadClass = this.getClass().getClassLoader().loadClass(className);
 				Object proxy = RpcProxyClient.getProxy(loadClass);
 				Class<? extends Object> class1 = proxy.getClass();
 				boolean interface1 = class1.isInterface();
-				FrameworkRpcParseUtil.parse(name, class1, element, parserContext,new ComponentCallback() {
+				FrameworkRpcParseUtil.parse(name, SpringConsumeBean.class, element, parserContext,new ComponentCallback() {
 					@Override
 					public void onParse(RootBeanDefinition beanDefinition) {
+						beanDefinition.getPropertyValues().addPropertyValue("classt",loadClass);
+						beanDefinition.getPropertyValues().addPropertyValue("className",className);
 					}
 				});
 				getClassNames.add(className);

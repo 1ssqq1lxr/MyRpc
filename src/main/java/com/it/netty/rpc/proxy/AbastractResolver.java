@@ -33,7 +33,7 @@ public abstract class AbastractResolver implements Resolver {
 
 	@Override
 	public Result invoke(Invocation invocation) {
-		if(invocation.getClass().isAssignableFrom(t.getClass())){
+		if(invocation.getInterfaceClass().isAssignableFrom(t.getClass())){
 			this.invocation=invocation;
 			// TODO Auto-generated method stub
 			return doInvoke(invocation);

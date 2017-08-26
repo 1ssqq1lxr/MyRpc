@@ -1,5 +1,25 @@
 package com.it.netty.rpc.romote;
 
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.springframework.beans.factory.InitializingBean;
+
+import com.it.netty.rpc.heart.HeartBeat;
+import com.it.netty.rpc.message.Const;
+import com.it.netty.rpc.message.Invocation;
+import com.it.netty.rpc.message.Resolver;
+import com.it.netty.rpc.message.Result;
+import com.it.netty.rpc.protocol.DefaultProtocolFactorySelector;
+import com.it.netty.rpc.protocol.ProtocolFactory;
+import com.it.netty.rpc.protocol.ProtocolFactorySelector;
+import com.it.netty.rpc.protocol.SerializeEnum;
+import com.it.netty.rpc.proxy.RpcProxyClient;
+import com.it.netty.rpc.service.ServiceObjectFind;
+import com.it.netty.rpc.service.ServiceObjectFindInteferce;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -17,26 +37,6 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
-
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-
-import com.it.netty.rpc.heart.HeartBeat;
-import com.it.netty.rpc.message.Const;
-import com.it.netty.rpc.message.Invocation;
-import com.it.netty.rpc.message.Resolver;
-import com.it.netty.rpc.message.Result;
-import com.it.netty.rpc.protocol.DefaultProtocolFactorySelector;
-import com.it.netty.rpc.protocol.ProtocolFactory;
-import com.it.netty.rpc.protocol.ProtocolFactorySelector;
-import com.it.netty.rpc.protocol.SerializeEnum;
-import com.it.netty.rpc.proxy.RpcProxyClient;
-import com.it.netty.rpc.service.ServiceObjectFindInteferce;
 /**
  * 
  * @author 17070680
@@ -44,7 +44,7 @@ import com.it.netty.rpc.service.ServiceObjectFindInteferce;
  */
 public class DeafultNettyServerRemoteConnection extends NettyServerApiService implements InitializingBean {
 	
-	ServiceObjectFindInteferce serviceObjectFindInteferce;
+	ServiceObjectFindInteferce serviceObjectFindInteferce ;
 	
 	
 	
@@ -115,7 +115,7 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 				ch.pipeline().addLast(ServerdefLoopGroup);
 				ch.pipeline().addLast(new ServerEncode());
 				ch.pipeline().addLast(new ServerDecode());
-				ch.pipeline().addLast(new IdleStateHandler(30,0 , 0));
+				ch.pipeline().addLast(new IdleStateHandler(30,30 ,30));
 				ch.pipeline().addLast(new OutChannelInvocationHandler());
 			}
 		}) .childOption(ChannelOption.SO_KEEPALIVE, true);;

@@ -17,11 +17,11 @@
 			<xsd:attribute name="id" type="xsd:string" use="required" />
 			<xsd:attribute name="zkAddress" type="xsd:string" use="required"  />
 			<xsd:attribute name="protocol"  use="optional"
-				default="HESSION">
+				default="HESSIAN">
 				<xsd:simpleType>
 					<xsd:restriction  base="xsd:string">
 						<xsd:enumeration value="jdk" />
-						<xsd:enumeration value="HESSION" />
+						<xsd:enumeration value="HESSIAN" />
 						<xsd:enumeration value="jackson" />
 					</xsd:restriction>
 				</xsd:simpleType>
