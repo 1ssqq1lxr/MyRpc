@@ -10,7 +10,7 @@ public class springClient {
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("consume.xml");
 		final PersonService bean = (PersonService) applicationContext.getBean(PersonService.class);
 		
-		for(int i=0;i<200;i++){
+		for(int i=0;i<30;i++){
 			new Thread(new Runnable() {
 				
 				@Override

@@ -20,6 +20,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,6 +49,8 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 	private final Lock lock = new ReentrantLock();
 	private final int TOP_LENGTH=129>>1|34; // 数据协议头
 	private final int TOP_HEARTBEAT=129>>1|36; // 心跳协议头
+	
+	private  final  CountDownLatch countDownLatch = new CountDownLatch(1);
 	static class staticInitBean{
 		public static DeafultNettyClientRemoteConnection clientRemoteConnection = new DeafultNettyClientRemoteConnection();
 	}
@@ -102,18 +105,20 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 	}
 	@Override
 	public ChannelManager doConnect(final URI uri) {
-			
 		// TODO Auto-generated method stub
 			try {
+				ChannelManager  	channelManager =null;
 				if(this.lock.tryLock(Const.TIME_OUT, TimeUnit.MILLISECONDS)){
 					
-					ChannelManager channelManager = DeafultNettyClientRemoteConnection.channels.get(getRemoteStr(uri));
+					channelManager=DeafultNettyClientRemoteConnection.channels.get(getRemoteStr(uri));
 					if(channelManager==null){
 						final ChannelFuture connect = b.connect(uri.getHost(), uri.getPort()).sync();
 						if(connect.isSuccess()){
 							ChannelManager channelManager1 = new ChannelManager(connect,uri);
 							DeafultNettyClientRemoteConnection.channels.putIfAbsent(getRemoteStr(uri), channelManager1);
+							countDownLatch.countDown();
 							return channelManager1;
+							
 						}
 						log.error(this.getClass().getName()+" 连接｛｝ 失败",getRemoteStr(uri));
 					}
@@ -121,10 +126,15 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 						return channelManager;
 					
 				}
+				countDownLatch.await();
+				channelManager=DeafultNettyClientRemoteConnection.channels.get(getRemoteStr(uri));
+				if(channelManager!=null)
+				return channelManager;
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				log.error(this.getClass().getName(), e);
 			}
+		
 			return null;
 	
 		
@@ -191,7 +201,6 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 				throws Exception {
 			if(invocation instanceof Invocation){ // 请求
 				ProtocolFactory protocolFactory = getProtocolFactory((Invocation)invocation);
-				System.out.println(TOP_LENGTH+"");
 				out.writeInt(TOP_LENGTH);
 				byte[] encode = protocolFactory.encode(invocation);
 				out.writeInt(protocolFactory.getProtocol());

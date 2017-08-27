@@ -51,6 +51,7 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 		invocation.setParams(args);
 		invocation.setParamsType(method.getParameterTypes());
 		invocation.setMethodName(method.getName());
+		invocation.setTimeout(5000);
 		URI uri = Config.uri.getCache(classes.getName());
 		if(uri==null)
 			throw new NoFindClassException();

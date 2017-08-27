@@ -47,13 +47,13 @@ public class ResultCallBack implements Callback{
 		if(this.result==null){
 			lock.lock();
 			try{	
-				boolean await = condition.await(timeout, TimeUnit.MILLISECONDS);
+				boolean await = condition.await(4000, TimeUnit.MILLISECONDS);
 				if(await){
 					return this.result;
 				}
 				else{
 					log.error(this.getClass().getSimpleName()+"请求超时");
-					return new Result(null, new RuntimeException(""), "请求超时", Const.ERROR_CODE);
+					return new Result(null, new RuntimeException("请求超时"), "请求超时", Const.ERROR_CODE);
 				}
 					
 			}

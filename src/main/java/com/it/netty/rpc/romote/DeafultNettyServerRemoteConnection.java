@@ -91,7 +91,7 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 				return new Thread(r, "BOSS_" + index.incrementAndGet());
 			}
 		});
-		workGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() * 10, new ThreadFactory() {
+		workGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() * 100, new ThreadFactory() {
 			private AtomicInteger index = new AtomicInteger(0);
 
 			public Thread newThread(Runnable r) {
