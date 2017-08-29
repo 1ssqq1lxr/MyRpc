@@ -236,10 +236,9 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 			return headerBytes;
 		}
 	}
-	class ClinetDecode extends ByteToMessageDecoder{
-
+	class  ClinetDecode extends ByteToMessageDecoder{
 		@Override
-		protected void decode(ChannelHandlerContext ctx, ByteBuf in,
+		protected void  decode(ChannelHandlerContext ctx, ByteBuf in,
 				List<Object> out) throws Exception {
 		    int beginReader;  
 	        while (true) {  
@@ -252,7 +251,7 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 	                }
 	                in.resetReaderIndex();  
 	                in.readByte();  
-	                if (in.readableBytes() < 4) {  
+	                if (in.readableBytes() < 8) {  
 	                    return;  
 	                }  
 	         } 
@@ -266,7 +265,7 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 			ProtocolFactory select = protocolFactorySelector.select(protocol);
 			in.readBytes(bytes);
 			Result decode = select.decode(Result.class, bytes);
-			log.info("success  do  request {}:{}",in.hashCode(),decode);
+			log.info("success  do  request {}:{}",ClinetDecode.this,decode);
 			in.discardReadBytes();
 			out.add(decode);
 		}

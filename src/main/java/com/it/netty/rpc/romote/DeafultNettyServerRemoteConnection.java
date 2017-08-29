@@ -259,13 +259,13 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 				beginReader = in.readerIndex();  
 				in.markReaderIndex();  
 				header=in.readInt();
-				log.info("header :{}:{},{}",in,in.hashCode(),header);
+				log.info("header :{}:{},{}",in,ServerDecode.this,header);
 				if (header == TOP_LENGTH || header==TOP_HEARTBEAT) {  
 					break;  
 				}
 				in.resetReaderIndex();  
 				in.readByte();  
-				if (in.readableBytes() < 4) {  
+				if (in.readableBytes() < 8) {  
 					return;  
 				}  
 			} 
