@@ -197,15 +197,15 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 					String path = data.getPath();
 					switch (event.getType()) {  
 					case NODE_ADDED:  
-						eventHandler.addNode(path,uri);
+						eventHandler.addNode(path.substring(1,path.length()),uri);
 						logger.info("NODE_ADDED : ("+ path +")  数据:"+ uri.toString());  
 						break;  
 					case NODE_REMOVED: 
-						eventHandler.removeNode(path);
+						eventHandler.removeNode(path.substring(1,path.length()));
 						logger.info("NODE_REMOVED : "+ path);  
 						break;  
 					case NODE_UPDATED:  
-						eventHandler.upateNode(path,uri);
+						eventHandler.upateNode(path.substring(1,path.length()),uri);
 						logger.info("NODE_UPDATED : ("+ path +")  数据:"+ uri.toString());  
 						break;  
 					default:  

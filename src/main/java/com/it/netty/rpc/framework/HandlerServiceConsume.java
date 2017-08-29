@@ -1,7 +1,5 @@
 package com.it.netty.rpc.framework;
 
-import java.lang.reflect.Constructor;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -66,7 +64,7 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 				Class<? extends Object> class1 = proxy.getClass();
 				boolean interface1 = class1.isInterface();
 				FrameworkRpcParseUtil.parse(name, SpringConsumeBean.class, element, parserContext,new ComponentCallback() {
-					@Override
+						@Override
 					public void onParse(RootBeanDefinition beanDefinition) {
 						beanDefinition.getPropertyValues().addPropertyValue("classt",loadClass);
 						beanDefinition.getPropertyValues().addPropertyValue("className",className);

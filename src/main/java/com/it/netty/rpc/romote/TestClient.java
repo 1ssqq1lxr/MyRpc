@@ -27,7 +27,7 @@ public class TestClient {
 //		System.out.println(object.getResultCode());
 		
 		Config.uri.addCache("com.it.netty.rpc.service.PersonService", uri);
-		PersonService personService = RpcProxyClient.getProxy(PersonService.class);
+		PersonService personService = new RpcProxyClient().getProxy(PersonService.class);
 		Person name = personService.getName();
 	}
 }

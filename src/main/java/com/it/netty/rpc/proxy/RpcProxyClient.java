@@ -21,7 +21,8 @@ public class RpcProxyClient {
 	@SuppressWarnings("unchecked")
 	public  static <T>  T getProxy( Class<T> classes) {
 		// TODO Auto-generated method stub
-		return (T) Proxy.newProxyInstance(classes.getClassLoader(), new Class<?>[]{classes}, new RpcInvocationHandler<T>(classes));
+		T newProxyInstance = (T) Proxy.newProxyInstance(classes.getClassLoader(), new Class<?>[]{classes}, new RpcInvocationHandler<T>(classes));
+		return (T) newProxyInstance;
 	}
 	public  static  Resolver getInvocation(final Object t) {
 		// TODO Auto-generated method stub

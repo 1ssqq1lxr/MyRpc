@@ -3,6 +3,8 @@ package com.it.netty.rpc.romote;
 import io.netty.channel.ChannelFuture;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +49,7 @@ public abstract class NettyClientApiService {
 	}
 	public abstract ChannelManager doConnect(URI uri);
 	
+	private final Lock locks = new ReentrantLock();
 	protected   Callback sendMessage(ChannelFuture channelFuture,Invocation invocation){
 		Callback initCallBack = initCallBack(invocation);
 		channelFuture.channel().writeAndFlush(invocation);
