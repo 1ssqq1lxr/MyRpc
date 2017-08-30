@@ -1,6 +1,5 @@
 package com.it.netty.rpc.service;
 
-import java.lang.annotation.Annotation;
 import java.util.Map;
 
 import javassist.NotFoundException;
@@ -31,17 +30,8 @@ public class ServiceObjectFind implements ServiceObjectFindInteferce, BeanFactor
     public void setBeanClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
-	/*
-	 * <p>Title: getObject</p>
-	 * <p>Description: </p>
-	 * @param className
-	 * @return
-	 * @throws Exception
-	 * @see com.it.netty.rpc.service.ServiceObjectFindInteferce#getObject(java.lang.String)
-	 */
 	@Override
 	public Object getObject(String className) throws Exception {
-		// TODO Auto-generated method stub
 		if(className==null){
 			return null;
 		}
@@ -58,15 +48,10 @@ public class ServiceObjectFind implements ServiceObjectFindInteferce, BeanFactor
 					  for (Map.Entry<String, ?> e : beans.entrySet()) {
 			                Object bean = e.getValue();
 			                object.putIfAbsentCache(className, bean);
-			                return bean;
-//			                Class<?> beanType = bean.getClass();
-//			                RpcService annotation = bean.getClass().getAnnotation(RpcService.class);
-//			                Annotation[] annotations = beanType.getAnnotations();
-//			                
-//			                
-//			                if (beanType.isAnnotationPresent(RpcService.class)) {
-//			                	return bean;
-//			                }
+			                Class<?> beanType = bean.getClass();
+			                if (beanType.isAnnotationPresent(RpcService.class)) {
+			                	return bean;
+			                }
 			            }
 			           throw new NotFoundException(className);
 				  }
@@ -77,6 +62,5 @@ public class ServiceObjectFind implements ServiceObjectFindInteferce, BeanFactor
 			}
 		}
 		return null;
-	}
-			
+	}			
 }

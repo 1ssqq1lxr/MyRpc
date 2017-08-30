@@ -1,4 +1,4 @@
-package com.it.netty.rpc.zookeeper;
+
 
 public class test {
 			public static void main(String[] args) {

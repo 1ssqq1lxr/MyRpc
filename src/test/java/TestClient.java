@@ -1,10 +1,9 @@
-package com.it.netty.rpc.romote;
+
 
 import com.it.netty.rpc.Config;
-import com.it.netty.rpc.message.Invocation;
-import com.it.netty.rpc.message.Result;
 import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.proxy.RpcProxyClient;
+import com.it.netty.rpc.romote.DeafultNettyClientRemoteConnection;
 import com.it.netty.rpc.service.Person;
 import com.it.netty.rpc.service.PersonService;
 
