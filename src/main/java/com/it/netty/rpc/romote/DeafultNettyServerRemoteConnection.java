@@ -181,7 +181,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 			if(atomicInteger.get()<6){
 				if(e.state().equals(IdleState.READER_IDLE) ){
 					log.info(this.getClass().getName()+"未收到来自{}的心跳次数{}", ctx.channel(),atomicInteger.incrementAndGet());
-
 				}
 			}
 			else{
@@ -288,15 +287,15 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 						newInstance = serviceObjectFindInteferce.getObject(invocation.getClassName());
 						Resolver resolver = init.getInvocation(newInstance);
 						result = resolver.invoke(invocation);
-						result.setSerialNo(invocation.getSerialNo());
 						result.setProtocol(invocation.getProtocol());
 						result.setSerialNo(invocation.getSerialNo());
 						channel.writeAndFlush(result);
-					} catch (Exception e) {
-						result = new Result(null,e,"没找到service", Const.ERROR_CODE);
-						result.setProtocol(invocation.getProtocol());
-						result.setSerialNo(invocation.getSerialNo());
-						channel.writeAndFlush(new Result(result));
+					} catch (RuntimeException e) {
+//						result = new Result(null,e,"没找到service", Const.ERROR_CODE);
+//						result.setProtocol(invocation.getProtocol());
+//						result.setSerialNo(invocation.getSerialNo());
+//						channel.writeAndFlush(result);
+						log.error("{}",e);
 					}
 				}
 			}

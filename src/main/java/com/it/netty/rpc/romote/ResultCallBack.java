@@ -17,10 +17,13 @@ import com.it.netty.rpc.message.Result;
  *
  */
 public class ResultCallBack implements Callback{
+	Thread thread;
+	private String className; 
 	private long timeout; //超时时间
-	public ResultCallBack(long timeout) {
+	public ResultCallBack(long timeout,String className) {
 		super();
 		this.timeout = timeout;
+		this.className = className;
 	}
 	private static final Logger log = LoggerFactory.getLogger(ResultCallBack.class.getSimpleName());
 	Result result;
@@ -50,8 +53,8 @@ public class ResultCallBack implements Callback{
 					return this.result;
 				}
 				else{
-					log.error(this.getClass().getSimpleName()+"请求超时");
-					return new Result(null, new RuntimeException("请求超时"), "请求超时", Const.ERROR_CODE);
+					log.error(className+"请求超时");
+					return new Result(null, new RuntimeException(className+"请求超时"), "请求超时", Const.ERROR_CODE);
 				}
 					
 			}

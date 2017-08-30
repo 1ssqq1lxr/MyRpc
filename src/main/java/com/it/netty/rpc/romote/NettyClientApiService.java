@@ -59,7 +59,7 @@ public abstract class NettyClientApiService {
 	
 	protected  Callback initCallBack(Invocation invocation) {
 		String UUID = java.util.UUID.randomUUID().toString();
-		Callback callback = new ResultCallBack(invocation.getTimeout());
+		Callback callback = new ResultCallBack(invocation.getTimeout(),invocation.getClassName()+":"+invocation.getMethodName());
 		invocation.setSerialNo(UUID);
 		callBacks.putIfAbsent(UUID, callback);
 		return callback;

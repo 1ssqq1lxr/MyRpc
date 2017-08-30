@@ -53,7 +53,7 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 		invocation.setTimeout(5000);
 		URI uri = Config.uri.getCache(classes.getName());
 		if(uri==null)
-			throw new NoFindClassException();
+			throw new NoFindClassException(classes.getName());
 		invocation.setUri(uri);
 		Callback invokeAsync = connection.invokeAsync(invocation);
 		if(invokeAsync==null){
