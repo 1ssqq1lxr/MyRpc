@@ -108,14 +108,14 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 		try {
 			ChannelManager  	channelManager =null;
 			if(this.lock.tryLock(Const.TIME_OUT, TimeUnit.MILLISECONDS)){
-
+				
 				channelManager=DeafultNettyClientRemoteConnection.channels.get(getRemoteStr(uri));
 				if(channelManager==null){
 					final ChannelFuture connect = b.connect(uri.getHost(), uri.getPort()).sync();
 					if(connect.isSuccess()){
 						ChannelManager channelManager1 = new ChannelManager(connect,uri);
 						DeafultNettyClientRemoteConnection.channels.putIfAbsent(getRemoteStr(uri), channelManager1);
-						countDownLatch.countDown();
+						uri.countDown();
 						return channelManager1;
 
 					}
@@ -125,7 +125,7 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 					return channelManager;
 
 			}
-			countDownLatch.await();
+			uri.await(0);
 			channelManager=DeafultNettyClientRemoteConnection.channels.get(getRemoteStr(uri));
 			if(channelManager!=null)
 				return channelManager;

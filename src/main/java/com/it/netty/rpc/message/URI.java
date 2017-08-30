@@ -1,17 +1,32 @@
 package com.it.netty.rpc.message;
 
 import java.io.Serializable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 
 public class URI implements Serializable {
 	/**
-	 * 序列化号
+	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	/**
+	 * 序列化号
+	 */
+	private transient long MINTIME = 3000l;
 	String serialMethod;  
 	String host;
 	int port;
 	String message;
+	private transient CountDownLatch countDownLatch = new CountDownLatch(1);
+	
+	public void await(long time) throws InterruptedException{
+		time=time==0?MINTIME:time;
+		countDownLatch.await(MINTIME, TimeUnit.MILLISECONDS);
+	}
+	public void countDown() throws InterruptedException{
+		countDownLatch.countDown();
+	}
 	
 	
 	public URI() {
