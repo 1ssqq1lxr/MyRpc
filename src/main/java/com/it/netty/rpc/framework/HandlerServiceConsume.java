@@ -62,7 +62,6 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 				final Class<?> loadClass = this.getClass().getClassLoader().loadClass(className);
 				Object proxy = RpcProxyClient.getProxy(loadClass);
 				Class<? extends Object> class1 = proxy.getClass();
-				boolean interface1 = class1.isInterface();
 				FrameworkRpcParseUtil.parse(name, SpringConsumeBean.class, element, parserContext,new ComponentCallback() {
 						@Override
 					public void onParse(RootBeanDefinition beanDefinition) {

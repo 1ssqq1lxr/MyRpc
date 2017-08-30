@@ -34,7 +34,6 @@ public class ResultCallBack implements Callback{
 				condition.signal();
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
 			log.error(this.getClass().getSimpleName()+"请求超时{}", e);
 		}
 		finally{
@@ -43,7 +42,6 @@ public class ResultCallBack implements Callback{
 	}
 	@Override
 	public Result getObject() {
-		// TODO Auto-generated method stub
 		if(this.result==null){
 			lock.lock();
 			try{	
@@ -58,7 +56,6 @@ public class ResultCallBack implements Callback{
 					
 			}
 			catch (InterruptedException e) {
-				// TODO: handle exception
 				log.error(this.getClass().getSimpleName()+"请求超时{}", e);
 			}
 			finally{

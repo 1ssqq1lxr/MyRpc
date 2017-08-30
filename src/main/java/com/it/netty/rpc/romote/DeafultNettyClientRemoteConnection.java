@@ -2,7 +2,6 @@ package com.it.netty.rpc.romote;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -60,10 +59,8 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 		return staticInitBean.clientRemoteConnection;
 	}
 	private  DeafultNettyClientRemoteConnection() {
-		//		super(port);
 		this.resource();
 		this.start();
-		// TODO Auto-generated constructor stub
 	}
 
 	public void resource(){
@@ -108,7 +105,6 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 	}
 	@Override
 	public ChannelManager doConnect(final URI uri) {
-		// TODO Auto-generated method stub
 		try {
 			ChannelManager  	channelManager =null;
 			if(this.lock.tryLock(Const.TIME_OUT, TimeUnit.MILLISECONDS)){
@@ -134,7 +130,6 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 			if(channelManager!=null)
 				return channelManager;
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			log.error(this.getClass().getName(), e);
 		}
 
@@ -147,29 +142,24 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 		@Override
 		protected void messageReceived(ChannelHandlerContext ctx, Result result)
 				throws Exception {
-			// TODO Auto-generated method stub
 			setCallBack(result);
 		}
 
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
 				throws Exception {
-			// TODO Auto-generated method stub
 			log.info(this.getClass().getName()+"channel 关闭{}：{}", ctx.channel(),cause);
 			ctx.close();
 		}
 
 		@Override
 		public void channelActive(ChannelHandlerContext ctx) throws Exception {
-			// TODO Auto-generated method stub
-
 			super.channelActive(ctx);
 		}
 
 		@Override
 		public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 			log.info(this.getClass().getName()+"channel 关闭{}", ctx.channel());
-			// TODO Auto-generated method stub
 			Channel channel = ctx.channel();
 			Set<String> keySet = DeafultNettyClientRemoteConnection.channels.keySet();
 			for(String set:keySet){
@@ -184,7 +174,6 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 		@Override
 		public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 				throws Exception {
-			// TODO Auto-generated method stub
 			IdleStateEvent e = (IdleStateEvent) evt; 
 			if(e.state().equals(IdleState.READER_IDLE) 
 					||e.state().equals(IdleState.WRITER_IDLE) 
@@ -203,9 +192,7 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 		protected void encode(ChannelHandlerContext ctx, Object invocation, ByteBuf out)
 				throws Exception {
 			if(invocation instanceof Invocation){ 
-//				ByteBuf directBuffer = Unpooled.buffer();
 				ByteBuffer byteBuffer = this.getByteBuffer((Invocation)invocation);
-//				directBuffer.writeBytes(byteBuffer);
 				out.writeBytes(byteBuffer);
 			}
 			else if(invocation instanceof HeartBeat){// 心跳

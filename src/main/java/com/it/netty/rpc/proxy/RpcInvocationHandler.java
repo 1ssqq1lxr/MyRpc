@@ -41,7 +41,6 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 	
 
 			throws Throwable {
-		Class<? extends Object> class1 = proxy.getClass();
 		Invocation invocation = new Invocation();
 		invocation.setProtocol(Config.protocol==null?"DEFAULTSERIALIZE":Config.protocol);
 		invocation.setProtocol(Config.protocol);

@@ -2,9 +2,7 @@ package com.it.netty.rpc.romote;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -26,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -51,11 +48,6 @@ import com.it.netty.rpc.service.ServiceObjectFindInteferce;
 public class DeafultNettyServerRemoteConnection extends NettyServerApiService implements InitializingBean {
 
 	ServiceObjectFindInteferce serviceObjectFindInteferce ;
-
-
-
-//	private final Lock lock = new ReentrantLock();
-//	private final Condition condition = lock.newCondition();
 	public ServiceObjectFindInteferce getServiceObjectFindInteferce() {
 		return serviceObjectFindInteferce;
 	}
@@ -74,8 +66,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 	private  final  ProtocolFactorySelector protocolFactorySelector = new DefaultProtocolFactorySelector();
 	private final int TOP_LENGTH=129>>1|34; // 数据协议头
 	private final int TOP_HEARTBEAT=129>>1|36; // 心跳协议头
-
-
 	public int getPort() {
 		return port;
 	}
@@ -135,14 +125,12 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 			sync = b.bind(port).sync();
 			log.info(this.getClass().getName()+"启动成功 ：{}",sync.channel());
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			log.error(this.getClass().getName()+"启动失败 ：{}",e);
 		}
 	}
 
 	public DeafultNettyServerRemoteConnection() {
 		resouce();
-		// TODO Auto-generated constructor stub
 	}
 
 	class OutChannelInvocationHandler extends SimpleChannelInboundHandler<Object>{
@@ -150,7 +138,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 		@Override
 		protected void messageReceived(ChannelHandlerContext ctx, Object result)
 				throws Exception {
-			// TODO Auto-generated method stub
 			if(result instanceof Invocation){
 				invoke(ctx.channel(), (Invocation)result);
 			}
@@ -163,7 +150,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
 				throws Exception {
-			// TODO Auto-generated method stub
 			log.info(this.getClass().getName()+"channel 关闭{}：{}", ctx.channel(),cause);
 			ctx.close();
 		}
@@ -171,13 +157,11 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 		@Override
 		public void channelActive(ChannelHandlerContext ctx) throws Exception {
 			log.info(this.getClass().getName()+"channel 关闭{}", ctx.channel());
-			// TODO Auto-generated method stub
 			super.channelActive(ctx);
 		}
 
 		@Override
 		public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-			// TODO Auto-generated method stub
 			Channel channel = ctx.channel();
 			Set<String> keySet = DeafultNettyClientRemoteConnection.channels.keySet();
 			for(String set:keySet){
@@ -193,8 +177,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 		@Override
 		public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 				throws Exception {
-			// TODO Auto-generated method stub
-
 			IdleStateEvent e = (IdleStateEvent) evt; 
 			if(atomicInteger.get()<6){
 				if(e.state().equals(IdleState.READER_IDLE) ){
@@ -212,15 +194,11 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 
 
 	}
-//	private final Lock locks = new ReentrantLock();
 	class ServerEncode extends MessageToByteEncoder<Object> {
-
 		protected void encode(ChannelHandlerContext ctx, Object invocation, ByteBuf out)
 				throws Exception {
 			if(invocation instanceof Result){ // 请求
-//				ByteBuf directBuffer = Unpooled.buffer();
 				ByteBuffer byteBuffer = this.getByteBuffer((Result)invocation);
-//				directBuffer.writeBytes(byteBuffer);
 				out.writeBytes(byteBuffer);
 				log.info("success  do  request {}:{}",ctx.channel(),out.hashCode());
 			}
@@ -246,7 +224,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 		}
 
 	}
-
 	class ServerDecode extends ByteToMessageDecoder{
 		@Override
 		protected void decode(ChannelHandlerContext ctx, ByteBuf in,
@@ -300,14 +277,11 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 	private final Lock lock1 = new ReentrantLock();
 	@Override
 	public Runnable getSubmitTask(final Channel channel,final Invocation invocation) {
-		// TODO Auto-generated method stub
 		return new Runnable() {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				if(invocation!=null){
-					Class<?> interfaceClass = invocation.getInterfaceClass();
 					Object newInstance;
 					Result result=null;
 					try {
@@ -318,13 +292,12 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 						result.setProtocol(invocation.getProtocol());
 						result.setSerialNo(invocation.getSerialNo());
 						channel.writeAndFlush(result);
-						//						log.info("success  do  request {}:{}",channel,invocation);
 					} catch (Exception e) {
 						result = new Result(null,e,"没找到service", Const.ERROR_CODE);
 						result.setProtocol(invocation.getProtocol());
 						result.setSerialNo(invocation.getSerialNo());
 						channel.writeAndFlush(new Result(result));
-					}// 从spring 容器中 获取bean
+					}
 				}
 			}
 		};
@@ -332,12 +305,10 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// TODO Auto-generated method stub
 		this.start();
 	}
 
 	public void destroy() throws Exception {
-		// TODO Auto-generated method stub
 		if(sync!=null){
 			sync.channel().close();
 		}

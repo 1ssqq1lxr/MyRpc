@@ -58,7 +58,6 @@ public abstract class NettyClientApiService {
 	};
 	
 	protected  Callback initCallBack(Invocation invocation) {
-		// TODO Auto-generated method stub
 		String UUID = java.util.UUID.randomUUID().toString();
 		Callback callback = new ResultCallBack(invocation.getTimeout());
 		invocation.setSerialNo(UUID);
@@ -66,7 +65,6 @@ public abstract class NettyClientApiService {
 		return callback;
 	}
 	protected  void setCallBack(Result result) {
-		// TODO Auto-generated method stub
 		if(result!=null){
 			String serialNo = result.getSerialNo();
 			Callback callback = callBacks.get(serialNo);

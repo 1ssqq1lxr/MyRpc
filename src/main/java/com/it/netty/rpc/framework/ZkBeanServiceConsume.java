@@ -4,7 +4,6 @@ import org.springframework.beans.factory.InitializingBean;
 
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.it.netty.rpc.Config;
-import com.it.netty.rpc.message.Const;
 import com.it.netty.rpc.zookeeper.ZookeeperService;
 
 
