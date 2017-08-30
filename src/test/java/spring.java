@@ -9,6 +9,5 @@ public class spring {
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("NewFile.xml");
 //		ZkBeanService bean = (ZkBeanService) applicationContext.getBean("ss");
 //		applicationContext.close();
-		@Autowired
 	}
 }

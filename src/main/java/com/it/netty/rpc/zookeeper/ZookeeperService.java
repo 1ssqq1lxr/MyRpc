@@ -83,7 +83,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	}
 	@Override
 	public void registNode(String path, URI uri,CreateMode mode,boolean is) {
-		// TODO Auto-generated method stub
 		path = path.startsWith("/")?path:"/"+path;
 		try {
 			if(is){
@@ -93,7 +92,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 				curatorFramework.create().withMode(mode).forPath(path, serialObject(uri));
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			Log.error(this.getClass().getName()+"创建节点失败", e);
 		}
 
@@ -102,21 +100,18 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	@Override
 	public void removeNode(String path,boolean is) {
 		path = path.startsWith("/")?path:"/"+path;
-		// TODO Auto-generated method stub
 		try {
 			if(is)
 				curatorFramework.delete().deletingChildrenIfNeeded().forPath(path);
 			else
 				curatorFramework.delete().forPath(path);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			Log.error(this.getClass().getName()+"删除节点失败", e);
 		}
 	}
 	@Override
 	public boolean exists(String path) {
 		path = path.startsWith("/")?path:"/"+path;
-		// TODO Auto-generated method stub
 		Stat forPath;
 		try {
 			forPath = curatorFramework.checkExists().forPath(path);
@@ -125,7 +120,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 			else
 				return  true;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			Log.error(this.getClass().getName()+"检查节点是否存在失败", e);
 		}
 		return false;
@@ -134,7 +128,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	@Override
 	public URI getData(String path) {
 		path = path.startsWith("/")?path:"/"+path;
-		// TODO Auto-generated method stub
 		if(exists(path)){
 			byte[] forPath;
 			try {
@@ -143,7 +136,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 					return factory.decode(URI.class, forPath);
 				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				Log.error(this.getClass().getName()+"获取节点数据失败", e);
 			}
 		}
@@ -165,7 +157,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 			}
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return list;
@@ -255,7 +246,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	}
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// TODO Auto-generated method stub
 		this.baseZookeeperClient = new ZookeeperClient();
 		this.curatorFramework=baseZookeeperClient.init(path, zkAddress, certificate);
 		this.eventHandler=new NodeEventHandler() {
@@ -264,19 +254,16 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 			}
 			@Override
 			public void removeNode(String path) {
-				// TODO Auto-generated method stub
 				Config.uri.remove(path);
 			}
 			@Override
 			public void addNode(String path,URI uri) {
-				// TODO Auto-generated method stub
 				Config.uri.addCache(path, uri);;
 			}
 		};
 	}
 	@Override
 	public void destroy() throws Exception {
-		// TODO Auto-generated method stub
 		this.closeServer();
 	}
 

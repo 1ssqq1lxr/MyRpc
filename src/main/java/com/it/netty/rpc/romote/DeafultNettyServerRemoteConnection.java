@@ -2,6 +2,7 @@ package com.it.netty.rpc.romote;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -250,11 +251,11 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 		@Override
 		protected void decode(ChannelHandlerContext ctx, ByteBuf in,
 				List<Object> out) throws Exception {
-			if(in.readableBytes()<4){
-				return;
-			}
 			int beginReader; 
 			int header; 
+		    if (in.readableBytes() < 12) {  
+                return;  
+            }
 			while (true) {  
 				beginReader = in.readerIndex();  
 				in.markReaderIndex();  
@@ -265,9 +266,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 				}
 				in.resetReaderIndex();  
 				in.readByte();  
-				if (in.readableBytes() < 8) {  
-					return;  
-				}  
 			} 
 			if(header==TOP_LENGTH){ // 处理消息
 				int protocol = in.readInt();
@@ -279,7 +277,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 				byte[] bytes = new byte[bodylength];
 				ProtocolFactory select = protocolFactorySelector.select(protocol);
 				in.readBytes(bytes);
-				in.discardReadBytes();
 				Invocation invocation = select.decode(Invocation.class, bytes);
 				out.add(invocation);
 			}
@@ -293,6 +290,7 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 				byte[] bytes = new byte[bodylength];
 				ProtocolFactory select = protocolFactorySelector.select(protocol);
 				in.readBytes(bytes);
+				in.discardReadBytes();
 				HeartBeat heartBeat = select.decode(HeartBeat.class, bytes);
 				out.add(heartBeat);
 			}

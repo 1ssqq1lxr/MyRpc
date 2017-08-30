@@ -241,6 +241,9 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 		protected void  decode(ChannelHandlerContext ctx, ByteBuf in,
 				List<Object> out) throws Exception {
 		    int beginReader;  
+		    if (in.readableBytes() < 12) {  
+                return;  
+            }
 	        while (true) {  
 	                beginReader = in.readerIndex();  
 	                in.markReaderIndex();  
@@ -250,10 +253,7 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 	                    break;  
 	                }
 	                in.resetReaderIndex();  
-	                in.readByte();  
-	                if (in.readableBytes() < 8) {  
-	                    return;  
-	                }  
+	                in.readByte();    
 	         } 
 			int protocol = in.readInt();
 			int bodylength = in.readInt();
@@ -266,7 +266,6 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 			in.readBytes(bytes);
 			Result decode = select.decode(Result.class, bytes);
 			log.info("success  do  request {}:{}",ClinetDecode.this,decode);
-			in.discardReadBytes();
 			out.add(decode);
 		}
 	}

@@ -9,6 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.it.netty.rpc.exception.ClientConnectionException;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.Result;
 import com.it.netty.rpc.message.URI;
@@ -33,14 +34,15 @@ public abstract class NettyClientApiService {
 	}
 	public   Callback invokeAsync(Invocation invocation){
 		URI uri = invocation.getUri();
+		String remoteStr = getRemoteStr(uri);
 		if(invocation==null || uri==null){
-			throw new NullPointerException();
+			throw new NullPointerException(invocation.toString());
 		}
-		ChannelManager channelManager = channels.get(getRemoteStr(uri));
+		ChannelManager channelManager = channels.get(remoteStr);
 		if(channelManager==null){
 			channelManager =doConnect(invocation.getUri()); // 连接服务器
 			if(channelManager==null||!channelManager.isAvailable()){ // 可用的
-				return null;
+					throw new ClientConnectionException(remoteStr);
 			}
 		}
 		ChannelFuture channelFuture = channelManager.getChannelFuture();
@@ -49,7 +51,6 @@ public abstract class NettyClientApiService {
 	}
 	public abstract ChannelManager doConnect(URI uri);
 	
-	private final Lock locks = new ReentrantLock();
 	protected   Callback sendMessage(ChannelFuture channelFuture,Invocation invocation){
 		Callback initCallBack = initCallBack(invocation);
 		channelFuture.channel().writeAndFlush(invocation);
