@@ -16,10 +16,10 @@ public class URI implements Serializable {
 	private String host;
 	private 	int port;
 	private String message;
-	private long timeout = 3000L;
+	private Long timeout = 3000L;
 	
 	public URI(String serialMethod, String host, int port, String message,
-			long timeout) {
+			Long timeout) {
 		super();
 		this.serialMethod = serialMethod;
 		this.host = host;
@@ -38,10 +38,10 @@ public class URI implements Serializable {
 	}
 	
 	
-	public long getTimeout() {
+	public Long getTimeout() {
 		return timeout;
 	}
-	public void setTimeout(long timeout) {
+	public void setTimeout(Long timeout) {
 		this.timeout = timeout;
 	}
 	public URI() {
@@ -81,7 +81,9 @@ public class URI implements Serializable {
 	@Override
 	public String toString() {
 		return "URI [serialMethod=" + serialMethod + ", host=" + host
-				+ ", port=" + port + ", message=" + message + "]";
+				+ ", port=" + port + ", message=" + message + ", timeout="
+				+ timeout + "]";
 	}
+	
 		
 }

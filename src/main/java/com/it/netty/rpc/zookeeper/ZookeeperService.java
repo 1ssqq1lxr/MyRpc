@@ -22,6 +22,7 @@ import org.springframework.beans.factory.InitializingBean;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.esotericsoftware.minlog.Log;
 import com.it.netty.rpc.Config;
+import com.it.netty.rpc.framework.HandlerService;
 import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.protocol.ProtocolFactory;
 import com.it.netty.rpc.protocol.jackson.JacksonProtocolFactory;
@@ -219,17 +220,18 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	}
 
 	public void  initRegist(ConcurrentHashSet<String> registClassNames)throws Exception{
-
 		Config.rpcPort = this.port;
 		if(CollectionUtils.isNotEmpty(registClassNames)){ //注册服务
 			InetAddress localHost = Inet4Address.getLocalHost();
 			String hostAddress = localHost.getHostAddress();
-			URI uri= new URI(null, hostAddress, this.port, null);
+		
 			for(String className:registClassNames){
+				Long timeout = HandlerService.timeouts.get(className)==null?5000L:HandlerService.timeouts.get(className);
 				Class<?> loadClass = this.getClass().getClassLoader().loadClass(className);
 				if(!loadClass.isInterface()){
 					className = loadClass.getInterfaces()[0].getName();
 				}
+				URI uri= new URI(null, hostAddress, this.port,null,timeout);
 				registNode(className, uri, CreateMode.EPHEMERAL, false);
 				logger.info( "success regist server {} :{} ", className,uri);  
 			}

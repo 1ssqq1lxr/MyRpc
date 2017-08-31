@@ -1,6 +1,5 @@
 package com.it.netty.rpc.framework;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
@@ -23,14 +22,13 @@ import com.it.netty.rpc.zookeeper.ZookeeperService;
 
 public class HandlerService extends AbstractSingleBeanDefinitionParser {
 	protected Logger logger = LoggerFactory.getLogger(getClass());
-	ConcurrentHashSet<String> registClassNames  = new ConcurrentHashSet<>();
+	public  final ConcurrentHashSet<String> registClassNames  = new ConcurrentHashSet<>();
 	private final String DEFAULT_NETTY_SERVICEOBJECTFINDINTEFERCE="serviceObjectFindInteferce";
 	private final String DEFAULT_NETTY_NAME="default_server_tcp";
 	private final String DEFAULT_ZOOKEEPER_NAME="default_server_zookeeper";
 	private final String DEFAULT_ZOOKEEPER_PATH="rpc";
 	private final String DEFAULT_TIMEOUT="timeout";
-	private static ConcurrentHashMap<String, String> timeouts = new ConcurrentHashMap<String, String>();
-	
+	public static final ConcurrentHashMap<String, Long> timeouts = new ConcurrentHashMap<String, Long>();
 	@Override
 	protected Class<?> getBeanClass(Element element) {
 		// TODO Auto-generated method stub
@@ -43,7 +41,7 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 			BeanDefinitionBuilder builder) {
 		// TODO Auto-generated method stub
 		try {
-			FrameworkRpcParseUtil.parse(DEFAULT_NETTY_SERVICEOBJECTFINDINTEFERCE, ServiceObjectFind.class, element, parserContext);
+ 			FrameworkRpcParseUtil.parse(DEFAULT_NETTY_SERVICEOBJECTFINDINTEFERCE, ServiceObjectFind.class, element, parserContext);
 			FrameworkRpcParseUtil.parse(DEFAULT_NETTY_NAME, DeafultNettyServerRemoteConnection.class, element, parserContext,new ComponentCallback() {
 				@Override
 				public void onParse(RootBeanDefinition beanDefinition) {
@@ -69,7 +67,8 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 				String attribute = item.getAttribute("class");
 				String timeout=item.getAttribute(DEFAULT_TIMEOUT);
 				registClassNames.add(attribute);
-				timeouts.putIfAbsent(attribute, timeout);
+				if(timeout!="" && timeout!=null)
+				HandlerService.timeouts.putIfAbsent(attribute, Long.parseLong(timeout));
 			}
 			builder.addPropertyValue("registClassNames", registClassNames);
 			builder.addPropertyValue("zookeeperService", new RuntimeBeanReference(DEFAULT_ZOOKEEPER_NAME) );

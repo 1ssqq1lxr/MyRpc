@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.it.netty.rpc.Config;
 import com.it.netty.rpc.exception.NoFindClassException;
+import com.it.netty.rpc.framework.HandlerService;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.URI;
 
@@ -27,7 +28,6 @@ public class ParameterFilter implements AbatractParameterFilter<Invocation>{
 		invocation.setClassName(class1.getName());
 		invocation.setInterfaceClass(class1);
 		invocation.setSerialNo(UUID.randomUUID().toString());
-		
 		invocation.setParamsType(method.getParameterTypes());
 		invocation.setMethodName(method.getName());
 		invocation.setTimeout(5000);
