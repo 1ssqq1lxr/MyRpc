@@ -11,6 +11,7 @@ public class TestClient {
 	static DeafultNettyClientRemoteConnection s=DeafultNettyClientRemoteConnection.newInstance();
 	
 	public static void main(String[] args) {
+		Thread thread;
 //		Invocation invocation = new Invocation();
 //		invocation.setProtocol("HESSIAN");
 //		invocation.setTimeout(2000);

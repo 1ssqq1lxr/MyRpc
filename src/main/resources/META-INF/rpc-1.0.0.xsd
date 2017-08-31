@@ -20,6 +20,14 @@
 	</xsd:element>
 	<xsd:complexType name="serviceRegeist">
 		<xsd:attribute name="class" type="xsd:string" use="required"/>
+		<xsd:attribute name="timeout"  >
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:int">
+						<xsd:maxInclusive value="5000"></xsd:maxInclusive>
+						<xsd:minInclusive value="2000"></xsd:minInclusive>
+					</xsd:restriction>
+				</xsd:simpleType>
+		</xsd:attribute>
 	</xsd:complexType>
 	
 </xsd:schema>

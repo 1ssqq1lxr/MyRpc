@@ -8,6 +8,6 @@
         http://www.lxr.com/schema/consume 
         http://www.lxr.com/schema/consume/rpc-consume-1.0.0.xsd">  
         <rpc:serviceBind id="123"  zkAddress="127.0.0.1:12181" protocol="HESSIAN">
-        			<rpc:serviceConsume name="personService" class="com.it.netty.rpc.service.PersonService"></rpc:serviceConsume>
+        			<rpc:serviceConsume name="personService" interface="com.it.netty.rpc.service.PersonService" ></rpc:serviceConsume>
         </rpc:serviceBind>
 </beans>  

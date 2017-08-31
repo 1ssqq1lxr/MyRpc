@@ -226,6 +226,10 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 			String hostAddress = localHost.getHostAddress();
 			URI uri= new URI(null, hostAddress, this.port, null);
 			for(String className:registClassNames){
+				Class<?> loadClass = this.getClass().getClassLoader().loadClass(className);
+				if(!loadClass.isInterface()){
+					className = loadClass.getInterfaces()[0].getName();
+				}
 				registNode(className, uri, CreateMode.EPHEMERAL, false);
 				logger.info( "success regist server {} :{} ", className,uri);  
 			}
@@ -233,6 +237,7 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	}
 	public void initServer(ConcurrentHashSet<String> getClassNames) throws Exception{
 		if(CollectionUtils.isNotEmpty(getClassNames)){ //获取服务信息
+	
 			for(String className:getClassNames){
 				URI data = getData(className);
 				if(data!=null){

@@ -26,7 +26,7 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	private final String DEFAULT_ZOOKEEPER_SERVICECONSUME="rpc:serviceConsume";
 	private final String DEFAULT_ZOOKEEPER_CERTIFICATE="certificate";
 	private final String DEFAULT_ZOOKEEPER_ZK_PATH="path";
-	private final String DEFAULT_ZOOKEEPER_CLASS="class";
+	private final String DEFAULT_ZOOKEEPER_CLASS="interface";
 	private final String DEFAULT_ZOOKEEPER_SERVER_NAME="name";
 	private  ConcurrentHashSet<String> getClassNames  = new ConcurrentHashSet<>();
 	@Override

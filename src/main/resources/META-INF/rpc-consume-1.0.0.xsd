@@ -29,17 +29,8 @@
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:complexType name="serviceConsume">
-		<xsd:attribute name="class" type="xsd:string" use="required" />
-			<xsd:attribute name="timeout" type="xsd:int" >
-		<!-- 		<xsd:simpleType>
-					<xsd:restriction base="xsd:int">
-						<xsd:maxInclusive value="5000"></xsd:maxInclusive>
-						<xsd:minInclusive value="2000"></xsd:minInclusive>
-					</xsd:restriction>
-				</xsd:simpleType> -->
-			</xsd:attribute>
+		<xsd:attribute name="interface" type="xsd:string" use="required" />
 			<xsd:attribute name="name" type="xsd:string" use="required" />
-			
 	</xsd:complexType>
 
 
