@@ -12,9 +12,9 @@ import org.w3c.dom.NodeList;
 
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.it.netty.rpc.framework.FrameworkRpcParseUtil.ComponentCallback;
-import com.it.netty.rpc.proxy.RpcProxyClient;
 import com.it.netty.rpc.zookeeper.Certificate;
 import com.it.netty.rpc.zookeeper.ZookeeperService;
+import com.it.netty.rpc.filter.ParameterFilter;
 
 
 public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
@@ -28,6 +28,7 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	private final String DEFAULT_ZOOKEEPER_ZK_PATH="path";
 	private final String DEFAULT_ZOOKEEPER_CLASS="interface";
 	private final String DEFAULT_ZOOKEEPER_SERVER_NAME="name";
+	private final String DEFAULT_PARAMETER_FILTER="filter";
 	private  ConcurrentHashSet<String> getClassNames  = new ConcurrentHashSet<>();
 	@Override
 	protected Class<?> getBeanClass(Element element) {
@@ -40,8 +41,8 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	protected void doParse(final Element element, ParserContext parserContext,
 			BeanDefinitionBuilder builder) {
 		// TODO Auto-generated method stub
-		String address = element.getAttribute(DEFAULT_ZOOKEEPER_ZKADDRESS);
-		String protocol = element.getAttribute(DEFAULT_ZOOKEEPER_PROTOCOL);
+		final String address = element.getAttribute(DEFAULT_ZOOKEEPER_ZKADDRESS);
+		final String protocol = element.getAttribute(DEFAULT_ZOOKEEPER_PROTOCOL)==null?"HESSIAN":element.getAttribute(DEFAULT_ZOOKEEPER_PROTOCOL);
 		builder.addPropertyValue(DEFAULT_ZOOKEEPER_ZKADDRESS, address);
 		builder.addPropertyValue(DEFAULT_ZOOKEEPER_PROTOCOL, protocol);
 		NodeList serviceRegeist = element.getElementsByTagName(DEFAULT_ZOOKEEPER_SERVICECONSUME);
@@ -54,19 +55,24 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 				beanDefinition.getPropertyValues().addPropertyValue(DEFAULT_ZOOKEEPER_ZK_PATH,DEFAULT_ZOOKEEPER_PATH);
 			}
 		});
+		FrameworkRpcParseUtil.parse(DEFAULT_PARAMETER_FILTER, ParameterFilter.class,element, parserContext,new ComponentCallback() {
+			@Override
+			public void onParse(RootBeanDefinition beanDefinition) {
+				// TODO Auto-generated method stub
+				beanDefinition.getPropertyValues().addPropertyValue("protocol",protocol);
+			}});
 		for(int i=0;i<serviceRegeist.getLength();i++){ // 获取服务信息
 			Element item = (Element) serviceRegeist.item(i);
 			final String className = item.getAttribute(DEFAULT_ZOOKEEPER_CLASS);
 			String name = item.getAttribute(DEFAULT_ZOOKEEPER_SERVER_NAME);
 			try {
 				final Class<?> loadClass = this.getClass().getClassLoader().loadClass(className);
-				Object proxy = RpcProxyClient.getProxy(loadClass);
-				Class<? extends Object> class1 = proxy.getClass();
 				FrameworkRpcParseUtil.parse(name, SpringConsumeBean.class, element, parserContext,new ComponentCallback() {
 						@Override
 					public void onParse(RootBeanDefinition beanDefinition) {
 						beanDefinition.getPropertyValues().addPropertyValue("classt",loadClass);
 						beanDefinition.getPropertyValues().addPropertyValue("className",className);
+						beanDefinition.getPropertyValues().addPropertyValue("filter",new RuntimeBeanReference(DEFAULT_PARAMETER_FILTER));
 					}
 				});
 				getClassNames.add(className);
@@ -78,5 +84,5 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 		builder.addPropertyValue("getClassNames", getClassNames);
 		builder.addPropertyValue("zookeeperService", new RuntimeBeanReference(DEFAULT_ZOOKEEPER_NAME));
 	}
-	
+
 }

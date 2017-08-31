@@ -6,6 +6,7 @@ import java.lang.reflect.Proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.it.netty.rpc.filter.AbatractParameterFilter;
 import com.it.netty.rpc.message.Const;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.Resolver;
@@ -19,9 +20,9 @@ import com.it.netty.rpc.message.Result;
 public class RpcProxyClient {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 	@SuppressWarnings("unchecked")
-	public  static <T>  T getProxy( Class<T> classes) {
+	public  static <T>  T getProxy( Class<T> classes,AbatractParameterFilter filter) {
 		// TODO Auto-generated method stub
-		T newProxyInstance = (T) Proxy.newProxyInstance(classes.getClassLoader(), new Class<?>[]{classes}, new RpcInvocationHandler<T>(classes));
+		T newProxyInstance = (T) Proxy.newProxyInstance(classes.getClassLoader(), new Class<?>[]{classes}, new RpcInvocationHandler<T>(classes,filter));
 		return (T) newProxyInstance;
 	}
 	public  static  Resolver getInvocation(final Object t) {

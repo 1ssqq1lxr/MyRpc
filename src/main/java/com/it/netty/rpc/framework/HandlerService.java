@@ -1,5 +1,8 @@
 package com.it.netty.rpc.framework;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -25,6 +28,9 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 	private final String DEFAULT_NETTY_NAME="default_server_tcp";
 	private final String DEFAULT_ZOOKEEPER_NAME="default_server_zookeeper";
 	private final String DEFAULT_ZOOKEEPER_PATH="rpc";
+	private final String DEFAULT_TIMEOUT="timeout";
+	private static ConcurrentHashMap<String, String> timeouts = new ConcurrentHashMap<String, String>();
+	
 	@Override
 	protected Class<?> getBeanClass(Element element) {
 		// TODO Auto-generated method stub
@@ -57,14 +63,16 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 					beanDefinition.getPropertyValues().addPropertyValue("path",DEFAULT_ZOOKEEPER_PATH);
 					beanDefinition.getPropertyValues().addPropertyValue("path",DEFAULT_ZOOKEEPER_PATH);
 				}
-			}); // 开启tcp服务端
+			}); 
 			for(int i=0;i<serviceRegeist.getLength();i++){ // 注册服务
 				Element item = (Element) serviceRegeist.item(i);
-				registClassNames.add(item.getAttribute("class"));
+				String attribute = item.getAttribute("class");
+				String timeout=item.getAttribute(DEFAULT_TIMEOUT);
+				registClassNames.add(attribute);
+				timeouts.putIfAbsent(attribute, timeout);
 			}
 			builder.addPropertyValue("registClassNames", registClassNames);
 			builder.addPropertyValue("zookeeperService", new RuntimeBeanReference(DEFAULT_ZOOKEEPER_NAME) );
-			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error(this.getClass().getName()+"error regeist service {}" +e);

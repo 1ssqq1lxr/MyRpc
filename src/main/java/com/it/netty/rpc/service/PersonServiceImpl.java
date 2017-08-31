@@ -15,9 +15,9 @@ public class PersonServiceImpl implements PersonService{
 	}
 
 	@Override
-	public void setName(String name) {
+	public String setName(String name) {
 		// TODO Auto-generated method stub
-		
+		return name;
 	}
 
 }

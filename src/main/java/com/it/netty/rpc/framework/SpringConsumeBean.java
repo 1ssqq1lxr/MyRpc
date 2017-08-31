@@ -6,6 +6,9 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.it.netty.rpc.filter.AbatractParameterFilter;
+import com.it.netty.rpc.filter.Filter;
+import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.proxy.RpcProxyClient;
 
 public class SpringConsumeBean implements FactoryBean, InitializingBean, DisposableBean {
@@ -29,14 +32,25 @@ public class SpringConsumeBean implements FactoryBean, InitializingBean, Disposa
 	public SpringConsumeBean() {
 		super();
 	}
+	private AbatractParameterFilter<Invocation> filter;
+	private Class<?> classt;
+	private String className;
+	private Object object ;
+	
+	
+	public AbatractParameterFilter<Invocation> getFilter() {
+		return filter;
+	}
 
-	Class<?> classt;
-	String className;
-	Object object ;
-	public SpringConsumeBean(Class<?> classt, String className) {
+	public void setFilter(AbatractParameterFilter<Invocation> filter) {
+		this.filter = filter;
+	}
+
+	public SpringConsumeBean(Class<?> classt, String className,AbatractParameterFilter<Invocation> filter) {
 		super();
 		this.classt = classt;
 		this.className = className;
+		this.filter=filter;
 	}
 
 	private ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
@@ -71,7 +85,7 @@ public class SpringConsumeBean implements FactoryBean, InitializingBean, Disposa
 		// TODO Auto-generated method stub
 		object=map.get(className);		
 		if(object==null){
-			object = RpcProxyClient.getProxy(classt);
+			object = RpcProxyClient.getProxy(classt,filter);
 		}
 	}
 

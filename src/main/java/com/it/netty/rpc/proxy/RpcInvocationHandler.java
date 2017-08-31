@@ -2,18 +2,15 @@ package com.it.netty.rpc.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.it.netty.rpc.Config;
-import com.it.netty.rpc.exception.NoFindClassException;
+import com.it.netty.rpc.filter.AbatractParameterFilter;
 import com.it.netty.rpc.message.Const;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.Result;
-import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.romote.Callback;
 import com.it.netty.rpc.romote.DeafultNettyClientRemoteConnection;
 /**
@@ -23,38 +20,25 @@ import com.it.netty.rpc.romote.DeafultNettyClientRemoteConnection;
  * @param <T>
  */
 public class RpcInvocationHandler<T> implements InvocationHandler{
+	
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
+	
 
 	private static ConcurrentHashMap<Object, Invocation>  map = new ConcurrentHashMap<>();
 	
 	private DeafultNettyClientRemoteConnection connection = DeafultNettyClientRemoteConnection.newInstance();
 
 
-	Class<T> classes;
-
-	public RpcInvocationHandler(Class<T> classes) {
+	private Class<T> classes;
+	private AbatractParameterFilter<Invocation> filter;
+	public RpcInvocationHandler(Class<T> classes,AbatractParameterFilter filter) {
 		super();
 		this.classes = classes;
+		this.filter=filter;
 	}
-
 	public Object invoke(Object proxy, Method method, Object[] args)
-	
-
 			throws Throwable {
-		Invocation invocation = new Invocation();
-		invocation.setProtocol(Config.protocol==null?"DEFAULTSERIALIZE":Config.protocol);
-		invocation.setProtocol(Config.protocol);
-		invocation.setClassName(classes.getName());
-		invocation.setInterfaceClass(classes);
-		invocation.setSerialNo(UUID.randomUUID().toString());
-		invocation.setParams(args);
-		invocation.setParamsType(method.getParameterTypes());
-		invocation.setMethodName(method.getName());
-		invocation.setTimeout(5000);
-		URI uri = Config.uri.getCache(classes.getName());
-		if(uri==null)
-			throw new NoFindClassException(classes.getName());
-		invocation.setUri(uri);
+		Invocation invocation = filter.doParameter(method,classes,args);
 		Callback invokeAsync = connection.invokeAsync(invocation);
 		if(invokeAsync==null){
 			logger.info(this.getClass().getName()+"连接远程服务器失败{}", invocation);
