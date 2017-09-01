@@ -52,10 +52,12 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 	private final int TOP_LENGTH=129>>1|34; // 数据协议头
 	private final int TOP_HEARTBEAT=129>>1|36; // 心跳协议头
 	private  final  CountDownLatch countDownLatch = new CountDownLatch(1);
+	private static int threads;
 	static class staticInitBean{
 		public static DeafultNettyClientRemoteConnection clientRemoteConnection = new DeafultNettyClientRemoteConnection();
 	}
-	public static DeafultNettyClientRemoteConnection newInstance(){
+	public static DeafultNettyClientRemoteConnection newInstance(int threads){
+		DeafultNettyClientRemoteConnection.threads=threads;
 		return staticInitBean.clientRemoteConnection;
 	}
 	private  DeafultNettyClientRemoteConnection() {
@@ -64,14 +66,14 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 	}
 
 	public void resource(){
-		this.ClientdefLoopGroup = new DefaultEventLoopGroup(Runtime.getRuntime().availableProcessors()*200, new ThreadFactory() {
+		this.ClientdefLoopGroup = new DefaultEventLoopGroup(threads, new ThreadFactory() {
 			private AtomicInteger index = new AtomicInteger(0);
 
 			public Thread newThread(Runnable r) {
 				return new Thread(r, "sxsDEFAULTEVENTLOOPGROUP_" + index.incrementAndGet());
 			}
 		});
-		this.clientGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors()*200, new ThreadFactory() {
+		this.clientGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors()*2, new ThreadFactory() {
 			private AtomicInteger index = new AtomicInteger(0);
 
 			public Thread newThread(Runnable r) {

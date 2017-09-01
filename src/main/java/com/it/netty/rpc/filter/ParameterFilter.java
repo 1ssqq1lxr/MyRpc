@@ -12,6 +12,14 @@ import com.it.netty.rpc.message.URI;
 public class ParameterFilter implements AbatractParameterFilter<Invocation>{
 	private String protocol;
 	
+	private int clientGroup_thread_nums ;
+	
+	public int getClientGroup_thread_nums() {
+		return clientGroup_thread_nums;
+	}
+	public void setClientGroup_thread_nums(int clientGroup_thread_nums) {
+		this.clientGroup_thread_nums = clientGroup_thread_nums;
+	}
 	public String getProtocol() {
 		return protocol;
 	}

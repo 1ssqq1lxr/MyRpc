@@ -16,6 +16,7 @@
 			</xsd:sequence>
 			<xsd:attribute name="id" type="xsd:string" use="required" />
 			<xsd:attribute name="zkAddress" type="xsd:string" use="required"  />
+			<xsd:attribute name="clientGroup-thread-nums" type="xsd:int" default="50" use="optional"  />
 			<xsd:attribute name="protocol"  use="optional"
 				default="HESSIAN">
 				<xsd:simpleType>

@@ -29,6 +29,8 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	private final String DEFAULT_ZOOKEEPER_CLASS="interface";
 	private final String DEFAULT_ZOOKEEPER_SERVER_NAME="name";
 	private final String DEFAULT_PARAMETER_FILTER="filter";
+	private final String DEFAULT_CLIENTGROUP_THREAD_NUMS = "clientGroup-thread-nums";
+	
 	private  ConcurrentHashSet<String> getClassNames  = new ConcurrentHashSet<>();
 	@Override
 	protected Class<?> getBeanClass(Element element) {
@@ -42,7 +44,8 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 			BeanDefinitionBuilder builder) {
 		// TODO Auto-generated method stub
 		final String address = element.getAttribute(DEFAULT_ZOOKEEPER_ZKADDRESS);
-		final String protocol = element.getAttribute(DEFAULT_ZOOKEEPER_PROTOCOL)==null?"HESSIAN":element.getAttribute(DEFAULT_ZOOKEEPER_PROTOCOL);
+		final String protocol = element.getAttribute(DEFAULT_ZOOKEEPER_PROTOCOL);
+		final String clientGroup_thread_nums = element.getAttribute(DEFAULT_CLIENTGROUP_THREAD_NUMS);
 		builder.addPropertyValue(DEFAULT_ZOOKEEPER_ZKADDRESS, address);
 		builder.addPropertyValue(DEFAULT_ZOOKEEPER_PROTOCOL, protocol);
 		NodeList serviceRegeist = element.getElementsByTagName(DEFAULT_ZOOKEEPER_SERVICECONSUME);
@@ -60,6 +63,7 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 			public void onParse(RootBeanDefinition beanDefinition) {
 				// TODO Auto-generated method stub
 				beanDefinition.getPropertyValues().addPropertyValue("protocol",protocol);
+				beanDefinition.getPropertyValues().addPropertyValue("clientGroup_thread_nums",clientGroup_thread_nums);
 			}});
 		for(int i=0;i<serviceRegeist.getLength();i++){ // 获取服务信息
 			Element item = (Element) serviceRegeist.item(i);

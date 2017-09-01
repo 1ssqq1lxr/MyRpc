@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.it.netty.rpc.filter.AbatractParameterFilter;
+import com.it.netty.rpc.filter.ParameterFilter;
 import com.it.netty.rpc.message.Const;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.Result;
@@ -26,20 +27,20 @@ public class RpcInvocationHandler<T> implements InvocationHandler{
 
 	private static ConcurrentHashMap<Object, Invocation>  map = new ConcurrentHashMap<>();
 	
-	private DeafultNettyClientRemoteConnection connection = DeafultNettyClientRemoteConnection.newInstance();
 
 
 	private Class<T> classes;
 	private AbatractParameterFilter<Invocation> filter;
-	public RpcInvocationHandler(Class<T> classes,AbatractParameterFilter filter) {
+	public RpcInvocationHandler(Class<T> classes,AbatractParameterFilter<Invocation> filter) {
 		super();
 		this.classes = classes;
 		this.filter=filter;
 	}
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
+		ParameterFilter p = (ParameterFilter)filter;
 		Invocation invocation = filter.doParameter(method,classes,args);
-		Callback invokeAsync = connection.invokeAsync(invocation);
+		Callback invokeAsync = DeafultNettyClientRemoteConnection.newInstance(p.getClientGroup_thread_nums()).invokeAsync(invocation);
 		if(invokeAsync==null){
 			logger.info(this.getClass().getName()+"连接远程服务器失败{}", invocation);
 			return null;

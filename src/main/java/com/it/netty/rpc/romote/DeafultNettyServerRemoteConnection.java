@@ -24,13 +24,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.InitializingBean;
 
 import com.it.netty.rpc.heart.HeartBeat;
-import com.it.netty.rpc.message.Const;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.Resolver;
 import com.it.netty.rpc.message.Result;
@@ -75,7 +72,7 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 	}
 
 	public void resouce(){
-		ServerdefLoopGroup = new DefaultEventLoopGroup(Runtime.getRuntime().availableProcessors() * 200, new ThreadFactory() {
+		ServerdefLoopGroup = new DefaultEventLoopGroup(Runtime.getRuntime().availableProcessors() * 2, new ThreadFactory() {
 			private AtomicInteger index = new AtomicInteger(0);
 
 			public Thread newThread(Runnable r) {
@@ -89,7 +86,7 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 				return new Thread(r, "BOSS_" + index.incrementAndGet());
 			}
 		});
-		workGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() * 200, new ThreadFactory() {
+		workGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() * 2, new ThreadFactory() {
 			private AtomicInteger index = new AtomicInteger(0);
 
 			public Thread newThread(Runnable r) {
@@ -273,7 +270,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 
 		}
 	}
-	private final Lock lock1 = new ReentrantLock();
 	@Override
 	public Runnable getSubmitTask(final Channel channel,final Invocation invocation) {
 		return new Runnable() {
