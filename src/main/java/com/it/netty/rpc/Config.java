@@ -5,7 +5,7 @@ import com.it.netty.rpc.cache.CacheFactory;
 import com.it.netty.rpc.message.URI;
 
 public class Config {
-		public  static Cache<String,URI>  uri = new CacheFactory<>(); // channel
+//		public  static Cache<String,URI>  uri = new CacheFactory<>(); // channel
 		
 		public static String protocol;
 		

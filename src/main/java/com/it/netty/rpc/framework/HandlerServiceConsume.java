@@ -11,15 +11,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
+import com.it.netty.rpc.filter.ParameterFilter;
 import com.it.netty.rpc.framework.FrameworkRpcParseUtil.ComponentCallback;
 import com.it.netty.rpc.zookeeper.Certificate;
+import com.it.netty.rpc.zookeeper.ZookeeperOpenApi;
 import com.it.netty.rpc.zookeeper.ZookeeperService;
-import com.it.netty.rpc.filter.ParameterFilter;
 
 
 public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	private final String DEFAULT_ZOOKEEPER_NAME="default_client_zookeeper";
+	private final String DEFAULT_ZOOKEEPER_NOPEN_API="default_client_zookeeper_open_api";
 	private final String DEFAULT_ZOOKEEPER_PATH="rpc";
 	private final String DEFAULT_ZOOKEEPER_ZKADDRESS="zkAddress";
 	private final String DEFAULT_ZOOKEEPER_PROTOCOL="protocol";
@@ -58,6 +60,7 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 				beanDefinition.getPropertyValues().addPropertyValue(DEFAULT_ZOOKEEPER_ZK_PATH,DEFAULT_ZOOKEEPER_PATH);
 			}
 		});
+		FrameworkRpcParseUtil.parse(DEFAULT_ZOOKEEPER_NOPEN_API, ZookeeperOpenApi.class, element, parserContext);
 		FrameworkRpcParseUtil.parse(DEFAULT_PARAMETER_FILTER, ParameterFilter.class,element, parserContext,new ComponentCallback() {
 			@Override
 			public void onParse(RootBeanDefinition beanDefinition) {

@@ -22,6 +22,8 @@ import org.springframework.beans.factory.InitializingBean;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.esotericsoftware.minlog.Log;
 import com.it.netty.rpc.Config;
+import com.it.netty.rpc.cache.Cache;
+import com.it.netty.rpc.cache.CacheFactory;
 import com.it.netty.rpc.framework.HandlerService;
 import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.protocol.ProtocolFactory;
@@ -30,7 +32,7 @@ import com.it.netty.rpc.zookeeper.base.BaseZookeeperClient;
 import com.it.netty.rpc.zookeeper.base.BaseZookeeperService;
 
 public class ZookeeperService implements BaseZookeeperService ,InitializingBean,DisposableBean {
-
+	public  static Cache<String,URI>  cache_uri = new CacheFactory<>(); // channel
 	private int port;
 
 	private String zkAddress;
@@ -169,12 +171,11 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 		return factory.decode(tclass,bytes);
 	}
 
-	@SuppressWarnings("unused")
-	private  void setListenter(String path,CuratorFramework client,final NodeEventHandler eventHandler) throws Exception{  
+	public  void setListenter(String path) throws Exception{  
 		path = path.startsWith("/")?path:"/"+path;
-		//设置节点的cache  
+		//设置节点的cache 
 		@SuppressWarnings("resource")
-		TreeCache treeCache = new TreeCache(client, path);  
+		TreeCache treeCache = new TreeCache(this.curatorFramework, path);  
 		//设置监听器和处理过程  
 		treeCache.getListenable().addListener(new TreeCacheListener() {  
 			@Override  
@@ -226,7 +227,7 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 			String hostAddress = localHost.getHostAddress();
 		
 			for(String className:registClassNames){
-				Long timeout = HandlerService.timeouts.get(className)==null?5000L:HandlerService.timeouts.get(className);
+				Long timeout = HandlerService.timeouts.get(className);
 				Class<?> loadClass = this.getClass().getClassLoader().loadClass(className);
 				if(!loadClass.isInterface()){
 					className = loadClass.getInterfaces()[0].getName();
@@ -243,8 +244,8 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 			for(String className:getClassNames){
 				URI data = getData(className);
 				if(data!=null){
-					Config.uri.addCache(className,data);
-					setListenter(className, this.curatorFramework,this.eventHandler);
+					cache_uri.addCache(className,data);
+					setListenter(className);
 				}
 				else
 					logger.info( "not regist server  : {}"+ className);  
@@ -257,15 +258,15 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 		this.curatorFramework=baseZookeeperClient.init(path, zkAddress, certificate);
 		this.eventHandler=new NodeEventHandler() {
 			public void upateNode(String path,URI uri) {
-				Config.uri.putIfAbsentCache(path, uri);
+				cache_uri.putIfAbsentCache(path, uri);
 			}
 			@Override
 			public void removeNode(String path) {
-				Config.uri.remove(path);
+				cache_uri.remove(path);
 			}
 			@Override
 			public void addNode(String path,URI uri) {
-				Config.uri.addCache(path, uri);;
+				cache_uri.addCache(path, uri);;
 			}
 		};
 	}

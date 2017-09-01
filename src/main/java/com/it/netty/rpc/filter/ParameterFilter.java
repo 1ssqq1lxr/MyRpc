@@ -8,6 +8,7 @@ import com.it.netty.rpc.exception.NoFindClassException;
 import com.it.netty.rpc.framework.HandlerService;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.URI;
+import com.it.netty.rpc.zookeeper.ZookeeperOpenApi;
 
 public class ParameterFilter implements AbatractParameterFilter<Invocation>{
 	private String protocol;
@@ -39,9 +40,9 @@ public class ParameterFilter implements AbatractParameterFilter<Invocation>{
 		invocation.setParamsType(method.getParameterTypes());
 		invocation.setMethodName(method.getName());
 		invocation.setTimeout(5000);
-		URI uri = Config.uri.getCache(class1.getName());
+		URI uri = ZookeeperOpenApi.getURI(class1.getName());
 		if(uri==null)
-			throw new NoFindClassException(class1.getName());
+			throw new NoFindClassException(class1.getName()+":未找到匹配的URI");
 		invocation.setUri(uri);
 		return invocation;
 	}
