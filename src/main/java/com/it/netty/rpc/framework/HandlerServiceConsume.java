@@ -31,6 +31,7 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	private final String DEFAULT_ZOOKEEPER_CLASS="interface";
 	private final String DEFAULT_ZOOKEEPER_SERVER_NAME="name";
 	private final String DEFAULT_PARAMETER_FILTER="filter";
+	private final String DEFAULT_PARAMETER_PROXY="proxy";
 	private final String DEFAULT_CLIENTGROUP_THREAD_NUMS = "clientGroup-thread-nums";
 	
 	private  ConcurrentHashSet<String> getClassNames  = new ConcurrentHashSet<>();
@@ -67,6 +68,7 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 				// TODO Auto-generated method stub
 				beanDefinition.getPropertyValues().addPropertyValue("protocol",protocol);
 				beanDefinition.getPropertyValues().addPropertyValue("clientGroup_thread_nums",clientGroup_thread_nums);
+				beanDefinition.getPropertyValues().addPropertyValue("proxy",element.getAttribute(DEFAULT_PARAMETER_PROXY));
 			}});
 		for(int i=0;i<serviceRegeist.getLength();i++){ // 获取服务信息
 			Element item = (Element) serviceRegeist.item(i);

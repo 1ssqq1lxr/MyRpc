@@ -1,46 +1,29 @@
 package com.it.netty.rpc.proxy;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.it.netty.rpc.filter.AbatractParameterFilter;
 import com.it.netty.rpc.message.Const;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.Resolver;
 import com.it.netty.rpc.message.Result;
-/**
- * 动态代理客户端
- * @author 17070680
- *
- * @param <T>
- */
-public class RpcProxyClient {
+import com.it.netty.rpc.proxy.jdk.RpcJdkProxyClient;
+
+public class ResolveProxy {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
-	@SuppressWarnings("unchecked")
-	public  static <T>  T getProxy( Class<T> classes,AbatractParameterFilter filter) {
-		// TODO Auto-generated method stub
-		T newProxyInstance = (T) Proxy.newProxyInstance(classes.getClassLoader(), new Class<?>[]{classes}, new RpcInvocationHandler<T>(classes,filter));
-		return (T) newProxyInstance;
-	}
 	public  static  Resolver getInvocation(final Object t) {
-		// TODO Auto-generated method stub
 		return new AbastractResolver(t) {
 			public Result doInvoke(Invocation invocation) {
-				// TODO Auto-generated method stub
 				try {
 					Method method = t.getClass().getMethod(invocation.getMethodName(), invocation.getParamsType());
 					return new Result(method.invoke(t, invocation.getParams()));
 				} catch (ReflectiveOperationException e) {
-					// TODO Auto-generated catch block
 					logger.error(this.getClass().getName()+":{}",e.getMessage());
 					return new Result(null, e, "操作失败", Const.ERROR_CODE);
 				} 
 			}
 		};
 	}
-
-
 }

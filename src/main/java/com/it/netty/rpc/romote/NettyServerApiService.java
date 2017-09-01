@@ -9,7 +9,7 @@ import com.it.netty.rpc.excutor.RpcExcutors;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.Resolver;
 import com.it.netty.rpc.message.Result;
-import com.it.netty.rpc.proxy.RpcProxyClient;
+import com.it.netty.rpc.proxy.jdk.RpcJdkProxyClient;
 
 /**
  * 

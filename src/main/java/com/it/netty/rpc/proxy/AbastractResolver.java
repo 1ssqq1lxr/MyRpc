@@ -8,16 +8,9 @@ import com.it.netty.rpc.message.Resolver;
 import com.it.netty.rpc.message.Result;
 
 public abstract class AbastractResolver implements Resolver {
-	
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
-	
-	
 	private transient Object t; // 实体类
-
-	
 	private  Invocation invocation;
-		
-
 	public AbastractResolver(Object t) {
 		super();
 		this.t = t;
@@ -42,10 +35,4 @@ public abstract class AbastractResolver implements Resolver {
 
 	}
 	public abstract Result doInvoke(Invocation invocation);	
-	
-
-
-	
-
-
 }

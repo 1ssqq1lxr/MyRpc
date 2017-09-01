@@ -8,11 +8,23 @@ import com.it.netty.rpc.exception.NoFindClassException;
 import com.it.netty.rpc.framework.HandlerService;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.URI;
+import com.it.netty.rpc.proxy.Proxy;
+import com.it.netty.rpc.proxy.RpcProxyFactorySelecter;
 import com.it.netty.rpc.zookeeper.ZookeeperOpenApi;
 
 public class ParameterFilter implements AbatractParameterFilter<Invocation>{
+	private RpcProxyFactorySelecter factorySelecter = new RpcProxyFactorySelecter();
 	private String protocol;
-	
+	private String proxy ;
+	public Proxy getDefaultProxy(){
+		return factorySelecter.selectProxy(this.proxy);
+	}
+	public String getProxy() {
+		return proxy;
+	}
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
+	}
 	private int clientGroup_thread_nums ;
 	
 	public int getClientGroup_thread_nums() {

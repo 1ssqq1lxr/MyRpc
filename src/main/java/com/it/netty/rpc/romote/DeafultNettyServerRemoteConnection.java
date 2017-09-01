@@ -35,7 +35,7 @@ import com.it.netty.rpc.protocol.DefaultProtocolFactorySelector;
 import com.it.netty.rpc.protocol.ProtocolFactory;
 import com.it.netty.rpc.protocol.ProtocolFactorySelector;
 import com.it.netty.rpc.protocol.SerializeEnum;
-import com.it.netty.rpc.proxy.RpcProxyClient;
+import com.it.netty.rpc.proxy.ResolveProxy;
 import com.it.netty.rpc.service.ServiceObjectFindInteferce;
 /**
  * 
@@ -53,7 +53,7 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 			ServiceObjectFindInteferce serviceObjectFindInteferce) {
 		this.serviceObjectFindInteferce = serviceObjectFindInteferce;
 	}
-	private RpcProxyClient init = new RpcProxyClient();
+	private ResolveProxy init = new ResolveProxy();
 	private DefaultEventLoopGroup ServerdefLoopGroup;
 	private NioEventLoopGroup bossGroup;
 	private NioEventLoopGroup workGroup;
@@ -287,10 +287,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 						result.setSerialNo(invocation.getSerialNo());
 						channel.writeAndFlush(result);
 					} catch (RuntimeException e) {
-//						result = new Result(null,e,"没找到service", Const.ERROR_CODE);
-//						result.setProtocol(invocation.getProtocol());
-//						result.setSerialNo(invocation.getSerialNo());
-//						channel.writeAndFlush(result);
 						log.error("{}",e);
 					}
 				}
