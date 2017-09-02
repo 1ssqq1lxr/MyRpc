@@ -39,7 +39,8 @@
 		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
 		http://www.lxr.com/schema/consume 
 		http://www.lxr.com/schema/consume/rpc-consume-1.0.0.xsd">  
-		<rpc:serviceBind id="123"  zkAddress="127.0.0.1:12181" 			proxy="cglib" clientGroup-thread-nums="50" protocol="HESSIAN">
+		<rpc:serviceBind id="123"  zkAddress="127.0.0.1:12181" 
+			proxy="cglib" clientGroup-thread-nums="50" protocol="HESSIAN">
 		    <rpc:serviceConsume name="*Service"interface="*.*Service"/>
 		</rpc:serviceBind>
 	</beans>  
