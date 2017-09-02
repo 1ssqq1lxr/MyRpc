@@ -13,6 +13,9 @@ public class RpcExcutors extends AbstractRpcExcutors{
 	public RpcExcutors(String name) {
 		super(name);
 	}
+	public RpcExcutors(String name, int corePoolSize,int intmaximumPoolSize) {
+		super(name,corePoolSize,intmaximumPoolSize);
+	}
 	public void excute(Runnable runnable) {
 		// TODO Auto-generated method stub
 		service.execute(runnable);

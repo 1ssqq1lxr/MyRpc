@@ -15,6 +15,9 @@ import com.alibaba.fastjson.parser.Feature;
 public abstract class AbstractRpcExcutors  implements AbstractExcutor{
 	ExecutorService service;
 	
+	private int corePoolSize =50;
+	private	int intmaximumPoolSize=200;
+	
 	public ExecutorService getService() {
 		return service;
 	}
@@ -24,6 +27,9 @@ public abstract class AbstractRpcExcutors  implements AbstractExcutor{
 	}
 
 	public AbstractRpcExcutors( String name){
-		service = new ThreadPoolExecutor(200, 400, 2, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(200),new RpcThreadFactory(name),new RpcRejectedExecution());
+		service = new ThreadPoolExecutor(this.corePoolSize, this.intmaximumPoolSize, 2, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(200),new RpcThreadFactory(name),new RpcRejectedExecution());
+	}
+	public AbstractRpcExcutors( String name, int corePoolSize,int intmaximumPoolSize){
+		service = new ThreadPoolExecutor(corePoolSize, intmaximumPoolSize, 2, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(200),new RpcThreadFactory(name),new RpcRejectedExecution());
 	}
 }

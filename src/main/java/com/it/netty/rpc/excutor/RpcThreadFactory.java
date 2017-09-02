@@ -26,7 +26,6 @@ public class RpcThreadFactory implements ThreadFactory {
 		logger.info(this+":create name:{}-{}线程成功",name,	num.incrementAndGet());
 		String newname =name+"-"+num.intValue();
 		Thread result=new Thread(runnable,newname);    
-	
 		return result;  
 	}
 	
