@@ -31,18 +31,18 @@
 	timeout：默认请求超时时间为5000毫秒，可设置2000-5000范围内;
 <br><br>
 ## 服务消费端
-		<beans xmlns="http://www.springframework.org/schema/beans"  
-		    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
-		    xmlns:rpc="http://www.lxr.com/schema/consume"  
-		    xsi:schemaLocation="  
-		        http://www.springframework.org/schema/beans 
-		        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
-		        http://www.lxr.com/schema/consume 
-		        http://www.lxr.com/schema/consume/rpc-consume-1.0.0.xsd">  
-		        <rpc:serviceBind id="123"  zkAddress="127.0.0.1:12181" 					proxy="cglib" clientGroup-thread-nums="50" protocol="HESSIAN">
-		        	<rpc:serviceConsume name="*Service"interface="*.*Service"/>
-		        </rpc:serviceBind>
-		</beans>  
+	<beans xmlns="http://www.springframework.org/schema/beans"  
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+		xmlns:rpc="http://www.lxr.com/schema/consume"  
+		xsi:schemaLocation="  
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
+		http://www.lxr.com/schema/consume 
+		http://www.lxr.com/schema/consume/rpc-consume-1.0.0.xsd">  
+		<rpc:serviceBind id="123"  zkAddress="127.0.0.1:12181" 			proxy="cglib" clientGroup-thread-nums="50" protocol="HESSIAN">
+		    <rpc:serviceConsume name="*Service"interface="*.*Service"/>
+		</rpc:serviceBind>
+	</beans>  
 		interface:代理接口全限定名;
 		zkAddress: zookeeper地址;
 		proxy:动态代理模式 目前支持jdk,cglib 默认jdk;
