@@ -3,7 +3,6 @@ package com.it.netty.rpc.framework;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
-import com.it.netty.rpc.Config;
 import com.it.netty.rpc.zookeeper.ZookeeperService;
 
 
@@ -53,7 +52,6 @@ public class ZkBeanServiceConsume implements InitializingBean{
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// TODO Auto-generated method stub
-		Config.protocol=this.protocol;
 		zookeeperService.initServer(getClassNames);;
 	}
 }

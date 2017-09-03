@@ -4,8 +4,6 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.curator.framework.CuratorFramework;
@@ -21,7 +19,6 @@ import org.springframework.beans.factory.InitializingBean;
 
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.esotericsoftware.minlog.Log;
-import com.it.netty.rpc.Config;
 import com.it.netty.rpc.cache.Cache;
 import com.it.netty.rpc.cache.CacheFactory;
 import com.it.netty.rpc.framework.HandlerService;
@@ -221,7 +218,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	}
 
 	public void  initRegist(ConcurrentHashSet<String> registClassNames)throws Exception{
-		Config.rpcPort = this.port;
 		if(CollectionUtils.isNotEmpty(registClassNames)){ //注册服务
 			InetAddress localHost = Inet4Address.getLocalHost();
 			String hostAddress = localHost.getHostAddress();
