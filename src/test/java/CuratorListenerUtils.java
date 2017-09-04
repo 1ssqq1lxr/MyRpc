@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 
 
 
+
 import org.apache.curator.RetryPolicy;  
 import org.apache.curator.framework.CuratorFramework;  
 import org.apache.curator.framework.CuratorFrameworkFactory;  
@@ -22,6 +23,7 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCache.StartMode;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;  
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;  
 import org.apache.curator.framework.recipes.cache.TreeCache;  
+import org.apache.curator.framework.recipes.cache.TreeCache.Builder;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;  
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;  
 import org.apache.curator.retry.ExponentialBackoffRetry;  
@@ -65,9 +67,6 @@ public class CuratorListenerUtils {
        // setListenterThreeTwo(client);  
 //        client.create().forPath("/love", "ss".getBytes());
 //        List<String> forPath = client.getChildren().forPath("/");
-        String forPaths = client.create().withMode(CreateMode.EPHEMERAL).forPath("/kiss", "ss".getBytes());
-        byte[] forPath = client.getData().watched().inBackground().forPath("/gg");
-        byte[] forPath1 = client.getData().forPath("/haha");
         setListenterThreeThree(client);  
        // getDataNode(client, "/two");  
        // setDataNode(client, "/two", "sss");  
@@ -124,11 +123,11 @@ public class CuratorListenerUtils {
         byte[] auth = "admin:admin".getBytes();  
         int connectionTimeoutMs = 5000;  
         String connectString = "127.0.0.1:12181";  
-        String namespace = "test";  
+        String namespace = "rpc";  
         CuratorFramework client = CuratorFrameworkFactory.builder().aclProvider(aclProvider).  
         authorization(scheme, auth).  
         connectionTimeoutMs(connectionTimeoutMs).  
-        connectString(connectString).  
+        connectString(connectString).
         namespace(namespace).
         sessionTimeoutMs(1000).
         retryPolicy(new RetryNTimes(Integer.MAX_VALUE, 1000)).build();  
@@ -249,7 +248,7 @@ public class CuratorListenerUtils {
     private static void setListenterThreeThree(CuratorFramework client) throws Exception{  
         ExecutorService pool = Executors.newCachedThreadPool();  
         //设置节点的cache  
-        TreeCache treeCache = new TreeCache(client, "/love");  
+        TreeCache treeCache = new TreeCache(client, "/");  
         //设置监听器和处理过程  
         treeCache.getListenable().addListener(new TreeCacheListener() {  
             @Override  

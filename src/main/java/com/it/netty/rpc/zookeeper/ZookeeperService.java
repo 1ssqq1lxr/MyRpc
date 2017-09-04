@@ -2,12 +2,19 @@ package com.it.netty.rpc.zookeeper;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache.StartMode;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
@@ -29,7 +36,9 @@ import com.it.netty.rpc.zookeeper.base.BaseZookeeperClient;
 import com.it.netty.rpc.zookeeper.base.BaseZookeeperService;
 
 public class ZookeeperService implements BaseZookeeperService ,InitializingBean,DisposableBean {
-	public  static Cache<String,URI>  cache_uri = new CacheFactory<>(); // channel
+	private String DEV_S="/";
+	private  String NODE_NAME="node_";
+	public  static Cache<String,RemoteAddress[]>  cache_uri = new CacheFactory<>(); // channel
 	private int port;
 
 	private String zkAddress;
@@ -79,11 +88,11 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 
 	public ZookeeperService() throws Exception {
 		super();
-		
+
 	}
 	@Override
 	public void registNode(String path, URI uri,CreateMode mode,boolean is) {
-		path = path.startsWith("/")?path:"/"+path;
+		path = buildPath(path);
 		try {
 			if(is){
 				curatorFramework.create().creatingParentsIfNeeded().withMode(mode).forPath(path, serialObject(uri));
@@ -127,7 +136,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	}
 	@Override
 	public URI getData(String path) {
-		path = path.startsWith("/")?path:"/"+path;
 		if(exists(path)){
 			byte[] forPath;
 			try {
@@ -145,21 +153,28 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 		curatorFramework.close();
 	}
 	@Override
-	public List<URI> getChildNodes(String path) {
-		path = path.startsWith("/")?path:"/"+path;
+	public RemoteAddress[] getChildNodes(String path) {
+		path = path.startsWith(DEV_S)?path:DEV_S+path;
 		// TODO Auto-generated method stub
-		List<URI> list = new ArrayList<>();
 		try {
 			List<String> forPath = curatorFramework.getChildren().forPath(path);
+			RemoteAddress[] addresses = new RemoteAddress[forPath.size()];
+			StringBuilder sb = new StringBuilder();
+			int num=0;
 			for(String paths :forPath){
-				list.add(this.getData(paths));
-
+				String final_path = sb.append(path).append(DEV_S).append(paths).toString();
+				URI data = this.getData(final_path);
+				if(data!=null){
+					RemoteAddress address = new RemoteAddress(paths,data);
+					addresses[num]=address;
+					num++;
+				}
 			}
-
+			return addresses;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return list;
+		return null;
 	}
 	public byte[] serialObject(Object obj){
 		return factory.encode(obj);
@@ -168,8 +183,51 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 		return factory.decode(tclass,bytes);
 	}
 
-	public  void setListenter(String path) throws Exception{  
-		path = path.startsWith("/")?path:"/"+path;
+	public void  setPathChildrenListenter(String path){
+		path = path.startsWith(DEV_S)?path:DEV_S+path;
+		ExecutorService pool = Executors.newCachedThreadPool();  
+		PathChildrenCache childrenCache = new PathChildrenCache(this.curatorFramework, path, true);  
+		PathChildrenCacheListener childrenCacheListener = new PathChildrenCacheListener() {  
+			@Override  
+			public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {  
+				ChildData data = event.getData(); 
+				if(data !=null){
+					URI uri = null;
+					if(data.getData()!=null && data.getData().length>0){
+						uri = factory.decode(URI.class, data.getData());
+					}
+
+					String path = data.getPath(); 
+					switch (event.getType()) {  
+					case CHILD_ADDED:  
+						eventHandler.addNode(path,uri);
+						logger.info("NODE_ADDED : ("+ path +")  数据:"+ uri.toString());  
+						break;  
+					case CHILD_REMOVED:  
+						eventHandler.removeNode(path);
+						logger.info("NODE_REMOVED : "+ path);  
+						break;  
+					case CHILD_UPDATED:  
+						eventHandler.upateNode(path,uri);
+						logger.info("NODE_UPDATED : ("+ path +")  数据:"+ uri.toString());  
+						break;   
+					default:  
+						break;  
+					}  
+				}
+			}  
+		};  
+		childrenCache.getListenable().addListener(childrenCacheListener);  
+		System.out.println("Register zk watcher successfully!");  
+		try {
+			childrenCache.start(StartMode.POST_INITIALIZED_EVENT);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("",e);
+		}  
+	}
+	public  void setTreeListenter(String path) throws Exception{  
+		path = path.startsWith(DEV_S)?path:DEV_S+path;
 		//设置节点的cache 
 		@SuppressWarnings("resource")
 		TreeCache treeCache = new TreeCache(this.curatorFramework, path);  
@@ -187,15 +245,15 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 					String path = data.getPath();
 					switch (event.getType()) {  
 					case NODE_ADDED:  
-						eventHandler.addNode(path.substring(1,path.length()),uri);
+						eventHandler.addNode(path,uri);
 						logger.info("NODE_ADDED : ("+ path +")  数据:"+ uri.toString());  
 						break;  
 					case NODE_REMOVED: 
-						eventHandler.removeNode(path.substring(1,path.length()));
+						eventHandler.removeNode(path);
 						logger.info("NODE_REMOVED : "+ path);  
 						break;  
 					case NODE_UPDATED:  
-						eventHandler.upateNode(path.substring(1,path.length()),uri);
+						eventHandler.upateNode(path,uri);
 						logger.info("NODE_UPDATED : ("+ path +")  数据:"+ uri.toString());  
 						break;  
 					default:  
@@ -221,7 +279,7 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 		if(CollectionUtils.isNotEmpty(registClassNames)){ //注册服务
 			InetAddress localHost = Inet4Address.getLocalHost();
 			String hostAddress = localHost.getHostAddress();
-		
+
 			for(String className:registClassNames){
 				Long timeout = HandlerService.timeouts.get(className);
 				Class<?> loadClass = this.getClass().getClassLoader().loadClass(className);
@@ -229,19 +287,18 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 					className = loadClass.getInterfaces()[0].getName();
 				}
 				URI uri= new URI(null, hostAddress, this.port,null,timeout);
-				registNode(className, uri, CreateMode.EPHEMERAL, false);
+				registNode(className, uri, CreateMode.EPHEMERAL_SEQUENTIAL, true);
 				logger.info( "success regist server {} :{} ", className,uri);  
 			}
 		}
 	}
 	public void initServer(ConcurrentHashSet<String> getClassNames) throws Exception{
 		if(CollectionUtils.isNotEmpty(getClassNames)){ //获取服务信息
-	
 			for(String className:getClassNames){
-				URI data = getData(className);
+				RemoteAddress[] data = getChildNodes(className);
 				if(data!=null){
 					cache_uri.addCache(className,data);
-					setListenter(className);
+					setPathChildrenListenter(className);
 				}
 				else
 					logger.info( "not regist server  : {}"+ className);  
@@ -254,15 +311,53 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 		this.curatorFramework=baseZookeeperClient.init(path, zkAddress, certificate);
 		this.eventHandler=new NodeEventHandler() {
 			public void upateNode(String path,URI uri) {
-				cache_uri.putIfAbsentCache(path, uri);
+				if(uri!=null){
+					String matchPath = matchPath(path);
+					RemoteAddress[] addresses = cache_uri.getCache(matchPath);
+					if(addresses!=null){
+						for(int i=0;i<addresses.length;i++){
+							if(path.contains(addresses[i].getNodeName())){
+								addresses[i].setUri(uri);
+								break;
+							}
+						}
+						cache_uri.addCache(matchPath, addresses);
+					}
+				}
 			}
 			@Override
 			public void removeNode(String path) {
-				cache_uri.remove(path);
+				String matchPath = matchPath(path);
+				RemoteAddress[] addresses  = cache_uri.getCache(matchPath);
+				if(addresses!=null ){
+					if(addresses.length>1){
+
+					}
+					RemoteAddress[] addresses_new =new RemoteAddress[addresses.length-1]; 
+					int num =0;
+					for(int i=0;i<addresses.length;i++){
+						if(!path.contains(addresses[i].getNodeName())){
+							addresses_new[num]=addresses[i];
+							num++;
+						}
+					}
+					cache_uri.addCache(matchPath, addresses_new);
+				}
 			}
 			@Override
 			public void addNode(String path,URI uri) {
-				cache_uri.addCache(path, uri);;
+				String matchPath = matchPath(path);
+				String final_path=path.substring(path.lastIndexOf('/')+1,path.length());
+				RemoteAddress[] addresses  = cache_uri.getCache(matchPath);
+				if(uri!=null&&!isExists(addresses,path)){
+					RemoteAddress[] addresses_new =new RemoteAddress[addresses.length+1];
+					for(int i=0;i<addresses.length;i++){
+						addresses_new[i]=addresses[i];
+					}
+					RemoteAddress address = new RemoteAddress(final_path,uri);
+					addresses_new[addresses.length]=address;
+					cache_uri.addCache(matchPath, addresses_new);
+				}
 			}
 		};
 	}
@@ -270,7 +365,32 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	public void destroy() throws Exception {
 		this.closeServer();
 	}
+	private String buildPath(String path){
+		path = path.startsWith(DEV_S)?path:DEV_S+path;
+		StringBuilder builder = new StringBuilder(path);
+		builder.append(DEV_S).append(NODE_NAME);
+		return builder.toString();
 
+	}
+	private String matchPath(String path){
+		String rgex = "/(.*?)/";
+		Pattern pattern = Pattern.compile(rgex);// 匹配的模式  
+		Matcher m = pattern.matcher(path);  
+		if(m.find()){
+			return m.group(1);
+		}
+		return null;
+	}
 	
+	public boolean isExists(RemoteAddress[] addresses,String path){
+		boolean flag=false;
+		for(RemoteAddress r:addresses){
+			if(path.contains(r.getNodeName())){
+				flag=true;
+				break;
+			}
+		}
+		return flag;
+	}
 
 }

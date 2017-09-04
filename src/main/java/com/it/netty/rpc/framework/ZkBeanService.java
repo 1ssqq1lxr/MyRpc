@@ -1,5 +1,7 @@
 package com.it.netty.rpc.framework;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
@@ -8,7 +10,7 @@ import com.it.netty.rpc.zookeeper.ZookeeperService;
 
 public class ZkBeanService implements InitializingBean{
 	
-	
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 	private  ConcurrentHashSet<String> registClassNames  = new ConcurrentHashSet<>();
 	
 	private ZookeeperService zookeeperService;
@@ -34,6 +36,7 @@ public class ZkBeanService implements InitializingBean{
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// TODO Auto-generated method stub
+		logger.info(""+zookeeperService);
 		zookeeperService.initRegist(registClassNames);
 	}	
 }
