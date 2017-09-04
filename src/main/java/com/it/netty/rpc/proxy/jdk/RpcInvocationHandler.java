@@ -15,7 +15,6 @@ import com.it.netty.rpc.proxy.cglib.CglibProxyMethodInterceptor;
  * @param <T>
  */
 public class RpcInvocationHandler<T> extends RpcProxyService implements InvocationHandler{
-	private static ConcurrentHashMap<Object, Invocation>  map = new ConcurrentHashMap<>();
 	private Class<T> classes;
 	private AbatractParameterFilter<Invocation> filter;
 	public RpcInvocationHandler(Class<T> classes,AbatractParameterFilter<Invocation> filter) {

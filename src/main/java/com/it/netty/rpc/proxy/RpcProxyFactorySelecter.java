@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.it.netty.rpc.cache.Cache;
 import com.it.netty.rpc.cache.CacheFactory;
 import com.it.netty.rpc.proxy.cglib.RpcCglibProxyClient;
+import com.it.netty.rpc.proxy.javassist.RpcJavassistProxyClient;
 import com.it.netty.rpc.proxy.jdk.RpcJdkProxyClient;
 
 public class RpcProxyFactorySelecter {
@@ -14,6 +15,7 @@ public class RpcProxyFactorySelecter {
 	public RpcProxyFactorySelecter(){
 		this.registProxy(new RpcCglibProxyClient());
 		this.registProxy(new RpcJdkProxyClient());
+		this.registProxy(new RpcJavassistProxyClient());
 	}	
 	final void registProxy(Proxy proxy){
 		log.info("success registProxy {} into RpcProxyFactorySelecter ",proxy.getProxyName());
