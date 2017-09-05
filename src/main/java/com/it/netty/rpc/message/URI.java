@@ -3,6 +3,8 @@ package com.it.netty.rpc.message;
 import java.io.Serializable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 public class URI implements Serializable {
@@ -27,7 +29,12 @@ public class URI implements Serializable {
 		this.message = message;
 		this.timeout = timeout;
 	}
+	private transient  Lock lock = new ReentrantLock();
 	private transient CountDownLatch countDownLatch = new CountDownLatch(1);
+	
+	public boolean tryLock(long time) throws InterruptedException{
+		return this.lock.tryLock(Const.TIME_OUT, TimeUnit.MILLISECONDS);
+	}
 	
 	public void await(long time) throws InterruptedException{
 		time=time==0?MINTIME:time;

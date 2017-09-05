@@ -3,8 +3,6 @@ package com.it.netty.rpc.romote;
 import io.netty.channel.ChannelFuture;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

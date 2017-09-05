@@ -3,8 +3,6 @@ package com.it.netty.rpc.zookeeper;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,12 +18,12 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
-import com.esotericsoftware.minlog.Log;
 import com.it.netty.rpc.cache.Cache;
 import com.it.netty.rpc.cache.CacheFactory;
 import com.it.netty.rpc.framework.HandlerService;
@@ -36,6 +34,7 @@ import com.it.netty.rpc.zookeeper.base.BaseZookeeperClient;
 import com.it.netty.rpc.zookeeper.base.BaseZookeeperService;
 
 public class ZookeeperService implements BaseZookeeperService ,InitializingBean,DisposableBean {
+	protected static final Logger log = LoggerFactory.getLogger(ZookeeperService.class.getSimpleName());
 	private String DEV_S="/";
 	private  String NODE_NAME="node_";
 	public  static Cache<String,RemoteAddress[]>  cache_uri = new CacheFactory<>(); // channel
@@ -101,7 +100,7 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 				curatorFramework.create().withMode(mode).forPath(path, serialObject(uri));
 			}
 		} catch (Exception e) {
-			Log.error(this.getClass().getName()+"创建节点失败", e);
+			log.error(this.getClass().getName()+"创建节点失败", e);
 		}
 
 
@@ -115,7 +114,7 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 			else
 				curatorFramework.delete().forPath(path);
 		} catch (Exception e) {
-			Log.error(this.getClass().getName()+"删除节点失败", e);
+			log.error(this.getClass().getName()+"删除节点失败", e);
 		}
 	}
 	@Override
@@ -129,7 +128,7 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 			else
 				return  true;
 		} catch (Exception e) {
-			Log.error(this.getClass().getName()+"检查节点是否存在失败", e);
+			log.error(this.getClass().getName()+"检查节点是否存在失败", e);
 		}
 		return false;
 
@@ -144,7 +143,7 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 					return factory.decode(URI.class, forPath);
 				}
 			} catch (Exception e) {
-				Log.error(this.getClass().getName()+"获取节点数据失败", e);
+				log.error(this.getClass().getName()+"获取节点数据失败", e);
 			}
 		}
 		return null;
@@ -186,7 +185,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 
 	public void  setPathChildrenListenter(String path){
 		path = path.startsWith(DEV_S)?path:DEV_S+path;
-		ExecutorService pool = Executors.newCachedThreadPool();  
 		PathChildrenCache childrenCache = new PathChildrenCache(this.curatorFramework, path, true);  
 		PathChildrenCacheListener childrenCacheListener = new PathChildrenCacheListener() {  
 			@Override  

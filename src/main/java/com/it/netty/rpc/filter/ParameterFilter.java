@@ -14,6 +14,7 @@ public class ParameterFilter implements AbatractParameterFilter<Invocation>{
 	private RpcProxyFactorySelecter factorySelecter = new RpcProxyFactorySelecter();
 	private String protocol;
 	private String proxy ;
+	private ZookeeperOpenApi api = new ZookeeperOpenApi();
 	public Proxy getDefaultProxy(){
 		return factorySelecter.selectProxy(this.proxy);
 	}
@@ -50,7 +51,7 @@ public class ParameterFilter implements AbatractParameterFilter<Invocation>{
 		invocation.setParamsType(method.getParameterTypes());
 		invocation.setMethodName(method.getName());
 		invocation.setTimeout(5000);
-		URI uri = ZookeeperOpenApi.getURI(class1.getName());
+		URI uri = api.getURI(class1.getName());
 		if(uri==null)
 			throw new NoFindClassException(class1.getName()+":未找到匹配的URI");
 		invocation.setUri(uri);

@@ -48,7 +48,6 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 	private  DefaultEventLoopGroup ClientdefLoopGroup;
 	private NioEventLoopGroup clientGroup;
 	private Bootstrap b;
-	private final Lock lock = new ReentrantLock();
 	private final int TOP_LENGTH=129>>1|34; // 数据协议头
 	private final int TOP_HEARTBEAT=129>>1|36; // 心跳协议头
 	private  final  CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -109,23 +108,21 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 	public ChannelManager doConnect(final URI uri) {
 		try {
 			ChannelManager  	channelManager =null;
-			if(this.lock.tryLock(Const.TIME_OUT, TimeUnit.MILLISECONDS)){
-				
+			if(uri.tryLock(Const.TIME_OUT)){
 				channelManager=DeafultNettyClientRemoteConnection.channels.get(getRemoteStr(uri));
 				if(channelManager==null){
 					final ChannelFuture connect = b.connect(uri.getHost(), uri.getPort()).sync();
 					if(connect.isSuccess()){
+						log.info(" server {}连接{}成功",connect,uri);
 						ChannelManager channelManager1 = new ChannelManager(connect,uri);
 						DeafultNettyClientRemoteConnection.channels.putIfAbsent(getRemoteStr(uri), channelManager1);
 						uri.countDown();
 						return channelManager1;
-
 					}
-					log.error(this.getClass().getName()+" 连接｛｝ 失败",getRemoteStr(uri));
+					log.info(this.getClass().getName()+" 连接｛｝ 失败",getRemoteStr(uri));
 				}
 				else
 					return channelManager;
-
 			}
 			uri.await(0);
 			channelManager=DeafultNettyClientRemoteConnection.channels.get(getRemoteStr(uri));
@@ -134,7 +131,6 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 		} catch (InterruptedException e) {
 			log.error(this.getClass().getName(), e);
 		}
-
 		return null;
 
 
