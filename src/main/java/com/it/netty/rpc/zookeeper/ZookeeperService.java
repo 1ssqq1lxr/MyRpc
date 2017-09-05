@@ -169,6 +169,7 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 					addresses[num]=address;
 					num++;
 				}
+				sb.delete(0, sb.length());
 			}
 			return addresses;
 		} catch (Exception e) {
@@ -330,9 +331,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 				String matchPath = matchPath(path);
 				RemoteAddress[] addresses  = cache_uri.getCache(matchPath);
 				if(addresses!=null ){
-					if(addresses.length>1){
-
-					}
 					RemoteAddress[] addresses_new =new RemoteAddress[addresses.length-1]; 
 					int num =0;
 					for(int i=0;i<addresses.length;i++){
