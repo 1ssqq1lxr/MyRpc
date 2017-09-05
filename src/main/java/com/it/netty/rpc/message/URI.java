@@ -17,16 +17,16 @@ public class URI implements Serializable {
 	private String serialMethod;  
 	private String host;
 	private 	int port;
-	private String message;
+	private String weight; // 权重
 	private Long timeout = 3000L;
 	
-	public URI(String serialMethod, String host, int port, String message,
+	public URI(String serialMethod, String host, int port, String weight,
 			Long timeout) {
 		super();
 		this.serialMethod = serialMethod;
 		this.host = host;
 		this.port = port;
-		this.message = message;
+		this.weight = weight;
 		this.timeout = timeout;
 	}
 	private transient  Lock lock = new ReentrantLock();
@@ -54,12 +54,12 @@ public class URI implements Serializable {
 	public URI() {
 		super();
 	}
-	public URI(String serialMethod, String host, int port, String message) {
+	public URI(String serialMethod, String host, int port, String weight) {
 		super();
 		this.serialMethod = serialMethod;
 		this.host = host;
 		this.port = port;
-		this.message = message;
+		this.weight = weight;
 	}
 	public String getSerialMethod() {
 		return serialMethod;
@@ -79,16 +79,16 @@ public class URI implements Serializable {
 	public void setPort(int port) {
 		this.port = port;
 	}
-	public String getMessage() {
-		return message;
+	public String getWeight() {
+		return weight;
 	}
-	public void setMessage(String message) {
-		this.message = message;
+	public void setWeight(String weight) {
+		this.weight = weight;
 	}
 	@Override
 	public String toString() {
 		return "URI [serialMethod=" + serialMethod + ", host=" + host
-				+ ", port=" + port + ", message=" + message + ", timeout="
+				+ ", port=" + port + ", weight=" + weight + ", timeout="
 				+ timeout + "]";
 	}
 	
