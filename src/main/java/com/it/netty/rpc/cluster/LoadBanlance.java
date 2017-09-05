@@ -5,4 +5,5 @@ import com.it.netty.rpc.zookeeper.RemoteAddress;
 
 public interface LoadBanlance {
 	public URI selectRandom(RemoteAddress[]  uris);
+	public String getName();
 }

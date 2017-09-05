@@ -6,6 +6,11 @@ import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.zookeeper.RemoteAddress;
 
 public class RandomLoadBanlance implements LoadBanlance{
+	String name ="random";
+	
+	public String getName() {
+		return name;
+	}
 
 	@Override
 	public URI selectRandom(RemoteAddress[] uris) {
