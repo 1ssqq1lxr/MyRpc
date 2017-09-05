@@ -7,7 +7,7 @@
 4、使用zookeeper作为服务的注册与发现中心。
 5、整合spring方便使用。
 6、目前代理默认使用jdk，支持Javassist，cglib等
-7、后期开发负载均衡路由模块.....
+7、支持轮询，随机，权重随机，一致性hash 负载均衡算法
 <br><br>
 ## 服务注册端
 <?xml version="1.0" encoding="UTF-8"?>

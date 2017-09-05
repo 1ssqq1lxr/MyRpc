@@ -20,7 +20,6 @@ public class ZookeeperOpenApi implements BeanFactoryAware {
 			RemoteAddress[] cache = ZookeeperService.cache_uri.getCache(className);
 			return banlance.selectRandom(cache);
 		}
-
 		@Override
 		public void setBeanFactory(BeanFactory beanFactory)
 				throws BeansException {
