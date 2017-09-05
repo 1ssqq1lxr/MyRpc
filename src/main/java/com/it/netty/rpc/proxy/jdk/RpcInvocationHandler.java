@@ -24,8 +24,22 @@ public class RpcInvocationHandler<T> extends RpcProxyService implements Invocati
 	}
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
-		logger.info("success {} create proxy :{}",RpcJdkProxyClient.class.getName(),classes.getName());
-		return doProxy(filter, method, classes, args);
+			logger.info("success {} create proxy :{}",RpcJdkProxyClient.class.getName(),classes.getName());
+			String methodName = method.getName();
+	        Class<?>[] parameterTypes = method.getParameterTypes();
+	        if (method.getDeclaringClass() == Object.class) {
+	        	return doProxy(filter, method, classes, args);
+	        }
+	        if ("toString".equals(methodName) && parameterTypes.length == 0) {
+	            return proxy.toString();
+	        }
+	        if ("hashCode".equals(methodName) && parameterTypes.length == 0) {
+	            return proxy.hashCode();
+	        }
+	        if ("equals".equals(methodName) && parameterTypes.length == 1) {
+	            return proxy.equals(args[0]);
+	        }
+	    	return doProxy(filter, method, classes, args);
 	}
 
 

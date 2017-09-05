@@ -29,6 +29,20 @@ public class CglibProxyMethodInterceptor extends RpcProxyService implements Meth
 	    @Override  
 	    public Object intercept(Object obj, Method method, Object[] args,  
 	            MethodProxy proxy) throws Throwable { 
-	    		return doProxy(filter, method, classes, args);
+			String methodName = method.getName();
+	        Class<?>[] parameterTypes = method.getParameterTypes();
+	        if (method.getDeclaringClass() == Object.class) {
+	        	return doProxy(filter, method, classes, args);
+	        }
+	        if ("toString".equals(methodName) && parameterTypes.length == 0) {
+	            return proxy.toString();
+	        }
+	        if ("hashCode".equals(methodName) && parameterTypes.length == 0) {
+	            return proxy.hashCode();
+	        }
+	        if ("equals".equals(methodName) && parameterTypes.length == 1) {
+	            return proxy.equals(args[0]);
+	        }
+	    	return doProxy(filter, method, classes, args);
 	    }  
 }

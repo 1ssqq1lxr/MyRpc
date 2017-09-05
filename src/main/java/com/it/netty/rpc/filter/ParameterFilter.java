@@ -37,7 +37,7 @@ public class ParameterFilter implements AbatractParameterFilter<Invocation>{
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
 	}
-	ParameterFilter(){
+	public ParameterFilter(){
 		super();
 	}
 	public Invocation doParameter(Method method,Class<?> class1,Object[] params) {

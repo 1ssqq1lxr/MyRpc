@@ -33,7 +33,6 @@
 					<xsd:restriction  base="xsd:string">
 						<xsd:enumeration value="jdk" />
 						<xsd:enumeration value="cglib" />
-						<xsd:enumeration value="javassist" />
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
