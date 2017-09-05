@@ -27,23 +27,5 @@ public class RoundRobinLoadBanlance implements LoadBanlance{
 			}
 		}
 	}
-	//	   public static void main(String[] args) {
-	//			for(int i=0;i<10;i++){
-	//				new Thread(new Runnable() {
-	//					
-	//					@Override
-	//					public void run() {
-	//						// TODO Auto-generated method stub
-	//						try {
-	//							Thread.sleep(2000);
-	//						} catch (InterruptedException e) {
-	//							// TODO Auto-generated catch block
-	//							e.printStackTrace();
-	//						}
-	//						System.out.println(Thread.currentThread().getName()+":"+getAndIncrement());
-	//					}
-	//				},"Thread-"+i).start();
-	//			}
-	//		}
 
 }

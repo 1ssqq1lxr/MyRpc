@@ -8,11 +8,11 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.ListableBeanFactory;
 
 import com.it.netty.rpc.cluster.LoadBanlance;
-import com.it.netty.rpc.cluster.RandomLoadBanlance;
+import com.it.netty.rpc.cluster.RoundRobinLoadBanlance;
 import com.it.netty.rpc.message.URI;
 
 public class ZookeeperOpenApi implements BeanFactoryAware {
-		LoadBanlance banlance = new RandomLoadBanlance();
+		LoadBanlance banlance = new RoundRobinLoadBanlance();
 		protected static final Logger log = LoggerFactory.getLogger(ZookeeperOpenApi.class.getSimpleName());
 		private final static String DEFAULT_ZOOKEEPER_NAME="default_client_zookeeper";
 		private static ListableBeanFactory beanFactory;
