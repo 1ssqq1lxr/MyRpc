@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.it.netty.rpc</groupId>
 	<artifactId>MyRpc</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>MyRpc Maven Webapp</name>
 	<url>http://maven.apache.org</url>
