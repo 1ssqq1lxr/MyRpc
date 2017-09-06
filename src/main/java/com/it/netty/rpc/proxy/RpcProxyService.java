@@ -15,9 +15,9 @@ import com.it.netty.rpc.romote.DeafultNettyClientRemoteConnection;
 
 public class RpcProxyService {
 		protected final  Logger logger = LoggerFactory.getLogger(getClass());
-		public  Object doProxy(AbatractParameterFilter<Invocation> filter,Method method,Class classes,Object[] args) throws Exception{
+		public  Object doProxy(AbatractParameterFilter<Invocation> filter,Method method,Object[] args) throws Exception{
 			ParameterFilter p = (ParameterFilter)filter;
-			Invocation invocation = filter.doParameter(method,classes,args);
+			Invocation invocation = filter.doParameter(method,args);
 			Callback invokeAsync = DeafultNettyClientRemoteConnection.newInstance(p.getClientGroup_thread_nums()).invokeAsync(invocation);
 			if(invokeAsync==null){
 				logger.info(this.getClass().getName()+"连接远程服务器失败{}", invocation);

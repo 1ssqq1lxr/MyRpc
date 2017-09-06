@@ -5,7 +5,7 @@ import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.proxy.ResolveProxy;
 
 public class RpcCglibProxyClient extends ResolveProxy implements com.it.netty.rpc.proxy.Proxy{
-	private String proxyName = "cglib";
+	private String proxyName = "CGLIB";
 	
 	public String getProxyName() {
 		return proxyName;

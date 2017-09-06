@@ -7,7 +7,16 @@
         http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
         http://www.lxr.com/schema/consume 
         http://www.lxr.com/schema/consume/rpc-consume-1.0.0.xsd">  
-        <rpc:serviceBind id="123"  zkAddress="127.0.0.1:12181" proxy="cglib" clientGroup-thread-nums="50" protocol="HESSIAN">
+        <rpc:serviceBind id="123"  zkAddress="127.0.0.1:12181" proxy="CGLIB" clientGroup-thread-nums="50" protocol="HESSIAN">
         			<rpc:serviceConsume name="personService" interface="com.it.netty.rpc.service.PersonService" ></rpc:serviceConsume>
+        			<rpc:serviceConsume name="Test1Service" interface="Test1Service" ></rpc:serviceConsume>
+        			<rpc:serviceConsume name="Test2Service" interface="Test2Service" ></rpc:serviceConsume>
+        			<rpc:serviceConsume name="Test3Service" interface="Test3Service" ></rpc:serviceConsume>
+        			<rpc:serviceConsume name="Test4Service" interface="Test4Service" ></rpc:serviceConsume>
+        			<rpc:serviceConsume name="Test5Service" interface="Test5Service" ></rpc:serviceConsume>
+        			<rpc:serviceConsume name="Test6Service" interface="Test6Service" ></rpc:serviceConsume>
+        			<rpc:serviceConsume name="Test7Service" interface="Test7Service" ></rpc:serviceConsume>
+        			<rpc:serviceConsume name="Test8Service" interface="Test8Service" ></rpc:serviceConsume>
+        			<rpc:serviceConsume name="Test9Service" interface="Test9Service" ></rpc:serviceConsume>
         </rpc:serviceBind>
 </beans>  

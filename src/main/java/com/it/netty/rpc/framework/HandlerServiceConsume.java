@@ -33,7 +33,7 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	private final String DEFAULT_PARAMETER_FILTER="filter";
 	private final String DEFAULT_PARAMETER_PROXY="proxy";
 	private final String DEFAULT_CLIENTGROUP_THREAD_NUMS = "clientGroup-thread-nums";
-	
+
 	private  ConcurrentHashSet<String> getClassNames  = new ConcurrentHashSet<>();
 	@Override
 	protected Class<?> getBeanClass(Element element) {
@@ -45,7 +45,6 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	@Override
 	protected void doParse(final Element element, ParserContext parserContext,
 			BeanDefinitionBuilder builder) {
-		// TODO Auto-generated method stub
 		final String address = element.getAttribute(DEFAULT_ZOOKEEPER_ZKADDRESS);
 		final String protocol = element.getAttribute(DEFAULT_ZOOKEEPER_PROTOCOL);
 		final String clientGroup_thread_nums = element.getAttribute(DEFAULT_CLIENTGROUP_THREAD_NUMS);
@@ -55,7 +54,6 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 		FrameworkRpcParseUtil.parse(DEFAULT_ZOOKEEPER_NAME, ZookeeperService.class, element, parserContext,new ComponentCallback() {
 			@Override
 			public void onParse(RootBeanDefinition beanDefinition) {
-				// TODO Auto-generated method stub
 				beanDefinition.getPropertyValues().addPropertyValue(DEFAULT_ZOOKEEPER_ZKADDRESS, element.getAttribute("zkAddress"));
 				beanDefinition.getPropertyValues().addPropertyValue(DEFAULT_ZOOKEEPER_CERTIFICATE,new Certificate());
 				beanDefinition.getPropertyValues().addPropertyValue(DEFAULT_ZOOKEEPER_ZK_PATH,DEFAULT_ZOOKEEPER_PATH);
@@ -65,7 +63,6 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 		FrameworkRpcParseUtil.parse(DEFAULT_PARAMETER_FILTER, ParameterFilter.class,element, parserContext,new ComponentCallback() {
 			@Override
 			public void onParse(RootBeanDefinition beanDefinition) {
-				// TODO Auto-generated method stub
 				beanDefinition.getPropertyValues().addPropertyValue("protocol",protocol);
 				beanDefinition.getPropertyValues().addPropertyValue("clientGroup_thread_nums",clientGroup_thread_nums);
 				beanDefinition.getPropertyValues().addPropertyValue("proxy",element.getAttribute(DEFAULT_PARAMETER_PROXY));
@@ -77,7 +74,7 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 			try {
 				final Class<?> loadClass = this.getClass().getClassLoader().loadClass(className);
 				FrameworkRpcParseUtil.parse(name, SpringConsumeBean.class, element, parserContext,new ComponentCallback() {
-						@Override
+					@Override
 					public void onParse(RootBeanDefinition beanDefinition) {
 						beanDefinition.getPropertyValues().addPropertyValue("classt",loadClass);
 						beanDefinition.getPropertyValues().addPropertyValue("className",className);
@@ -86,7 +83,6 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 				});
 				getClassNames.add(className);
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				logger.error("not find class {},{}", className,e);
 			}
 		}

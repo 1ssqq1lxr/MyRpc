@@ -28,11 +28,11 @@
 				</xsd:simpleType>
 			</xsd:attribute>
 			<xsd:attribute name="proxy"  use="optional"
-				default="jdk">
+				default="JDK">
 				<xsd:simpleType>
 					<xsd:restriction  base="xsd:string">
-						<xsd:enumeration value="jdk" />
-						<xsd:enumeration value="cglib" />
+						<xsd:enumeration value="JDK" />
+						<xsd:enumeration value="CGLIB" />
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>

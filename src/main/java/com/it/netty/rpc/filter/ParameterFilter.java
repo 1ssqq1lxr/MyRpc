@@ -3,14 +3,20 @@ package com.it.netty.rpc.filter;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.it.netty.rpc.exception.NoFindClassException;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.URI;
 import com.it.netty.rpc.proxy.Proxy;
 import com.it.netty.rpc.proxy.RpcProxyFactorySelecter;
+import com.it.netty.rpc.proxy.cglib.RpcCglibProxyClient;
+import com.it.netty.rpc.proxy.jdk.RpcJdkProxyClient;
 import com.it.netty.rpc.zookeeper.ZookeeperOpenApi;
 
 public class ParameterFilter implements AbatractParameterFilter<Invocation>{
+	protected final  Logger logger = LoggerFactory.getLogger(getClass());
 	private RpcProxyFactorySelecter factorySelecter = new RpcProxyFactorySelecter();
 	private String protocol;
 	private String proxy ;
@@ -41,20 +47,22 @@ public class ParameterFilter implements AbatractParameterFilter<Invocation>{
 	public ParameterFilter(){
 		super();
 	}
-	public Invocation doParameter(Method method,Class<?> class1,Object[] params) {
+	public Invocation doParameter(Method method,Object[] params) {
+		Class<?> declaringClass = method.getDeclaringClass();
 		Invocation invocation = new Invocation();
 		invocation.setParams(params);
 		invocation.setProtocol(protocol);
-		invocation.setClassName(class1.getName());
-		invocation.setInterfaceClass(class1);
+		invocation.setClassName(declaringClass.getName());
+		invocation.setInterfaceClass(declaringClass);
 		invocation.setSerialNo(UUID.randomUUID().toString());
 		invocation.setParamsType(method.getParameterTypes());
 		invocation.setMethodName(method.getName());
 		invocation.setTimeout(5000);
-		URI uri = api.getURI(class1.getName());
+		URI uri = api.getURI(declaringClass.getName());
 		if(uri==null)
-			throw new NoFindClassException(class1.getName()+":未找到匹配的URI");
+			throw new NoFindClassException(declaringClass.getName()+":未找到匹配的URI");
 		invocation.setUri(uri);
+		logger.info("success :{}",invocation);
 		return invocation;
 	}
 }

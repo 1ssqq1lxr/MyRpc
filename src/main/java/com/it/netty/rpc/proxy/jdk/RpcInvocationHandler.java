@@ -28,7 +28,7 @@ public class RpcInvocationHandler<T> extends RpcProxyService implements Invocati
 			String methodName = method.getName();
 	        Class<?>[] parameterTypes = method.getParameterTypes();
 	        if (method.getDeclaringClass() == Object.class) {
-	        	return doProxy(filter, method, classes, args);
+	        	return doProxy(filter, method, args);
 	        }
 	        if ("toString".equals(methodName) && parameterTypes.length == 0) {
 	            return proxy.toString();
@@ -39,7 +39,7 @@ public class RpcInvocationHandler<T> extends RpcProxyService implements Invocati
 	        if ("equals".equals(methodName) && parameterTypes.length == 1) {
 	            return proxy.equals(args[0]);
 	        }
-	    	return doProxy(filter, method, classes, args);
+	    	return doProxy(filter, method, args);
 	}
 
 

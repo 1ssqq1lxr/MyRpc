@@ -280,6 +280,7 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 					Object newInstance;
 					Result result=null;
 					try {
+						log.info("{}:{}",channel,invocation);
 						newInstance = serviceObjectFindInteferce.getObject(invocation.getClassName());
 						Resolver resolver = init.getInvocation(newInstance);
 						result = resolver.invoke(invocation);

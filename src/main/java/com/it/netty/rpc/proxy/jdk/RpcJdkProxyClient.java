@@ -13,7 +13,7 @@ import com.it.netty.rpc.proxy.ResolveProxy;
  * @param <T>
  */
 public class RpcJdkProxyClient  extends ResolveProxy implements com.it.netty.rpc.proxy.Proxy{
-	private String proxyName = "jdk";
+	private String proxyName = "JDK";
 	
 	public String getProxyName() {
 		return proxyName;

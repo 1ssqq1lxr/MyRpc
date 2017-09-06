@@ -22,12 +22,11 @@ import io.netty.handler.timeout.IdleStateHandler;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import com.it.netty.rpc.heart.HeartBeat;
 import com.it.netty.rpc.message.Const;
@@ -44,13 +43,13 @@ import com.it.netty.rpc.protocol.SerializeEnum;
  *
  */
 public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
+    private ScheduledExecutorService executorService;
 	private  final  ProtocolFactorySelector protocolFactorySelector = new DefaultProtocolFactorySelector();
 	private  DefaultEventLoopGroup ClientdefLoopGroup;
 	private NioEventLoopGroup clientGroup;
 	private Bootstrap b;
 	private final int TOP_LENGTH=129>>1|34; // 数据协议头
 	private final int TOP_HEARTBEAT=129>>1|36; // 心跳协议头
-	private  final  CountDownLatch countDownLatch = new CountDownLatch(1);
 	private static int threads;
 	static class staticInitBean{
 		public static DeafultNettyClientRemoteConnection clientRemoteConnection = new DeafultNettyClientRemoteConnection();
@@ -62,9 +61,25 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 	private  DeafultNettyClientRemoteConnection() {
 		this.resource();
 		this.start();
+		executorService.scheduleWithFixedDelay(new Runnable() {
+	            @Override
+	            public void run() {
+	                cleanupClients();
+	            }
+	        }, 10, 10, TimeUnit.SECONDS);
 	}
-
+	public final void cleanupClients(){
+		if(!channels.isEmpty()){
+			for(String key:channels.keySet()){
+				ChannelManager channelManager = channels.get(key);
+				if(channelManager==null || !channelManager.isAvailable()){
+					channels.remove(key);
+				}
+			}
+		}
+	}
 	public void resource(){
+        executorService = Executors.newScheduledThreadPool(2);
 		this.ClientdefLoopGroup = new DefaultEventLoopGroup(threads, new ThreadFactory() {
 			private AtomicInteger index = new AtomicInteger(0);
 

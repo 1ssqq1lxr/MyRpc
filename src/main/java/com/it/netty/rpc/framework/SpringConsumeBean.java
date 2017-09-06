@@ -2,16 +2,21 @@ package com.it.netty.rpc.framework;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.it.netty.rpc.filter.AbatractParameterFilter;
 import com.it.netty.rpc.message.Invocation;
+import com.it.netty.rpc.protocol.DefaultProtocolFactorySelector;
+import com.it.netty.rpc.proxy.Proxy;
 import com.it.netty.rpc.proxy.cglib.RpcCglibProxyClient;
 
 public class SpringConsumeBean implements FactoryBean, InitializingBean, DisposableBean {
-	
+    private static final Logger log = LoggerFactory.getLogger(SpringConsumeBean.class.getSimpleName());
+
 	public Class<?> getClasst() {
 		return classt;
 	}
@@ -84,7 +89,9 @@ public class SpringConsumeBean implements FactoryBean, InitializingBean, Disposa
 		// TODO Auto-generated method stub
 		object=map.get(className);		
 		if(object==null){
-			object = this.filter.getDefaultProxy().getProxy(classt,this.filter);
+			Proxy defaultProxy = this.filter.getDefaultProxy();
+			log.info(" ================================================= {}",defaultProxy);
+			object = defaultProxy.getProxy(classt,this.filter);
 		}
 	}
 

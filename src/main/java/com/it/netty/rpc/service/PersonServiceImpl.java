@@ -20,4 +20,10 @@ public class PersonServiceImpl implements PersonService{
 		return name;
 	}
 
+	@Override
+	public void get1Name() {
+		// TODO Auto-generated method stub
+		System.out.println("kkkkkk");
+	}
+
 }

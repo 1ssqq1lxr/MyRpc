@@ -6,8 +6,8 @@ import com.it.netty.rpc.proxy.jdk.RpcJdkProxyClient;
 
 public enum ProxyEnum {
 		JDK("jdk"),
-		CGLib("cglib");
-		private Proxy proxy;
+		CGLIB("cglib");
+		public Proxy proxy;
 		ProxyEnum(String proxyName){
 			switch (proxyName) {
 			case "jdk":
