@@ -2,12 +2,12 @@
 主要使用技术以及后期开发功能简介：
 <br>
 1、rpc远程调用使用netty作为通信框架，采用netty主从线程模型。
-2、目前开发给予tcp协议长链接的rpc远程调用，支持异步回调，超时时间，后期加入接口调用统计,权限。
+2、目前开发给予tcp协议长链接的rpc远程调用，支持同步/异步回调，超时时间，后期加入接口调用统计,权限。
 3、序列化目前支持jdk，hessian，jakson序列化，后面准备支持protobuf，Marshalling等序列化技术。
-4、使用zookeeper作为服务的注册与发现中心。
-5、整合spring方便使用。
+4、使用zookeeper作为服务的注册与发现中心。实现服务的自动注册与发现，无限监听节点的变更，提供实时可靠的服务。
+5、整合spring方便使用。集成spring容器，使用更加方便快捷。
 6、目前代理默认使用jdk，支持Javassist，cglib等
-7、支持轮询，随机，权重随机，一致性hash 负载均衡算法
+7、支持轮询，随机，权重随机，一致性hash 负载均衡算法(待开发)
 <br><br>
 ## 服务注册端
 <?xml version="1.0" encoding="UTF-8"?>
@@ -40,10 +40,11 @@
 		http://www.lxr.com/schema/consume 
 		http://www.lxr.com/schema/consume/rpc-consume-1.0.0.xsd">  
 		<rpc:serviceBind id="123"  zkAddress="127.0.0.1:12181" 
-			proxy="cglib" clientGroup-thread-nums="50" protocol="HESSIAN">
+			proxy="cglib" clientGroup-thread-nums="50" protocol="HESSIAN" loadBanlance="random">
 		    <rpc:serviceConsume name="*Service"interface="*.*Service"/>
 		</rpc:serviceBind>
 	</beans>  
+		loadBanlance:负载均衡算法默认随机random,支持轮询roundRobin,定向ip访问 ip。(默认一台主机时不走负载均衡)
 		interface:代理接口全限定名;
 		zkAddress: zookeeper地址;
 		proxy:动态代理模式 目前支持jdk,cglib 默认jdk;
