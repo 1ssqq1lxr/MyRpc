@@ -8,22 +8,14 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.ListableBeanFactory;
 
 import com.it.netty.rpc.cluster.LoadBanlance;
-import com.it.netty.rpc.cluster.RoundRobinLoadBanlance;
 import com.it.netty.rpc.message.URI;
 
-public class ZookeeperOpenApi implements BeanFactoryAware {
-		LoadBanlance banlance = new RoundRobinLoadBanlance();
+public class ZookeeperOpenApi {
 		protected static final Logger log = LoggerFactory.getLogger(ZookeeperOpenApi.class.getSimpleName());
-		private final static String DEFAULT_ZOOKEEPER_NAME="default_client_zookeeper";
-		private static ListableBeanFactory beanFactory;
-		public  URI getURI(String className){
+		public  URI getURI(LoadBanlance loadBanlance,String className){
 			RemoteAddress[] cache = ZookeeperService.cache_uri.getCache(className);
-			return banlance.selectRandom(cache);
-		}
-		@Override
-		public void setBeanFactory(BeanFactory beanFactory)
-				throws BeansException {
-			// TODO Auto-generated method stub
-			ZookeeperOpenApi.beanFactory = (ListableBeanFactory) beanFactory;
+			if(cache.length ==1)
+				return cache[0].getUri();
+			return loadBanlance.selectRandom(cache);
 		}
 }		

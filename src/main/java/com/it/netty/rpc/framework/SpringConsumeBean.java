@@ -10,9 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 import com.it.netty.rpc.filter.AbatractParameterFilter;
 import com.it.netty.rpc.message.Invocation;
-import com.it.netty.rpc.protocol.DefaultProtocolFactorySelector;
 import com.it.netty.rpc.proxy.Proxy;
-import com.it.netty.rpc.proxy.cglib.RpcCglibProxyClient;
 
 public class SpringConsumeBean implements FactoryBean, InitializingBean, DisposableBean {
     private static final Logger log = LoggerFactory.getLogger(SpringConsumeBean.class.getSimpleName());
@@ -87,11 +85,12 @@ public class SpringConsumeBean implements FactoryBean, InitializingBean, Disposa
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// TODO Auto-generated method stub
-		object=map.get(className);		
+		object=map.get(className);	
+		log.info("=============================================================================");
 		if(object==null){
 			Proxy defaultProxy = this.filter.getDefaultProxy();
-			log.info(" ================================================= {}",defaultProxy);
 			object = defaultProxy.getProxy(classt,this.filter);
+			map.put(className, object);
 		}
 	}
 

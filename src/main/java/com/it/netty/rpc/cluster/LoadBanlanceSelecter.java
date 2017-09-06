@@ -2,7 +2,7 @@ package com.it.netty.rpc.cluster;
 
 
 public class LoadBanlanceSelecter {
-	public static LoadBanlance selectLoadBanlance(String loadBanlance){
+	public  LoadBanlance selectLoadBanlance(String loadBanlance){
 		switch (loadBanlance) {
 		case "random":
 			return 	LoadBanlanceEnum.RANDOM.getLoadBanlance();

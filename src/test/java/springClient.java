@@ -21,17 +21,17 @@ public class springClient {
 			}).start();
 
 		}
-		for(int i=0;i<100;i++){
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					bean.get1Name();
-					
-				}
-			}).start();
-
-		}
+//		for(int i=0;i<100;i++){
+//			new Thread(new Runnable() {
+//				@Override
+//				public void run() {
+//					// TODO Auto-generated method stub
+//					bean.get1Name();
+//					
+//				}
+//			}).start();
+//
+//		}
 //		for(int i=0;i<100;i++){
 //			new Thread(new Runnable() {
 //				@Override

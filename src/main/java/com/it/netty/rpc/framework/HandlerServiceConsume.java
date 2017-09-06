@@ -14,14 +14,12 @@ import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.it.netty.rpc.filter.ParameterFilter;
 import com.it.netty.rpc.framework.FrameworkRpcParseUtil.ComponentCallback;
 import com.it.netty.rpc.zookeeper.Certificate;
-import com.it.netty.rpc.zookeeper.ZookeeperOpenApi;
 import com.it.netty.rpc.zookeeper.ZookeeperService;
 
 
 public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	private final String DEFAULT_ZOOKEEPER_NAME="default_client_zookeeper";
-	private final String DEFAULT_ZOOKEEPER_NOPEN_API="default_client_zookeeper_open_api";
 	private final String DEFAULT_ZOOKEEPER_PATH="rpc";
 	private final String DEFAULT_ZOOKEEPER_ZKADDRESS="zkAddress";
 	private final String DEFAULT_ZOOKEEPER_PROTOCOL="protocol";
@@ -32,6 +30,7 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	private final String DEFAULT_ZOOKEEPER_SERVER_NAME="name";
 	private final String DEFAULT_PARAMETER_FILTER="filter";
 	private final String DEFAULT_PARAMETER_PROXY="proxy";
+	private final String DEFAULT_PARAMETER_LOADBANLANCE="loadBanlance";
 	private final String DEFAULT_CLIENTGROUP_THREAD_NUMS = "clientGroup-thread-nums";
 
 	private  ConcurrentHashSet<String> getClassNames  = new ConcurrentHashSet<>();
@@ -47,6 +46,7 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 			BeanDefinitionBuilder builder) {
 		final String address = element.getAttribute(DEFAULT_ZOOKEEPER_ZKADDRESS);
 		final String protocol = element.getAttribute(DEFAULT_ZOOKEEPER_PROTOCOL);
+		final String loadBanlance = element.getAttribute(DEFAULT_PARAMETER_LOADBANLANCE);
 		final String clientGroup_thread_nums = element.getAttribute(DEFAULT_CLIENTGROUP_THREAD_NUMS);
 		builder.addPropertyValue(DEFAULT_ZOOKEEPER_ZKADDRESS, address);
 		builder.addPropertyValue(DEFAULT_ZOOKEEPER_PROTOCOL, protocol);
@@ -59,10 +59,10 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 				beanDefinition.getPropertyValues().addPropertyValue(DEFAULT_ZOOKEEPER_ZK_PATH,DEFAULT_ZOOKEEPER_PATH);
 			}
 		});
-		FrameworkRpcParseUtil.parse(DEFAULT_ZOOKEEPER_NOPEN_API, ZookeeperOpenApi.class, element, parserContext);
 		FrameworkRpcParseUtil.parse(DEFAULT_PARAMETER_FILTER, ParameterFilter.class,element, parserContext,new ComponentCallback() {
 			@Override
 			public void onParse(RootBeanDefinition beanDefinition) {
+				beanDefinition.getPropertyValues().addPropertyValue("loadBanlance",loadBanlance);
 				beanDefinition.getPropertyValues().addPropertyValue("protocol",protocol);
 				beanDefinition.getPropertyValues().addPropertyValue("clientGroup_thread_nums",clientGroup_thread_nums);
 				beanDefinition.getPropertyValues().addPropertyValue("proxy",element.getAttribute(DEFAULT_PARAMETER_PROXY));

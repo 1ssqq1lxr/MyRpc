@@ -27,6 +27,16 @@
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
+			<xsd:attribute name="loadBanlance"  use="optional"
+				default="random">
+				<xsd:simpleType>
+					<xsd:restriction  base="xsd:string">
+						<xsd:enumeration value="random" />
+						<xsd:enumeration value="roundRobin" />
+						<xsd:enumeration value="ip" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
 			<xsd:attribute name="proxy"  use="optional"
 				default="JDK">
 				<xsd:simpleType>
