@@ -18,11 +18,11 @@ public class RpcProxyService {
 		public  Object doProxy(AbatractParameterFilter<Invocation> filter,Method method,Object[] args) throws Exception{
 			ParameterFilter p = (ParameterFilter)filter;
 			Invocation invocation = filter.doParameter(method,args);
-			Callback invokeAsync = DeafultNettyClientRemoteConnection.newInstance(p.getClientGroup_thread_nums()).invokeSync(invocation); // 同步调用
-			if(invokeAsync==null){
+			Callback callback = DeafultNettyClientRemoteConnection.newInstance(p.getClientGroup_thread_nums()).invokeSync(invocation); // 同步调用
+			if(callback==null){
 				return null;
 			}
-			Result result = invokeAsync.getObject();
+			Result result = callback.getObject();
 			if(result.getResultCode().endsWith(Const.ERROR_CODE)){
 				throw result.getException();
 			}
