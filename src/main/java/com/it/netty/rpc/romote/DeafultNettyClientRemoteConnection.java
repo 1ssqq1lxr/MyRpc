@@ -174,11 +174,12 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 		public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 			log.info(this.getClass().getName()+"channel 关闭{}", ctx.channel());
 			Channel channel = ctx.channel();
-			Set<String> keySet = DeafultNettyClientRemoteConnection.channels.keySet();
+			Set<String> keySet = channels.keySet();
 			for(String set:keySet){
-				ChannelManager channelManager = DeafultNettyClientRemoteConnection.channels.get(set);
+				ChannelManager channelManager = channels.get(set);
 				if(channelManager.getChannel()==channel){
-					DeafultNettyClientRemoteConnection.channels.remove(set);
+					log.info(this.getClass().getName()+"channel remove{}", ctx.channel());
+					channels.remove(set);
 				}
 			}
 			ctx.close();
