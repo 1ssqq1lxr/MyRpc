@@ -16,10 +16,17 @@ public class Invocation implements Serializable{
 	private Object[] params;
 	private Class<?>[] paramsType;
 	private String protocol ="DEFAULTSERIALIZE";
+	private boolean returnType =true;
 	
 	private transient URI uri;
 	
-	
+	public boolean isReturnType() {
+		return returnType;
+	}
+
+	public void setReturnType(boolean returnType) {
+		this.returnType = returnType;
+	}
 
 	public long getTimeout() {
 		return timeout;

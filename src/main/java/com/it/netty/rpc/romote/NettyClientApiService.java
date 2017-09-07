@@ -50,9 +50,12 @@ public abstract class NettyClientApiService {
 	public abstract ChannelManager doConnect(URI uri);
 	
 	protected   Callback sendMessage(ChannelFuture channelFuture,Invocation invocation){
-		Callback initCallBack = initCallBack(invocation);
+		Callback initCallBack =null;
+		if(invocation.isReturnType()){
+			initCallBack= initCallBack(invocation);
+		}
 		channelFuture.channel().writeAndFlush(invocation);
-		return initCallBack;
+		return invocation.isReturnType()?initCallBack:null;
 	};
 	
 	protected  Callback initCallBack(Invocation invocation) {

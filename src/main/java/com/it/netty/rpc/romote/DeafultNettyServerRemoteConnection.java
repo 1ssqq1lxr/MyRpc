@@ -283,10 +283,12 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 						log.info("{}:{}",channel,invocation);
 						newInstance = serviceObjectFindInteferce.getObject(invocation.getClassName());
 						Resolver resolver = init.getInvocation(newInstance);
-						result = resolver.invoke(invocation);
-						result.setProtocol(invocation.getProtocol());
-						result.setSerialNo(invocation.getSerialNo());
-						channel.writeAndFlush(result);
+						if(invocation.isReturnType()){
+							result = resolver.invoke(invocation);
+							result.setProtocol(invocation.getProtocol());
+							result.setSerialNo(invocation.getSerialNo());
+							channel.writeAndFlush(result);
+						}
 					} catch (RuntimeException e) {
 						log.error("{}",e);
 					}

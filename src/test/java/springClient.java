@@ -14,8 +14,7 @@ public class springClient {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					Person name = bean.getName();
-					System.out.println(name.getName());
+					bean.get1Name();
 					System.out.println(bean.setName("sad"));
 				}
 			}).start();

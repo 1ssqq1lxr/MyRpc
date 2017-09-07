@@ -40,6 +40,9 @@ public class ParameterFilter implements AbatractParameterFilter<Invocation>{
 		invocation.setParamsType(method.getParameterTypes());
 		invocation.setMethodName(method.getName());
 		invocation.setTimeout(5000);
+		Class<?> returnType = method.getReturnType();
+		if(returnType.getName().equals("void"))
+			invocation.setReturnType(false);
 		URI uri = api.getURI(banlanceSelecter.selectLoadBanlance(loadBanlance),declaringClass.getName());
 		if(uri==null)
 			throw new NoFindClassException(declaringClass.getName()+":未找到匹配的URI");

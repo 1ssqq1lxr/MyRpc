@@ -20,7 +20,6 @@ public class RpcProxyService {
 			Invocation invocation = filter.doParameter(method,args);
 			Callback invokeAsync = DeafultNettyClientRemoteConnection.newInstance(p.getClientGroup_thread_nums()).invokeAsync(invocation);
 			if(invokeAsync==null){
-				logger.info(this.getClass().getName()+"连接远程服务器失败{}", invocation);
 				return null;
 			}
 			Result result = invokeAsync.getObject();

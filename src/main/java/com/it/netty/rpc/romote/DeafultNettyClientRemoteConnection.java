@@ -134,7 +134,7 @@ public class DeafultNettyClientRemoteConnection  extends NettyClientApiService{
 						uri.countDown();
 						return channelManager1;
 					}
-					log.info(this.getClass().getName()+" 连接｛｝ 失败",getRemoteStr(uri));
+					log.info(this.getClass().getName()+" 连接{}失败",getRemoteStr(uri));
 				}
 				else
 					return channelManager;
