@@ -328,7 +328,7 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 			public void removeNode(String path) {
 				String matchPath = matchPath(path);
 				RemoteAddress[] addresses  = cache_uri.getCache(matchPath);
-				if(addresses!=null ){
+				if(addresses!=null &&  addresses.length>0){
 					RemoteAddress[] addresses_new =new RemoteAddress[addresses.length-1]; 
 					int num =0;
 					for(int i=0;i<addresses.length;i++){

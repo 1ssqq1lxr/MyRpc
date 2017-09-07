@@ -14,8 +14,11 @@ public class ZookeeperOpenApi {
 		protected static final Logger log = LoggerFactory.getLogger(ZookeeperOpenApi.class.getSimpleName());
 		public  URI getURI(LoadBanlance loadBanlance,String className){
 			RemoteAddress[] cache = ZookeeperService.cache_uri.getCache(className);
-			if(cache.length ==1)
+			if(cache==null || cache.length<1)
+				return null;
+			else if(cache.length ==1)
 				return cache[0].getUri();
-			return loadBanlance.selectRandom(cache);
+			else
+				return loadBanlance.selectRandom(cache);
 		}
 }		
