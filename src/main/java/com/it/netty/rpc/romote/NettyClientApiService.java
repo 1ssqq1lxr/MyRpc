@@ -30,7 +30,7 @@ public abstract class NettyClientApiService {
 		}
 		return null;
 	}
-	public   Callback invokeAsync(Invocation invocation){
+	public   Callback invokeSync(Invocation invocation){
 		URI uri = invocation.getUri();
 		String remoteStr = getRemoteStr(uri);
 		if(invocation==null || uri==null){

@@ -18,7 +18,7 @@ public class RpcProxyService {
 		public  Object doProxy(AbatractParameterFilter<Invocation> filter,Method method,Object[] args) throws Exception{
 			ParameterFilter p = (ParameterFilter)filter;
 			Invocation invocation = filter.doParameter(method,args);
-			Callback invokeAsync = DeafultNettyClientRemoteConnection.newInstance(p.getClientGroup_thread_nums()).invokeAsync(invocation);
+			Callback invokeAsync = DeafultNettyClientRemoteConnection.newInstance(p.getClientGroup_thread_nums()).invokeSync(invocation); // 同步调用
 			if(invokeAsync==null){
 				return null;
 			}
