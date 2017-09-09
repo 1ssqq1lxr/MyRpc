@@ -27,6 +27,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import com.it.netty.rpc.cache.Cache;
+import com.it.netty.rpc.cache.CacheFactory;
 import com.it.netty.rpc.heart.HeartBeat;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.Resolver;
@@ -43,7 +45,6 @@ import com.it.netty.rpc.service.ServiceObjectFindInteferce;
  *
  */
 public class DeafultNettyServerRemoteConnection extends NettyServerApiService implements InitializingBean {
-
 	ServiceObjectFindInteferce serviceObjectFindInteferce ;
 	public ServiceObjectFindInteferce getServiceObjectFindInteferce() {
 		return serviceObjectFindInteferce;
@@ -273,7 +274,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 	@Override
 	public Runnable getSubmitTask(final Channel channel,final Invocation invocation) {
 		return new Runnable() {
-
 			@Override
 			public void run() {
 				if(invocation!=null){

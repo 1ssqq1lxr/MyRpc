@@ -17,9 +17,7 @@ public class Invocation implements Serializable{
 	private Class<?>[] paramsType;
 	private String protocol ="DEFAULTSERIALIZE";
 	private boolean returnType =true;
-	
 	private transient URI uri;
-	
 	public boolean isReturnType() {
 		return returnType;
 	}
@@ -51,31 +49,24 @@ public class Invocation implements Serializable{
 	public void setInterfaceClass(Class<?> interfaceClass) {
 		this.interfaceClass = interfaceClass;
 	}
-
 	public String getClassName() {
 		return className;
 	}
-
 	public void setClassName(String className) {
 		this.className = className;
 	}
-
 	public String getMethodName() {
 		return methodName;
 	}
-
 	public void setMethodName(String methodName) {
 		this.methodName = methodName;
 	}
-
 	public Object[] getParams() {
 		return params;
 	}
-
 	public void setParams(Object[] params) {
 		this.params = params;
 	}
-
 	public Class<?>[] getParamsType() {
 		return paramsType;
 	}
@@ -83,23 +74,18 @@ public class Invocation implements Serializable{
 	public void setParamsType(Class<?>[] paramsType) {
 		this.paramsType = paramsType;
 	}
-
 	public String getProtocol() {
 		return protocol;
 	}
-
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
 	}
-
 	public URI getUri() {
 		return uri;
 	}
-
 	public void setUri(URI uri) {
 		this.uri = uri;
 	}
-
 	@Override
 	public String toString() {
 		return "Invocation [serialNo=" + serialNo + ", timeout=" + timeout

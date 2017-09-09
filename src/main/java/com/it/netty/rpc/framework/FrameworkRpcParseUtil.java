@@ -29,7 +29,6 @@ public class FrameworkRpcParseUtil {
 	            parserContext.getReaderContext().error(e.getMessage(), rootElement);
 	        }
 	    }
-	    
 	    public static String parse(Class<?> beanType, Element rootElement, ParserContext parserContext) {
 	        String beanName = null;
 	        try {

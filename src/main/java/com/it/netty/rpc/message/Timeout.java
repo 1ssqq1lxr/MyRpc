@@ -3,16 +3,12 @@ package com.it.netty.rpc.message;
 public class Timeout {
 	private String className;
 	private long timeout;
-
-
 	public long getTimeout() {
 		return timeout;
 	}
-
 	public void setTimeout(long timeout) {
 		this.timeout = timeout;
 	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -21,7 +17,6 @@ public class Timeout {
 				+ ((className == null) ? 0 : className.hashCode());
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -38,5 +33,4 @@ public class Timeout {
 			return false;
 		return true;
 	}
-	
 }

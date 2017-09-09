@@ -11,26 +11,17 @@ import com.it.netty.rpc.zookeeper.ZookeeperService;
 public class ZkBeanServiceConsume implements InitializingBean{
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	private  ConcurrentHashSet<String> getClassNames  = new ConcurrentHashSet<>();
-	
 	private String protocol;
-	
-	
 	private String zkAddress;
-	
-	
-	
 	public String getZkAddress() {
 		return zkAddress;
 	}
-
 	public void setZkAddress(String zkAddress) {
 		this.zkAddress = zkAddress;
 	}
-
 	public String getProtocol() {
 		return protocol;
 	}
-
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
 	}
