@@ -17,7 +17,7 @@ import com.it.netty.rpc.exception.NoFindClassException;
 import com.it.netty.rpc.exception.NotFoundServiceException;
 import com.it.netty.rpc.romote.NettyClientApiService;
 
-public class ServiceObjectFind implements ServiceObjectFindInteferce, BeanFactoryAware, BeanClassLoaderAware{
+public class FrameworkServiceObjectFind implements ServiceObjectFindInteferce, BeanFactoryAware, BeanClassLoaderAware{
 	protected  Logger log = LoggerFactory.getLogger(NettyClientApiService.class.getSimpleName());
 	private ListableBeanFactory beanFactory;
     private ClassLoader classLoader;
@@ -55,6 +55,9 @@ public class ServiceObjectFind implements ServiceObjectFindInteferce, BeanFactor
 					                	return bean;
 					                }
 					            }
+						  }
+						  else{
+							  
 						  }
 				           throw new NotFoundServiceException(className);
 					  }

@@ -24,8 +24,6 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	private final String DEFAULT_ZOOKEEPER_ZKADDRESS="zkAddress";
 	private final String DEFAULT_ZOOKEEPER_PROTOCOL="protocol";
 	private final String DEFAULT_ZOOKEEPER_SERVICECONSUME="rpc:serviceConsume";
-	private final String DEFAULT_ZOOKEEPER_CERTIFICATE="certificate";
-	private final String DEFAULT_ZOOKEEPER_ZK_PATH="path";
 	private final String DEFAULT_ZOOKEEPER_CLASS="interface";
 	private final String DEFAULT_ZOOKEEPER_SERVER_NAME="name";
 	private final String DEFAULT_PARAMETER_FILTER="filter";
@@ -36,11 +34,8 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 	private  ConcurrentHashSet<String> getClassNames  = new ConcurrentHashSet<>();
 	@Override
 	protected Class<?> getBeanClass(Element element) {
-		// TODO Auto-generated method stub
 		return ZkBeanServiceConsume.class;
 	}
-
-
 	@Override
 	protected void doParse(final Element element, ParserContext parserContext,
 			BeanDefinitionBuilder builder) {
@@ -48,15 +43,15 @@ public class HandlerServiceConsume extends AbstractSingleBeanDefinitionParser {
 		final String protocol = element.getAttribute(DEFAULT_ZOOKEEPER_PROTOCOL);
 		final String loadBanlance = element.getAttribute(DEFAULT_PARAMETER_LOADBANLANCE);
 		final String clientGroup_thread_nums = element.getAttribute(DEFAULT_CLIENTGROUP_THREAD_NUMS);
-		builder.addPropertyValue(DEFAULT_ZOOKEEPER_ZKADDRESS, address);
-		builder.addPropertyValue(DEFAULT_ZOOKEEPER_PROTOCOL, protocol);
+		builder.addPropertyValue("zkAddress", address);
+		builder.addPropertyValue("protocol", protocol);
 		NodeList serviceRegeist = element.getElementsByTagName(DEFAULT_ZOOKEEPER_SERVICECONSUME);
 		FrameworkRpcParseUtil.parse(DEFAULT_ZOOKEEPER_NAME, ZookeeperService.class, element, parserContext,new ComponentCallback() {
 			@Override
 			public void onParse(RootBeanDefinition beanDefinition) {
-				beanDefinition.getPropertyValues().addPropertyValue(DEFAULT_ZOOKEEPER_ZKADDRESS, element.getAttribute("zkAddress"));
-				beanDefinition.getPropertyValues().addPropertyValue(DEFAULT_ZOOKEEPER_CERTIFICATE,new Certificate());
-				beanDefinition.getPropertyValues().addPropertyValue(DEFAULT_ZOOKEEPER_ZK_PATH,DEFAULT_ZOOKEEPER_PATH);
+				beanDefinition.getPropertyValues().addPropertyValue("zkAddress", element.getAttribute("zkAddress"));
+				beanDefinition.getPropertyValues().addPropertyValue("certificate",new Certificate());
+				beanDefinition.getPropertyValues().addPropertyValue("path",DEFAULT_ZOOKEEPER_PATH);
 			}
 		});
 		FrameworkRpcParseUtil.parse(DEFAULT_PARAMETER_FILTER, ParameterFilter.class,element, parserContext,new ComponentCallback() {

@@ -42,5 +42,4 @@ public class RpcInvocationHandler<T> extends RpcProxyService implements Invocati
 	    	return doProxy(filter, method, args);
 	}
 
-
 }

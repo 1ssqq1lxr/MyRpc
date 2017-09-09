@@ -20,8 +20,7 @@
  				<rpc:serviceRegeist class="Test8Service" timeout="4000"></rpc:serviceRegeist>
  				<rpc:serviceRegeist class="Test9Service" timeout="4000"></rpc:serviceRegeist>
  				<rpc:serviceRegeist class="Test10Service" timeout="4000"></rpc:serviceRegeist>
- 				
  	</rpc:server>
- 	
+ <!-- 	<bean id="my" class="MyBeanPostProcessor"></bean> -->
 	
 </beans>  
