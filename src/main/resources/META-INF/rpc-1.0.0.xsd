@@ -20,11 +20,19 @@
 	</xsd:element>
 	<xsd:complexType name="serviceRegeist">
 		<xsd:attribute name="class" type="xsd:string" use="required"/>
-		<xsd:attribute name="timeout"  >
+		<xsd:attribute name="timeout"  default="3000">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:int">
 						<xsd:maxInclusive value="5000"></xsd:maxInclusive>
 						<xsd:minInclusive value="2000"></xsd:minInclusive>
+					</xsd:restriction>
+				</xsd:simpleType>
+		</xsd:attribute>
+			<xsd:attribute name="max-flow"  default="200">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:int">
+						<xsd:maxInclusive value="2000"></xsd:maxInclusive>
+						<xsd:minInclusive value="200"></xsd:minInclusive>
 					</xsd:restriction>
 				</xsd:simpleType>
 		</xsd:attribute>

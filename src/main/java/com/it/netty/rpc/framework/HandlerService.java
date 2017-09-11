@@ -13,6 +13,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
+import com.it.netty.rpc.flow.DefaultFlowRestrict;
+import com.it.netty.rpc.flow.FlowRestrict;
 import com.it.netty.rpc.framework.FrameworkRpcParseUtil.ComponentCallback;
 import com.it.netty.rpc.romote.DeafultNettyServerRemoteConnection;
 import com.it.netty.rpc.service.FrameworkServiceObjectFind;
@@ -28,13 +30,13 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 	private final String DEFAULT_ZOOKEEPER_NAME="default_server_zookeeper";
 	private final String DEFAULT_ZOOKEEPER_PATH="rpc";
 	private final String DEFAULT_TIMEOUT="timeout";
+	private final String DEFAULT_MAX_FLOW="max-flow";
 	public static final ConcurrentHashMap<String, Long> timeouts = new ConcurrentHashMap<String, Long>();
+	public static final ConcurrentHashMap<String, FlowRestrict> flows = new ConcurrentHashMap<String, FlowRestrict>();
 	@Override
 	protected Class<?> getBeanClass(Element element) {
 		return ZkBeanService.class;
 	}
-
-
 	@Override
 	protected void doParse(final Element element, ParserContext parserContext,
 			BeanDefinitionBuilder builder) {
@@ -61,17 +63,28 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 				Element item = (Element) serviceRegeist.item(i);
 				String attribute = item.getAttribute("class");
 				String timeout=item.getAttribute(DEFAULT_TIMEOUT);
-				registClassNames.add(attribute);
-				if(timeout!="" && timeout!=null)
-				HandlerService.timeouts.putIfAbsent(attribute, Long.parseLong(timeout));
+				String flow=item.getAttribute(DEFAULT_MAX_FLOW);
+				String loadClassName = loadClassName(attribute);
+				registClassNames.add(loadClassName);
+				timeouts.putIfAbsent(loadClassName, Long.parseLong(timeout));
+				flows.putIfAbsent(loadClassName, new DefaultFlowRestrict(Integer.parseInt(flow)));
 			}
 			builder.addPropertyValue("registClassNames", registClassNames);
 			builder.addPropertyValue("zookeeperService", new RuntimeBeanReference(DEFAULT_ZOOKEEPER_NAME) );
 		} catch (Exception e) {
 			logger.error(this.getClass().getName()+"error regeist service {}" +e);
 		}
-		
-
-		
+	}
+	private String loadClassName(String className){
+		Class<?> loadClass;
+		try {
+			loadClass = this.getClass().getClassLoader().loadClass(className);
+			if(!loadClass.isInterface()){
+				return className = loadClass.getInterfaces()[0].getName();
+			}
+		} catch (ClassNotFoundException e) {
+			logger.error(this.getClass().getName()+" not load service {}" ,className);
+		}
+		return className;
 	}
 }

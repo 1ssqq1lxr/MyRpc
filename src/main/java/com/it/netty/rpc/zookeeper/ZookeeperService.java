@@ -281,10 +281,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 
 			for(String className:registClassNames){
 				Long timeout = HandlerService.timeouts.get(className);
-				Class<?> loadClass = this.getClass().getClassLoader().loadClass(className);
-				if(!loadClass.isInterface()){
-					className = loadClass.getInterfaces()[0].getName();
-				}
 				URI uri= new URI(null, hostAddress, this.port,null,timeout);
 				registNode(className, uri, CreateMode.EPHEMERAL_SEQUENTIAL, true);
 				logger.info( "success regist server {} :{} ", className,uri);  

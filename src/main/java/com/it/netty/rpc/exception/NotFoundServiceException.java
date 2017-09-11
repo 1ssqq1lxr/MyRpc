@@ -1,9 +1,6 @@
 package com.it.netty.rpc.exception;
 
 public class NotFoundServiceException extends RuntimeException{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public NotFoundServiceException(String name){
