@@ -38,56 +38,17 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 	private String DEV_S="/";
 	private  String NODE_NAME="node_";
 	public  static Cache<String,RemoteAddress[]>  cache_uri = new CacheFactory<>(); // channel
-	private int port;
-
-	private String zkAddress;
-
+	private int port; 
+	private String zkAddress; 
 	private Certificate certificate;
-
 	private String path;
-
 	private NodeEventHandler eventHandler;
-
-	public String getPath() {
-		return path;
-	}
-	public void setPath(String path) {
-		this.path = path;
-	}
-	public String getZkAddress() {
-		return zkAddress;
-	}
-	public void setZkAddress(String zkAddress) {
-		this.zkAddress = zkAddress;
-	}
-	public Certificate getCertificate() {
-		return certificate;
-	}
-	public void setCertificate(Certificate certificate) {
-		this.certificate = certificate;
-	}
-
-
-	public int getPort() {
-		return port;
-	}
-	public void setPort(int port) {
-		this.port = port;
-	}
-
 	private final org.slf4j.Logger logger = LoggerFactory.getLogger(getClass());
-	@SuppressWarnings("unused")
 	private BaseZookeeperClient baseZookeeperClient;
-
-	@SuppressWarnings("unused")
 	private ProtocolFactory factory = new JacksonProtocolFactory();
-
-	@SuppressWarnings("unused")
 	private CuratorFramework curatorFramework;
-
 	public ZookeeperService() throws Exception {
 		super();
-
 	}
 	@Override
 	public void registNode(String path, URI uri,CreateMode mode,boolean is) {
@@ -185,6 +146,7 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 
 	public void  setPathChildrenListenter(String path){
 		path = path.startsWith(DEV_S)?path:DEV_S+path;
+		@SuppressWarnings("resource")
 		PathChildrenCache childrenCache = new PathChildrenCache(this.curatorFramework, path, true);  
 		PathChildrenCacheListener childrenCacheListener = new PathChildrenCacheListener() {  
 			@Override  
@@ -195,7 +157,6 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 					if(data.getData()!=null && data.getData().length>0){
 						uri = factory.decode(URI.class, data.getData());
 					}
-
 					String path = data.getPath(); 
 					switch (event.getType()) {  
 					case CHILD_ADDED:  
@@ -384,5 +345,29 @@ public class ZookeeperService implements BaseZookeeperService ,InitializingBean,
 		}
 		return flag;
 	}
+	public String getPath() {
+		return path;
+	}
+	public void setPath(String path) {
+		this.path = path;
+	}
+	public String getZkAddress() {
+		return zkAddress;
+	}
+	public void setZkAddress(String zkAddress) {
+		this.zkAddress = zkAddress;
+	}
+	public Certificate getCertificate() {
+		return certificate;
+	}
+	public void setCertificate(Certificate certificate) {
+		this.certificate = certificate;
+	}
 
+	public int getPort() {
+		return port;
+	}
+	public void setPort(int port) {
+		this.port = port;
+	}
 }
