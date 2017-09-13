@@ -27,8 +27,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.InitializingBean;
 
-import com.it.netty.rpc.cache.Cache;
-import com.it.netty.rpc.cache.CacheFactory;
+import com.it.netty.rpc.flow.FlowRestrict;
+import com.it.netty.rpc.flow.FlowRestrictWraper;
+import com.it.netty.rpc.framework.HandlerService;
 import com.it.netty.rpc.heart.HeartBeat;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.Resolver;
@@ -75,7 +76,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 	public void resouce(){
 		ServerdefLoopGroup = new DefaultEventLoopGroup(Runtime.getRuntime().availableProcessors() * 2, new ThreadFactory() {
 			private AtomicInteger index = new AtomicInteger(0);
-
 			public Thread newThread(Runnable r) {
 				return new Thread(r, "DEFAULTEVENTLOOPGROUP_" + index.incrementAndGet());
 			}
@@ -148,13 +148,13 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
 				throws Exception {
-			log.info(this.getClass().getName()+"channel 关闭{}：{}", ctx.channel(),cause);
+			log.info(this.getClass().getName()+"channel 连接关闭{}：{}", ctx.channel(),cause);
 			ctx.close();
 		}
 
 		@Override
 		public void channelActive(ChannelHandlerContext ctx) throws Exception {
-			log.info(this.getClass().getName()+"channel 关闭{}", ctx.channel());
+			log.info(this.getClass().getName()+"channel 建立连接{}", ctx.channel());
 			super.channelActive(ctx);
 		}
 
@@ -197,7 +197,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 			if(invocation instanceof Result){ // 请求
 				ByteBuffer byteBuffer = this.getByteBuffer((Result)invocation);
 				out.writeBytes(byteBuffer);
-				log.info("success  do  request {}:{}",ctx.channel(),out.hashCode());
 			}
 
 		}
@@ -234,7 +233,6 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 				beginReader = in.readerIndex();  
 				in.markReaderIndex();  
 				header=in.readInt();
-				log.info("header :{}:{},{}",in,ServerDecode.this,header);
 				if (header == TOP_LENGTH || header==TOP_HEARTBEAT) {  
 					break;  
 				}
@@ -248,6 +246,7 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 					in.readerIndex(beginReader); //初始化读取位置
 					return;
 				}
+				log.info("body :{}:{} byte【length】{}",in,in.hashCode(),bodylength);
 				byte[] bytes = new byte[bodylength];
 				ProtocolFactory select = protocolFactorySelector.select(protocol);
 				in.readBytes(bytes);
@@ -277,21 +276,31 @@ public class DeafultNettyServerRemoteConnection extends NettyServerApiService im
 			@Override
 			public void run() {
 				if(invocation!=null){
-					Object newInstance;
-					Result result=null;
-					try {
-						log.info("{}:{}",channel,invocation);
-						newInstance = serviceObjectFindInteferce.getObject(invocation.getClassName());
-						Resolver resolver = init.getInvocation(newInstance);
-						if(invocation.isReturnType()){
-							result = resolver.invoke(invocation);
-							result.setProtocol(invocation.getProtocol());
-							result.setSerialNo(invocation.getSerialNo());
-							channel.writeAndFlush(result);
-						}
-					} catch (RuntimeException e) {
-						log.error("{}",e);
+					FlowRestrictWraper flowRestrictWraper =new FlowRestrictWraper(HandlerService.flows.get(invocation.getClassName())) ;
+					 if(flowRestrictWraper.doRestrict()){
+						 doWork(channel, invocation, flowRestrictWraper);	
+					 }
+					 else
+					 log.info(" server 超过负载 丢弃任务 ");
+				}
+			}
+			private void doWork(final Channel channel,final Invocation invocation,final FlowRestrictWraper flowRestrictWraper){
+				Object newInstance;
+				Result result=null;
+				try {
+					newInstance = serviceObjectFindInteferce.getObject(invocation.getClassName());
+					Resolver resolver = init.getInvocation(newInstance);
+					if(invocation.isReturnType()){
+						result = resolver.invoke(invocation);
+						result.setProtocol(invocation.getProtocol());
+						result.setSerialNo(invocation.getSerialNo());
+						channel.writeAndFlush(result);
 					}
+				} catch (RuntimeException e) {
+					log.error("{}",e);
+				}
+				finally{
+					flowRestrictWraper.doRelease();
 				}
 			}
 		};

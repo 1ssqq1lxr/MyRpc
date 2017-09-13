@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import com.it.netty.rpc.cache.Cache;
 import com.it.netty.rpc.cache.CacheFactory;
 import com.it.netty.rpc.excutor.RpcExcutors;
+import com.it.netty.rpc.flow.FlowRestrict;
+import com.it.netty.rpc.flow.FlowRestrictWraper;
+import com.it.netty.rpc.framework.HandlerService;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.message.Resolver;
 import com.it.netty.rpc.message.Result;
@@ -24,11 +27,11 @@ public abstract class NettyServerApiService  {
 	protected final static RpcExcutors exRpcExcutors = new RpcExcutors("Rpc-method-server");
 	protected void invoke(Channel channel,Invocation invocation){
 		try {
-			
-			exRpcExcutors.excute(getSubmitTask(channel,invocation));
+			exRpcExcutors.excute(getSubmitTask(channel, invocation));
 		} catch (Exception e) {
 			log.error(this.getClass().getName()+"线程池执行失败 类{} 方法{} 参数{}", invocation.getClassName(),invocation.getMethodName(),invocation.getParams());
 		}
+		
 	}
 	public abstract Runnable getSubmitTask(Channel channel,Invocation invocation);
 	

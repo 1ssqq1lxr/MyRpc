@@ -23,7 +23,6 @@ public class CglibProxyMethodInterceptor extends RpcProxyService implements Meth
 		this.filter=filter;
 		enhancer.setSuperclass(clazz);  
 		enhancer.setCallback(this);
-		logger.info("success {} create proxy :{}",RpcCglibProxyClient.class.getName(),classes.getName());
 		return enhancer.create();  
 	}  
 	@Override  

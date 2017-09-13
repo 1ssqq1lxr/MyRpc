@@ -35,7 +35,6 @@ public class DefaultProtocolFactorySelector implements ProtocolFactorySelector {
 
     public ProtocolFactory registry(ProtocolFactory protocolFactory) {
         ProtocolFactory pf = protocolFactories.putIfAbsent(protocolFactory.getProtocol(), protocolFactory);
-        log.info("registry protocolFactory code : {}, protocolFactory : {}, putIfAbsent : {}", protocolFactory.getProtocol(), protocolFactory, pf);
         return pf;
     }
 
@@ -45,7 +44,6 @@ public class DefaultProtocolFactorySelector implements ProtocolFactorySelector {
         }
         for (ProtocolFactory protocolFactory : protocolFactories) {
             ProtocolFactory pf = this.protocolFactories.putIfAbsent(protocolFactory.getProtocol(), protocolFactory);
-            log.info("registry protocolFactory code : {}, protocolFactory : {}, putIfAbsent : {}", protocolFactory.getProtocol(), protocolFactory, pf);
         }
     }
 }

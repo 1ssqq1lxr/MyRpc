@@ -19,7 +19,6 @@ public class URI implements Serializable {
 	private 	int port;
 	private String weight; // 权重
 	private Long timeout = 3000L;
-	
 	public URI(String serialMethod, String host, int port, String weight,
 			Long timeout) {
 		super();

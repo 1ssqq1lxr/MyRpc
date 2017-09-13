@@ -22,6 +22,5 @@ public class RpcJdkProxyClient  extends ResolveProxy implements com.it.netty.rpc
 	public   <T>  T getProxy( Class<T> classes,AbatractParameterFilter<Invocation> filter) {
 		T newProxyInstance = (T) Proxy.newProxyInstance(classes.getClassLoader(), new Class<?>[]{classes}, new RpcInvocationHandler<T>(classes,filter));
 		return (T) newProxyInstance;
-	}
-	
+	}	
 }

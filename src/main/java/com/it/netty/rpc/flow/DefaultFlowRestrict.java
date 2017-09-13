@@ -17,7 +17,7 @@ public class DefaultFlowRestrict implements FlowRestrict {
 		public boolean restrict() {
 			try {
 				return semaphore.tryAcquire(DEFAULT_TIME,TimeUnit.MILLISECONDS);
-			} catch (InterruptedException e) {
+			} catch (Exception e) {
 				logger.warn("not acquire semaphore",e);
 				return false;
 			}

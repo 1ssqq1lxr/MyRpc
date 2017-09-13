@@ -2,12 +2,10 @@ package com.it.netty.rpc.proxy.jdk;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.it.netty.rpc.filter.AbatractParameterFilter;
 import com.it.netty.rpc.message.Invocation;
 import com.it.netty.rpc.proxy.RpcProxyService;
-import com.it.netty.rpc.proxy.cglib.CglibProxyMethodInterceptor;
 /**
  * rpc客户端代码类
  * @author 17070680
@@ -24,7 +22,7 @@ public class RpcInvocationHandler<T> extends RpcProxyService implements Invocati
 	}
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
-			logger.info("success {} create proxy :{}",RpcJdkProxyClient.class.getName(),classes.getName());
+			long begintime = System.currentTimeMillis();
 			String methodName = method.getName();
 	        Class<?>[] parameterTypes = method.getParameterTypes();
 	        if (method.getDeclaringClass() == Object.class) {
@@ -39,7 +37,10 @@ public class RpcInvocationHandler<T> extends RpcProxyService implements Invocati
 	        if ("equals".equals(methodName) && parameterTypes.length == 1) {
 	            return proxy.equals(args[0]);
 	        }
-	    	return doProxy(filter, method, args);
+	        Object result =doProxy(filter, method, args);
+	        long endtime = System.currentTimeMillis();
+//	        logger.info(msg);
+	    	return result;
 	}
 
 }

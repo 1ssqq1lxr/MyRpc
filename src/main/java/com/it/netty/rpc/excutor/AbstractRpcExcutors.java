@@ -15,8 +15,8 @@ import com.alibaba.fastjson.parser.Feature;
 public abstract class AbstractRpcExcutors  implements AbstractExcutor{
 	ExecutorService service;
 	
-	private int corePoolSize =50;
-	private	int intmaximumPoolSize=200;
+	private int corePoolSize =250;
+	private	int intmaximumPoolSize=400;
 	
 	public ExecutorService getService() {
 		return service;

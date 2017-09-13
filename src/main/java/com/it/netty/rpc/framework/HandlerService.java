@@ -13,6 +13,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
+import com.it.netty.rpc.flow.DefaultFlowRestrict;
+import com.it.netty.rpc.flow.FlowRestrict;
 import com.it.netty.rpc.framework.FrameworkRpcParseUtil.ComponentCallback;
 import com.it.netty.rpc.romote.DeafultNettyServerRemoteConnection;
 import com.it.netty.rpc.service.FrameworkServiceObjectFind;
@@ -30,7 +32,7 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 	private final String DEFAULT_TIMEOUT="timeout";
 	private final String DEFAULT_MAX_FLOW="max-flow";
 	public static final ConcurrentHashMap<String, Long> timeouts = new ConcurrentHashMap<String, Long>();
-	public static final ConcurrentHashMap<String, Integer> flows = new ConcurrentHashMap<String, Integer>();
+	public static final ConcurrentHashMap<String, FlowRestrict> flows = new ConcurrentHashMap<String, FlowRestrict>();
 	@Override
 	protected Class<?> getBeanClass(Element element) {
 		return ZkBeanService.class;
@@ -65,7 +67,7 @@ public class HandlerService extends AbstractSingleBeanDefinitionParser {
 				String loadClassName = loadClassName(attribute);
 				registClassNames.add(loadClassName);
 				timeouts.putIfAbsent(loadClassName, Long.parseLong(timeout));
-				flows.putIfAbsent(loadClassName,Integer.parseInt(flow));
+				flows.putIfAbsent(loadClassName, new DefaultFlowRestrict(Integer.parseInt(flow)));
 			}
 			builder.addPropertyValue("registClassNames", registClassNames);
 			builder.addPropertyValue("zookeeperService", new RuntimeBeanReference(DEFAULT_ZOOKEEPER_NAME) );

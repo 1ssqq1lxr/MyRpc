@@ -73,7 +73,6 @@ public class SpringConsumeBean implements FactoryBean, InitializingBean, Disposa
 	public void afterPropertiesSet() throws Exception {
 		// TODO Auto-generated method stub
 		object=map.get(className);	
-		log.info("=============================================================================");
 		if(object==null){
 			Proxy defaultProxy = this.filter.getDefaultProxy();
 			object = defaultProxy.getProxy(classt,this.filter);
