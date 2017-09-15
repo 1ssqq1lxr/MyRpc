@@ -48,7 +48,7 @@ public class ResultCallBack implements Callback{
 		if(this.result==null){
 			lock.lock();
 			try{	
-				boolean await = condition.await(4000, TimeUnit.MILLISECONDS);
+				boolean await = condition.await(timeout, TimeUnit.MILLISECONDS);
 				if(await){
 					return this.result;
 				}

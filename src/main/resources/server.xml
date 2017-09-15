@@ -10,7 +10,7 @@
     <bean id="perservice" class="com.it.netty.rpc.service.PersonServiceImpl"></bean>
     <bean id="test1Service" class="Test1ServiceImpl"></bean>
  	<rpc:server id="test" serverPort="8097" zkAddress="127.0.0.1:12181" >
- 				<rpc:serviceRegeist class="com.it.netty.rpc.service.PersonServiceImpl" timeout="5000"></rpc:serviceRegeist>
+ 				<rpc:serviceRegeist class="com.it.netty.rpc.service.PersonServiceImpl" timeout="15000"></rpc:serviceRegeist>
  				<rpc:serviceRegeist class="Test1Service" timeout="4000"></rpc:serviceRegeist>
  				<rpc:serviceRegeist class="Test2Service" timeout="4000"></rpc:serviceRegeist>
  				<rpc:serviceRegeist class="Test3Service" timeout="4000"></rpc:serviceRegeist>
