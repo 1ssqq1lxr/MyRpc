@@ -7,7 +7,7 @@
 4、使用zookeeper作为服务的注册与发现中心。实现服务的自动注册与发现，无限监听节点的变更，提供实时可靠的服务。
 5、整合spring方便使用。集成spring容器，使用更加方便快捷。
 6、目前代理默认使用jdk，支持Javassist，cglib等
-7、支持轮询，随机，权重随机，一致性hash 负载均衡算法(待开发)
+7、支持轮询，随机，权重随机，一致性hash 负载均衡算法
 <br><br>
 ## 服务注册端
 <?xml version="1.0" encoding="UTF-8"?>
@@ -21,7 +21,7 @@
         http://www.lxr.com/schema/rpc/rpc-1.0.0.xsd">  
     	<bean id="perservice" class="*.*ServiceImpl"/>
  		<rpc:server id="test" serverPort="8096" zkAddress="127.0.0.1:12181">
-			<rpc:serviceRegeist class="*.*.*Service" timeout="5000"/>
+			<rpc:serviceRegeist class="*.*.*Service" timeout="5000" max-flow="2000"/>
  		</rpc:server>
 	</beans>  
 	serverPort:默认开启tcp端口;
@@ -29,6 +29,7 @@
 			并且在 com.it.netty.rpc.service.PersonServiceImpl类上加上注解@RpcService
 	zkAddress: zookeeper地址;
 	timeout：默认请求超时时间为5000毫秒，可设置2000-5000范围内;
+	max-flow:最大并发量
 <br><br>
 ## 服务消费端
 	<beans xmlns="http://www.springframework.org/schema/beans"  
